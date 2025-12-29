@@ -3,6 +3,8 @@
 icon: fas fa-info-circle
 order: 4
 ---
+Hey, I’m Mehdi!  
 
-> Add Markdown syntax content to file `_tabs/about.md`{: .filepath } and it will show up on this page.
-{: .prompt-tip }
+I like thinking about weird, counter-intuitive, and sometimes ridiculous things, and when I do, I want to share them immediately! 
+
+This website is where I dump thoughts, record what I’m learning, and occasionally post life updates. Basically, this is where I try to make sense of life while keeping it interesting (and adless).
