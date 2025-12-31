@@ -3,9 +3,10 @@ layout: post
 title: "A Guide to (some) Greek Gods in no Particular Order"
 date: 2025-12-31
 categories: mythology
+tags: [greek myths]
 ---
 
-Zeus is the guy with the lightning bolt, the king of gods. He’s part of the main “trio” of gods – with Poseidon and Hades – who divided the world among them. Zeus rules over land and sky. Poseidon gets the oceans and Hades the underworld. Zeus is married to Hera, and let’s just say Zeus had a few too many children Hera did not know about. We’ll go over a few of them! 
+Zeus is the guy with the lightning bolt, the king of gods. Cronus, his father, had swallowed all his children to prevent a prophecy that one of them would overthrow him. When Zeus was born, his mother Rhea hid him and gave Cronus a stone wrapped in swaddling clothes instead. Zeus grew up in secret, eventually returning to free his swallowed siblings. Then he led a ten-year war against the Titans—giant, primal gods of the old order. With the help of his freed siblings and the Cyclopes, Zeus defeated Cronus and the Titans and established the reign of the Olympian gods. He’s part of the main “trio” with Poseidon and Hades, who divided the world: Zeus rules the sky and land, Poseidon the seas, and Hades the underworld. He’s married to Hera... and let’s just say he had a few children she eventually found out about... sometimes the hard way. We’ll go over a few of them! 
 
 Hera, Queen of Olympus, is the goddess of childbirth and family.  She was proud, clever, and fiercely independent. Zeus, her younger brother, had just overthrown Cronus and freed the other gods. Naturally, he noticed Hera—and decided she must be his wife. Hera was not impressed. She fled, changing form to escape him, a bird here, a cow there, anything to avoid Zeus. But Zeus was persistent. He transformed too, taking the shape of a cuckoo, a swan, or whatever would allow him to catch her. After a long chase across the skies, Hera finally relented, and Zeus claimed her as his queen. She’s the mother of Ares, Hephaestus. She’s famous, or rather infamous, for jealous vengeance against Zeus’ lovers and illegitimate children. 
 
