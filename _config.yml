@@ -29,8 +29,7 @@ github:
   username: mehdievaltimes # change to your GitHub username
 
 instagram:
-  username: mehdievaltimes # change to your Twitter username
-
+  username: mehdievaltimes # change to your Instagram username
 social:
   # Change to your full name.
   # It will be displayed as the default author of the posts and the copyright owner in the Footer
@@ -40,9 +39,15 @@ social:
     # The first element serves as the copyright owner's link
     - https://instagram.com/mehdievaltimes # change to your instagram homepage
     - https://github.com/mehdievaltimes # change to your GitHub homepage
-    # Uncomment below to add more social links
-    # - https://www.facebook.com/username
     - https://www.linkedin.com/in/mehdishak
+
+
+
+
+
+
+
+
 
 # Site Verification Settings
 webmaster_verifications:
