@@ -15,9 +15,9 @@ The simplest way of mapping English to numbers is to assign a number to every ch
 
 It’s fairly easy for a computer to memorize the meanings of words. The full Oxford English Dictionary occupies no more than 2 GB. However, a computer lacks understanding of the language despite knowing the possible meanings of every word. To a dictionary, the following two sentences are nearly identical:
 
-> "Joey has a big heart."
+> Joey has a big heart.
 >
-> "Baby Kangaroo owns a humongous aortic pump."
+> Baby Kangaroo owns a humongous aortic pump.
 
 Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn't know that "Joey" here is likely the name of a person, rather than a literal marsupial.
 
@@ -27,9 +27,9 @@ Nowadays, it’s not controversial to say LLMs can easily understand context. Wh
 
 Think of the model as a giant office of filing cabinets:
 
-* **Query (Q):** Query (Q): Every token (like the word "it") holds a sticky note asking a question: "I’m a pronoun—which noun in this sentence do I belong to?"
-* **Key (K):** Every other token has a label on its cabinet drawer. The cabinet for "cat" is labeled: "I am a feline noun." The cabinet for "mat" is labeled: "I am a floor covering."
-* **Value (V):** Inside the "cat" cabinet is the actual information, a list of numbers representing the "meaning" of a cat.
+- Query (Q): Every token (like the word "it") holds a sticky note asking a question: "I’m a pronoun. Which noun in this sentence do I belong to?"
+- Key (K): Every other token has a label on its cabinet drawer. The cabinet for "cat" is labeled: "I am a feline noun." The cabinet for "mat" is labeled: "I am a floor covering."
+- Value (V): Inside the "cat" cabinet is the actual information, a list of numbers representing the "meaning" of a cat.
 
 When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token.
 
