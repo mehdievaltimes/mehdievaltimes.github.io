@@ -48,7 +48,7 @@ Here's a (brief) list of problems with the way we currently tokenize language:
 - The Case-Sensitivity Glitch: To a tokenizer, Hello, hello, and HELLO are often three completely different "numbers."
 - The "SolidGoldMagikarp" Glitch: Some tokenizers include strings that appeared often in the training data but were never "explained" to the model (like specific usernames or weird Reddit tags). If the model sees these "hallucination tokens," it can completely lose its mind and start outputting gibberish.
 - The ASCII Art Failure: Ever wonder why LLMs can't draw a simple cat with slashes and dashes?
-- Subword "Garbage" in Code: In programming, specific variable names like idx_to_str might be broken into idx, _to, and _str. If the tokenizer is bad, it might break it into i, dx, _t, o_s, tr. This makes it much harder for the model to "reason" about the logic of the code because the variable name looks like a word salad.
+- Subword "Garbage" in Code: In programming, specific variable names like idx_to_str might be broken into idx, _to, and _str. If the tokenizer is bad, it might break it into i, dx, _t, o_s, tr. This makes it much harder for the model to reason about the logic of the code because the variable name looks like a word salad.
 
 Ideally, we want to get rid of this cumbersome process of tokenization entirely and treat inputs as streams of bytes, allowing the model to process words quasi-natively. Several papers have been written on the subject, such as [Megabyte](https://arxiv.org/abs/2305.07185), but there is currently no definitive empirical proof that it can outperform tokenization.
 
