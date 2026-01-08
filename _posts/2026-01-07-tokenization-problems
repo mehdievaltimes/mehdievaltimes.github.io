@@ -6,44 +6,37 @@ categories: Tokenization
 tags: [LLMs, AI, NLP, Transformers, Machine-Learning]
 ---
 
-# Problems with Tokenization
-
-I’m sure you have all seen some version of this meme:
-
-![LLM meme showing matrix multiplication as a virtual girlfriend](https://mehdievaltimes.github.io/assets/img/virtualgfmeme.jpg)
-
 This obviously oversimplified yet vaguely accurate caricature says all LLMs do math on the series of characters we feed into them. As part of this process, LLMs inevitably convert these strings to a series of numbers so that they can begin "math-ing." In other words, computers do not process language natively. We developers have to map every possible string to numbers so the computer can do math on it and give us an output.
 
-The simplest way of mapping English to numbers is to assign a number to every character in the alphabet—i.e., *a* is 1, *b* is 2, *c* is 3, and so on. If we limit the model to English, we’ll have 26 letters (double that for uppercase), punctuation, and whitespace, totaling about 57 tokens. We can technically build and train models this way, but it comes with a massive set of problems. Before I talk about those, however, I need to briefly go over how current LLMs “understand” language.
+The simplest way of mapping English to numbers is to assign a number to every character in the alphabet—i.e., a is 1, b is 2, c is 3, and so on. If we limit the model to English, we’ll have 26 letters (double that for uppercase), punctuation, and whitespace, totaling about 57 tokens. We can technically build and train models this way, but it comes with a massive set of problems. Before I talk about those, however, I need to briefly go over how current LLMs “understand” language.
 
-### How LLMs "Understand"
-It’s fairly easy for a computer to memorize the meanings of words. The full *Oxford English Dictionary* occupies no more than 2 GB. However, a computer lacks understanding of the language despite knowing the possible meanings of every word. To a dictionary, the following two sentences are nearly identical:
+It’s fairly easy for a computer to memorize the meanings of words. The full Oxford English Dictionary occupies no more than 2 GB. However, a computer lacks understanding of the language despite knowing the possible meanings of every word. To a dictionary, the following two sentences are nearly identical:
 
-> “Joey has a big heart.”
+> "Joey has a big heart."
 >
-> “Baby Kangaroo owns a humongous aortic pump.”
+> "Baby Kangaroo owns a humongous aortic pump."
 
-Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn’t know that "Joey" here is likely the name of a person, rather than a literal marsupial.
+Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn't know that "Joey" here is likely the name of a person, rather than a literal marsupial.
 
-To instill contextual understanding, AI devs of the 50s and 60s tried to hard-code specific triggers. For instance, Joseph Weizenbaum’s ELIZA program relied on rigid "scripts." If a user typed, "I am feeling sad about my mother," ELIZA didn't actually "understand" grief; it was simply programmed with a rule: **If [input] contains "mother," then [output] "Tell me more about your family."** It was a "canned" response that collapsed the moment the user stepped outside the pre-defined patterns.
+To instill contextual understanding, AI devs of the 50s and 60s tried to hard-code specific triggers. For instance, Joseph Weizenbaum’s ELIZA program relied on rigid "scripts." If a user typed, "I am feeling sad about my mother," ELIZA didn't actually "understand" grief; it was simply programmed with a rule: If [input] contains "mother," then [output] "Tell me more about your family." It was a "canned" response that collapsed the moment the user stepped outside the pre-defined patterns.
 
-### The Attention Mechanism
-Nowadays, it’s not controversial to say LLMs can easily understand context. When we write, *“The cat sat on the mat, and it played with its toy,”* an LLM understands that “it” refers to “the cat.” The way the machine knows this is through a mechanism called **Self-Attention**, which uses three vectors: Queries, Keys, and Values (KQV).
+Nowadays, it’s not controversial to say LLMs can easily understand context. When we write, “The cat sat on the mat, and it played with its toy,” an LLM understands that "it" refers to “the cat.” The way the machine knows this is through a mechanism called Self-Attention, which uses three vectors: Queries, Keys, and Values (KQV).
 
 Think of the model as a giant office of filing cabinets:
 
-* **Query (Q):** Every token (like the word "it") holds a sticky note asking a question: "I’m a pronoun—which noun in this sentence do I belong to?"
+* **Query (Q):** Query (Q): Every token (like the word "it") holds a sticky note asking a question: "I’m a pronoun—which noun in this sentence do I belong to?"
 * **Key (K):** Every other token has a label on its cabinet drawer. The cabinet for "cat" is labeled: "I am a feline noun." The cabinet for "mat" is labeled: "I am a floor covering."
 * **Value (V):** Inside the "cat" cabinet is the actual information—a list of numbers representing the "meaning" of a cat.
 
 When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token. This creates a mathematical map of context that ELIZA could only dream of.
 
-### The Tokenization Trade-off
-In this process, each “token” pays “attention” to other tokens. You can already see that if we treat every letter as a separate token, we have a massive computational problem. If a sentence has 50 characters, we need to process $50 \times 49$ operations for just one layer of attention. More importantly, letters alone have no semantic meaning; it’s virtually impossible for a model to know how much the *C* in *cat* should "pay attention" to the *t*.
+When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token. This creates a mathematical map of context that ELIZA could only dream of.
 
-If we treat each word as a distinct token, things get easier and more intuitive. We know "cat" should pay "attention" to "mat." But here’s where things get interesting: you’ve probably heard how older LLMs cannot tell us there are 3 *r*'s in the word *strawberry*. 
+In this process, each “token” pays “attention” to other tokens. You can already see that if we treat every letter as a separate token, we have a massive computational problem. If a sentence has 50 characters, we need to process $50 \times 49$ operations for just one layer of attention. More importantly, letters alone have no semantic meaning; it’s virtually impossible for a model to know how much the C in cat should "pay attention" to the t.
 
-**That’s because of tokenization!** When we feed *strawberry* to an LLM, it treats it as three tokens: `st-raw-berry`. It can tell us about the history of the fruit, but it doesn't "see" the individual letters `s-t-r-a-w-b-e-r-r-y`.
+If we treat each word as a distinct token, things get easier and more intuitive. We know "cat" should pay "attention" to "mat." But here’s where things get interesting: you’ve probably heard how older LLMs cannot tell us there are 3 r's in the word strawberry.
+
+That’s because of tokenization! When we feed strawberry to an LLM, it treats it as three tokens: st-raw-berry. It can tell us about the history of the fruit, but it doesn't "see" the individual letters s-t-r-a-w-b-e-r-r-y.
 
 This also explains why LLMs are historically bad at simple arithmetic or why they struggle with languages like Japanese. The workaround for these problems is to let the model run Python code! When we ask a modern model like ChatGPT, it secretly runs a script to count the letters:
 
