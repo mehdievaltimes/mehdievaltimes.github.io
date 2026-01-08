@@ -9,7 +9,7 @@ I’m sure you have all seen some version of this meme:
 
 ![LLM meme showing matrix multiplication as a virtual girlfriend](https://mehdievaltimes.github.io/assets/img/virtualgfmeme.jpg)
 
-This obviously oversimplified yet vaguely accurate caricature says all LLMs do math on the series of characters we feed into them. As part of this process, LLMs inevitably convert these strings to a series of numbers so that they can begin "math-ing." In other words, computers do not process language natively. We developers have to map every possible string to numbers so the computer can do math on it and give us an output.
+This obviously oversimplified yet vaguely accurate caricature says all LLMs do math on the series of characters we feed into them. As part of this process, LLMs inevitably convert these strings to a series of numbers so that they can begin math-ing. In other words, computers do not process language natively. We developers have to map every possible string to numbers so the computer can do math on it and give us an output.
 
 The simplest way of mapping English to numbers is to assign a number to every character in the alphabet --- a is 1, b is 2, c is 3, and so on. If we limit the model to English, we’ll have 26 letters (double that for uppercase), punctuation, and whitespace, totaling 57 tokens. We can technically build and train models this way, but it comes with a massive set of problems. Before I talk about those, however, I need to briefly go over how machines “understand” language.
 
