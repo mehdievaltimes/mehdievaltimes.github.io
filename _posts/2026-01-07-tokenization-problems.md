@@ -29,7 +29,7 @@ Think of the model as a giant office of filing cabinets:
 
 * **Query (Q):** Query (Q): Every token (like the word "it") holds a sticky note asking a question: "I’m a pronoun—which noun in this sentence do I belong to?"
 * **Key (K):** Every other token has a label on its cabinet drawer. The cabinet for "cat" is labeled: "I am a feline noun." The cabinet for "mat" is labeled: "I am a floor covering."
-* **Value (V):** Inside the "cat" cabinet is the actual information—a list of numbers representing the "meaning" of a cat.
+* **Value (V):** Inside the "cat" cabinet is the actual information, a list of numbers representing the "meaning" of a cat.
 
 When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token. This creates a mathematical map of context that ELIZA could only dream of.
 
@@ -49,6 +49,6 @@ count = word.lower().count('r')
 print(count)
 ```
 
-Ideally, we want to get rid of this unintelligent process entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject—such as Megabyte—but there is currently no definitive empirical proof that it can outperform tokenization without requiring an impossible amount of computing power.
+Ideally, we want to get rid of this unintelligent process entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject --- such as [Megabyte](https://arxiv.org/abs/2305.07185) --- but there is currently no definitive empirical proof that it can outperform tokenization.
 
 I also want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him.
