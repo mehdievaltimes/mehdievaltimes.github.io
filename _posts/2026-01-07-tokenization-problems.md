@@ -23,7 +23,7 @@ Obviously, dictionary software cannot fully understand language alone because it
 
 To instill contextual understanding, AI devs of the 50s and 60s tried to hard-code specific triggers. For instance, Joseph Weizenbaum’s ELIZA program relied on rigid "scripts." If a user typed, "I am feeling sad about my mother," ELIZA didn't actually "understand" grief; it was simply programmed with a rule: If [input] contains "mother," then [output] "Tell me more about your family." It was a "canned" response that collapsed the moment the user stepped outside the pre-defined patterns.
 
-Nowadays, it’s not controversial to say LLMs can easily understand context. When we write, “The cat sat on the mat, and it played with its toy,” an LLM understands that "it" refers to “the cat.” The way the machine knows this is through a mechanism called Self-Attention, which uses three vectors: Queries, Keys, and Values (KQV).
+Nowadays, it’s not controversial to say LLMs can easily understand context. When we write, “The cat sat on the mat, and it played with its toy,” an LLM understands that "it" refers to “the cat.” The way the machine captures contextual cues is through a mechanism called [Self-Attention] (https://arxiv.org/abs/1706.03762), which uses three vectors: Queries, Keys, and Values (KQV).
 
 Think of the model as a giant office of filing cabinets:
 
@@ -31,9 +31,7 @@ Think of the model as a giant office of filing cabinets:
 * **Key (K):** Every other token has a label on its cabinet drawer. The cabinet for "cat" is labeled: "I am a feline noun." The cabinet for "mat" is labeled: "I am a floor covering."
 * **Value (V):** Inside the "cat" cabinet is the actual information, a list of numbers representing the "meaning" of a cat.
 
-When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token. This creates a mathematical map of context that ELIZA could only dream of.
-
-When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token. This creates a mathematical map of context that ELIZA could only dream of.
+When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token.
 
 In this process, each “token” pays “attention” to other tokens. You can already see that if we treat every letter as a separate token, we have a massive computational problem. If a sentence has 50 characters, we need to process $50 \times 49$ operations for just one layer of attention. More importantly, letters alone have no semantic meaning; it’s virtually impossible for a model to know how much the C in cat should "pay attention" to the t.
 
@@ -51,4 +49,4 @@ print(count)
 
 Ideally, we want to get rid of this unintelligent process entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject --- such as [Megabyte](https://arxiv.org/abs/2305.07185) --- but there is currently no definitive empirical proof that it can outperform tokenization.
 
-I also want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him.
+Note: I want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him.
