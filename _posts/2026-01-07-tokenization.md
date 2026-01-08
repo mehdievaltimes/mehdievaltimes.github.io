@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Tokenization Problems"
+title: "On Tokenization"
 date: 2026-01-07
 categories: Tokenization
 tags: [LLMs, AI, NLP, Transformers, Machine-Learning]
@@ -49,4 +49,6 @@ print(count)
 
 Ideally, we want to get rid of this unintelligent tedious process of tokenization entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject, such as [Megabyte](https://arxiv.org/abs/2305.07185), but there is currently no definitive empirical proof that it can outperform tokenization.
 
-Note: I want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him.
+Notes: 
+- I want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him. 
+- You can play around with GPT's tokenizer [here](https://platform.openai.com/tokenizer). 
