@@ -33,13 +33,13 @@ Think of the model as a giant office of filing cabinets:
 
 When the model processes the sentence, the Query for "it" scans all the Keys. It finds a high mathematical match with the "cat" Key. The model then opens that drawer and pulls out the Value, blending that information into the "it" token.
 
-In this process, each “token” pays “attention” to other tokens. You can already see that if we treat every letter as a separate token, we have a massive computational problem. If a sentence has 50 characters, we need to process $50 \times 49$ operations for just one layer of attention. More importantly, letters alone have no semantic meaning; it’s virtually impossible for a model to know how much the C in cat should "pay attention" to the t.
+In this process, each “token” pays “attention” to other tokens. You can already see that if we treat every letter as a separate token, we have a massive computational problem. If a sentence has 50 characters, we need to process 50^2=2500 operations for just one layer of attention. More importantly, letters alone have no semantic meaning; it’s virtually impossible for a model to know how much the c in cat should "pay attention" to the t in mat.
 
-If we treat each word as a distinct token, things get easier and more intuitive. We know "cat" should pay "attention" to "mat." But here’s where things get interesting: you’ve probably heard how older LLMs cannot tell us there are 3 r's in the word strawberry.
+If we treat each word as a distinct token, things get easier and more intuitive. We know "cat" should pay some amount of "attention" to "mat." But here’s where things get interesting: you’ve probably heard how older LLMs cannot tell us there are 3 r's in the word strawberry.
 
-That’s because of tokenization! When we feed strawberry to an LLM, it treats it as three tokens: st-raw-berry. It can tell us about the history of the fruit, but it doesn't "see" the individual letters s-t-r-a-w-b-e-r-r-y.
+That’s because of tokenization! When we feed strawberry to an LLM, it treats it as three tokens: st-raw-berry. It can tell us about the history of the fruit, the etymology, it can make up stories about magical strawberries but it doesn't "see" the individual letters s-t-r-a-w-b-e-r-r-y.
 
-This also explains why LLMs are historically bad at simple arithmetic or why they struggle with languages like Japanese. The workaround for these problems is to let the model run Python code! When we ask a modern model like ChatGPT, it secretly runs a script to count the letters:
+This also explains why LLMs are historically bad at simple arithmetic or why they struggle with harder-to-tokenize languages like Japanese. The workaround for the first two problems is to let the model run Python code! When we ask a modern LLM, it secretly runs a script to count the letters:
 
 ```python
 word = "strawberry"
@@ -47,6 +47,6 @@ count = word.lower().count('r')
 print(count)
 ```
 
-Ideally, we want to get rid of this unintelligent process entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject --- such as [Megabyte](https://arxiv.org/abs/2305.07185) --- but there is currently no definitive empirical proof that it can outperform tokenization.
+Ideally, we want to get rid of this unintelligent tedious process of tokenization entirely and treat inputs as streams of bytes, allowing the model to process words "natively" as they are. Several papers have been written on the subject, such as [Megabyte](https://arxiv.org/abs/2305.07185), but there is currently no definitive empirical proof that it can outperform tokenization.
 
 Note: I want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him.
