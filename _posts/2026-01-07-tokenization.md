@@ -19,7 +19,7 @@ It’s fairly easy for a computer to memorize the meanings of words. The full Ox
 >
 > Baby Kangaroo is a marvelous Homo sepien with a full-sized aortic pump.
 
-Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn't know that "Joey" here is likely the name of a person, rather than a literal marsupial.
+Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn't know that "Joey" here is the name of a person, rather than a literal marsupial.
 
 To instill contextual understanding, AI devs of the 50s and 60s tried to hard-code specific triggers. For instance, Joseph Weizenbaum’s ELIZA program relied on rigid "scripts." If a user typed, "I am feeling sad about my mother," ELIZA didn't actually "understand" grief; it was simply programmed with a rule: If [input] contains "mother," then [output] "Tell me more about your family." It was a "canned" response that collapsed the moment the user stepped outside the pre-defined patterns.
 
