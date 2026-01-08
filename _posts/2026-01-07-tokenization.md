@@ -54,4 +54,4 @@ Ideally, we want to get rid of this cumbersome process of tokenization entirely 
 
 Notes: 
 - I want to mention Andrej Karpathy's [lecture on Tokenization](https://www.youtube.com/watch?v=zduSFxRajkE), as most of the ideas here were shamelessly stolen from him. 
-- You can play around with GPT's tokenizer [here](https://platform.openai.com/tokenizer). 
+- You can play around with GPT's tokenizers [here](https://platform.openai.com/tokenizer). 
