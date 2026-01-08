@@ -17,7 +17,7 @@ It’s fairly easy for a computer to memorize the meanings of words. The full Ox
 
 > Joey is a nice person with a big heart.
 >
-> Baby Kangaroo is a preprocessing Homo sepien with a full-sized aortic pump.
+> Baby Kangaroo is a marvelous Homo sepien with a full-sized aortic pump.
 
 Obviously, dictionary software cannot fully understand language alone because it doesn't know anything about contextual cues. It doesn't know that "Joey" here is likely the name of a person, rather than a literal marsupial.
 
