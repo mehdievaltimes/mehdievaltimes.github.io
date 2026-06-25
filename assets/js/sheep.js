@@ -8,6 +8,13 @@ document.addEventListener("DOMContentLoaded", function() {
         .leg-anim { animation: walk 0.5s infinite alternate ease-in-out; }
         .leg-anim-delay { animation: walk 0.5s infinite alternate-reverse ease-in-out; }
         .head-anim { animation: graze 4s infinite; transform-origin: 80% 50%; }
+        .head { transform-origin: 80% 50%; transition: transform 0.5s; }
+        .head-sad { transform: rotate(20deg) translate(-2px, 4px) !important; }
+        .ear { transition: transform 0.5s; transform-origin: center; }
+        .head-sad .ear { transform: rotate(50deg) !important; }
+        .eye { transition: clip-path 0.5s; }
+        .head-sad .eye { clip-path: polygon(0 50%, 100% 50%, 100% 100%, 0 100%); }
+        
         @keyframes walk {
           0% { transform: rotate(-15deg); }
           100% { transform: rotate(15deg); }
@@ -32,13 +39,19 @@ document.addEventListener("DOMContentLoaded", function() {
         <g class="head">
           <ellipse cx="50" cy="20" rx="8" ry="10" fill="#222"/>
           <!-- Ear -->
-          <ellipse cx="43" cy="17" rx="5" ry="2.5" fill="#222" transform="rotate(20 43 17)"/>
+          <ellipse class="ear" cx="43" cy="17" rx="5" ry="2.5" fill="#222" transform="rotate(20 43 17)"/>
           <!-- Eye -->
-          <circle cx="53" cy="18" r="1.5" fill="#fff"/>
+          <circle class="eye" cx="53" cy="18" r="1.5" fill="#fff"/>
         </g>
       </g>
     </svg>
     `;
+
+    const allSheepData = [];
+
+    window.callSheepHome = function() {
+        allSheepData.forEach(s => s.goHome());
+    };
 
     for (let i = 0; i < numSheep; i++) {
         setTimeout(createSheep, i * 800);
@@ -64,6 +77,9 @@ document.addEventListener("DOMContentLoaded", function() {
         
         let isGrazing = false;
         let isDragging = false;
+        let isGoingHome = false;
+        let homeTarget = 0; 
+        
         let dragOffsetX = 0;
         let dragOffsetY = 0;
         let isClick = false; 
@@ -72,6 +88,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const legs = sheep.querySelectorAll('.leg');
         
         sheep.addEventListener('mousedown', (e) => {
+            if (isGoingHome) return; 
             isDragging = true;
             isClick = true;
             sheep.style.cursor = "grabbing";
@@ -80,7 +97,6 @@ document.addEventListener("DOMContentLoaded", function() {
             dragOffsetX = e.clientX - position;
             dragOffsetY = e.clientY - rect.top;
             
-            // Wiggle legs fast while dragged
             legs.forEach(l => {
                 l.style.animationDuration = "0.15s";
                 l.style.animationPlayState = 'running';
@@ -88,7 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
             head.classList.remove('head-anim');
             isGrazing = false;
             
-            e.preventDefault(); // Prevent text selection
+            e.preventDefault(); 
         });
         
         window.addEventListener('mousemove', (e) => {
@@ -129,7 +145,15 @@ document.addEventListener("DOMContentLoaded", function() {
         });
         
         function animate() {
-            if (!isGrazing && !isDragging) {
+            if (isGoingHome) {
+                position += speed * direction * 0.8; 
+                sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
+                
+                if ((direction === 1 && position > homeTarget) || (direction === -1 && position < homeTarget)) {
+                    legs.forEach(l => l.style.animationPlayState = 'paused');
+                    return; 
+                }
+            } else if (!isGrazing && !isDragging) {
                 position += speed * direction;
                 
                 if (position > window.innerWidth + 50) {
@@ -147,7 +171,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     
                     setTimeout(() => {
                         isGrazing = false;
-                        if (!isDragging) {
+                        if (!isDragging && !isGoingHome) {
                             legs.forEach(l => l.style.animationPlayState = 'running');
                         }
                         head.classList.remove('head-anim');
@@ -161,5 +185,29 @@ document.addEventListener("DOMContentLoaded", function() {
         
         head.classList.remove('head-anim');
         animate();
+
+        allSheepData.push({
+            goHome: () => {
+                isGoingHome = true;
+                isGrazing = false;
+                isDragging = false;
+                head.classList.remove('head-anim');
+                head.classList.add('head-sad');
+                sheep.style.cursor = "default";
+                sheep.style.pointerEvents = "none";
+                legs.forEach(l => {
+                    l.style.animationPlayState = 'running';
+                    l.style.animationDuration = "0.8s"; 
+                });
+                
+                if (position > window.innerWidth / 2) {
+                    direction = 1;
+                    homeTarget = window.innerWidth + 100;
+                } else {
+                    direction = -1;
+                    homeTarget = -100;
+                }
+            }
+        });
     }
 });
