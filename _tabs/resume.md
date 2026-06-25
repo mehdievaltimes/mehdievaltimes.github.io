@@ -8,7 +8,7 @@ order: 1
 ## Where I Learn Things
 **Columbia University**  
 *B.A. in Mathematics and Computer Science (Expected May 2027)*  
-GPA: 3.76 |
+GPA: 3.76 | **Relevant Courses:** Systems Programming, Computational Genomics, Probability Theory, Security, Natural Language Processing, Real Analysis, Modern Algebra
 
 ---
 
