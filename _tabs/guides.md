@@ -2,7 +2,7 @@
 layout: page
 title: Guides
 icon: fas fa-book
-order: 6
+order: 3
 ---
 
 <style>
