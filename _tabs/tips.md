@@ -58,32 +58,6 @@ order: 3
       flex-direction: column;
       color: var(--text-color);
     }
-    .tweet-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 0.8rem;
-    }
-    .tweet-avatar {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      margin-right: 12px;
-      object-fit: cover;
-    }
-    .tweet-author {
-      display: flex;
-      flex-direction: column;
-      line-height: 1.2;
-    }
-    .tweet-name {
-      font-weight: bold;
-      font-size: 1.1rem;
-      color: var(--text-color);
-    }
-    .tweet-handle {
-      color: var(--text-muted);
-      font-size: 0.9rem;
-    }
     .tweet-content {
       font-size: 1.05rem;
       line-height: 1.5;
@@ -101,13 +75,6 @@ order: 3
   <div id="tweet-list" class="flex-grow-1 px-xl-1">
     {% for tip in site.tips %}
       <div class="tweet-card">
-        <div class="tweet-header">
-          <img src="/assets/img/avatar.png" alt="Avatar" class="tweet-avatar" onerror="this.style.display='none'">
-          <div class="tweet-author">
-            <span class="tweet-name">{{ site.title }}</span>
-            <span class="tweet-handle">@mehdisha</span>
-          </div>
-        </div>
         <div class="tweet-content content">
           {{ tip.content }}
         </div>
