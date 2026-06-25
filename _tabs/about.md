@@ -11,4 +11,4 @@ I like thinking about weird, counter-intuitive, and sometimes ridiculous things,
 Expect a mix of ideas, observations, chess tricks, and the occasional rant. Basically, this is where I try to make sense of life while keeping it interesting and ad-free!
 
 ---
-Email: ms7251 at columbia dot edu
+Email: mehdi.s at columbia dot edu
