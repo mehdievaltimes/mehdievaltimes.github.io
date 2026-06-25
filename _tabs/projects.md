@@ -26,15 +26,18 @@ Here are some of my recent open-source projects on GitHub.
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     const username = "mehdievaltimes";
-    const numRepos = 5;
+    const fetchLimit = 10;
     
-    fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=${numRepos}`)
+    fetch(`https://api.github.com/users/${username}/repos?sort=updated&per_page=${fetchLimit}`)
         .then(response => response.json())
         .then(data => {
             const container = document.getElementById("github-projects");
             container.innerHTML = "";
             
-            data.forEach(repo => {
+            // Filter out the website itself and limit to 5 projects
+            const filteredData = data.filter(repo => repo.name !== 'mehdievaltimes.github.io').slice(0, 5);
+            
+            filteredData.forEach(repo => {
                 const card = document.createElement("div");
                 card.className = "card";
                 card.style.flex = "1 1 calc(50% - 1rem)";
@@ -47,8 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
                         </h4>
                         <p class="card-text text-muted flex-grow-1">${repo.description || "No description provided."}</p>
                         <div class="text-muted small mt-2">
-                            <span class="me-3"><i class="far fa-star"></i> ${repo.stargazers_count}</span>
-                            <span class="me-3"><i class="fas fa-code-branch"></i> ${repo.forks_count}</span>
                             <span><i class="fas fa-circle" style="color: #6e7681; font-size: 0.8em; vertical-align: baseline;"></i> ${repo.language || "Unknown"}</span>
                         </div>
                     </div>
