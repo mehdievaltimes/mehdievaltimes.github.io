@@ -47,26 +47,74 @@ order: 3
 <div id="mystery-content">
   <p>Welcome to my Digital Garden! Here is a collection of living documents, tips, and notes I iterate on.</p>
 
-  <div id="post-list" class="flex-grow-1 px-xl-1">
+  <style>
+    .tweet-card {
+      background: var(--card-bg, var(--main-bg));
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      flex-direction: column;
+      color: var(--text-color);
+    }
+    .tweet-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 0.8rem;
+    }
+    .tweet-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      margin-right: 12px;
+      object-fit: cover;
+    }
+    .tweet-author {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.2;
+    }
+    .tweet-name {
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: var(--text-color);
+    }
+    .tweet-handle {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+    .tweet-content {
+      font-size: 1.05rem;
+      line-height: 1.5;
+    }
+    .tweet-content p {
+      margin-bottom: 0.5rem;
+    }
+    .tweet-date {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-top: 0.8rem;
+    }
+  </style>
+
+  <div id="tweet-list" class="flex-grow-1 px-xl-1">
     {% for tip in site.tips %}
-      <article class="card-wrapper card">
-        <a href="{{ tip.url | relative_url }}" class="post-preview row g-0 flex-md-row">
-          <div class="col-md-12">
-            <div class="card-body d-flex flex-column">
-              <h1 class="card-title my-2 mt-md-0">{{ tip.title }}</h1>
-              <div class="card-text content mt-0 mb-3">
-                <p>{{ tip.content | strip_html | truncatewords: 30 | escape }}</p>
-              </div>
-              <div class="post-meta flex-grow-1 d-flex align-items-end">
-                <div class="me-auto">
-                  <i class="far fa-calendar fa-fw me-1"></i>
-                  <em>{{ tip.last_modified_at | default: tip.date | default: "Recently Updated" }}</em>
-                </div>
-              </div>
-            </div>
+      <div class="tweet-card">
+        <div class="tweet-header">
+          <img src="/assets/img/avatar.png" alt="Avatar" class="tweet-avatar" onerror="this.style.display='none'">
+          <div class="tweet-author">
+            <span class="tweet-name">{{ site.title }}</span>
+            <span class="tweet-handle">@mehdisha</span>
           </div>
-        </a>
-      </article>
+        </div>
+        <div class="tweet-content content">
+          {{ tip.content }}
+        </div>
+        <div class="tweet-date">
+          {{ tip.last_modified_at | default: tip.date | date: "%l:%M %p · %b %d, %Y" | default: "Recently" }}
+        </div>
+      </div>
     {% endfor %}
   </div>
 </div>
