@@ -2,7 +2,7 @@
 layout: page
 title: Resume
 icon: fas fa-file-alt
-order: 7
+order: 1
 ---
 
 # Mehdi Shakibapour

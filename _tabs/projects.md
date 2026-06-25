@@ -2,10 +2,21 @@
 layout: page
 title: Projects
 icon: fas fa-code
-order: 5
+order: 2
 ---
 
 Here are some of my recent open-source projects on GitHub.
+
+<style>
+  #github-projects .card {
+    background: var(--card-bg, var(--main-bg));
+    border-color: var(--card-border-color, var(--border-color));
+    color: var(--text-color);
+  }
+  #github-projects .card-text, #github-projects .small {
+    color: var(--text-muted) !important;
+  }
+</style>
 
 <div id="github-projects" class="d-flex flex-wrap" style="gap: 1rem;">
   <!-- Projects will be loaded here via JS -->
