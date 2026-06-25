@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const numSheep = 3;
+    const numSheep = 15;
     
     const sheepSvg = `
     <svg width="60" height="50" viewBox="0 0 60 50" xmlns="http://www.w3.org/2000/svg">
