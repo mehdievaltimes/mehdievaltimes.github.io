@@ -24,7 +24,7 @@ I built a full-stack platform (Next.js, Tailwind, Firebase) from scratch to supp
 
 ## Projects I've Built
 
-**Commodity Price Signal Backtester**  
+**[Commodity Price Signal Backtester](https://github.com/mehdievaltimes/Commodity-Price-Signal-Backtester)**  
 *Python, Pandas, NumPy, yfinance*  
 Building a quantitative backtesting engine for commodity futures (oil, gas, agriculture). I'm testing momentum and mean-reversion signals and checking if the math holds up (Sharpe ratio, drawdowns, rolling volatility) across different market cycles.
 
@@ -34,9 +34,9 @@ Wrote a sequence-labeling system in PyTorch mapping text to Ontonotes 5.0 semant
 
 **ELF Linker**  
 *C, Linux*  
-Built a linker in C for Jae's ASP class. It merges multiple object files into a runnable executable by resolving symbols and handling relocations
+Literally built a linker in C. It merges multiple object files into a runnable executable by resolving symbols and handling relocations. Low-level systems programming is wild.
 
-**Gemini-Backed Student Advisor**  
+**[Gemini-Backed Student Advisor](https://github.com/mehdievaltimes/pantherai)**  
 *Flutter, Firebase, Gemini API*  
 Built a login-gated advisor app powered by Gemini. Hooked it up to a RAG pipeline reading from a SQL database of academic records and a fun crowdsourced DB of student secrets. Later migrated the whole data layer to Firebase.
 
