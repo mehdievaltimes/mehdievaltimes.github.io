@@ -5,12 +5,10 @@ icon: fas fa-file-alt
 order: 1
 ---
 
-> "I don't want it to be super formal... so here's what I actually do." 
-
 ## Where I Learn Things
 **Columbia University**  
 *B.A. in Mathematics and Computer Science (Expected May 2027)*  
-GPA: 3.76 | I spend a lot of time doing Linear Algebra, Multivariable Calculus, NLP, Systems Programming, Computational Genomics, and Databases.
+GPA: 3.76 |
 
 ---
 
@@ -20,7 +18,7 @@ GPA: 3.76 | I spend a lot of time doing Linear Algebra, Multivariable Calculus, 
 I teach people math and physics! Specifically, I guide cohorts through the weeds of linear algebra, multivariable calc, and stats. I also ran weekly problem-solving sessions for Physics I, teaching everything from harmonic oscillations to orbital mechanics.
 
 **Head of Technology** @ [*Columbia GSBS*](https://columbiagsbs.com) (Jan 2026 -- Present)  
-I built a full-stack platform (Next.js, Tailwind, Firebase) from scratch to support over 100 members. It's got an authenticated recruiter portal that magically generates resume PDFs and Excel exports. I also wired up a Gmail API integration to spam—I mean, strictly notify—members about sweet internships.
+I built a full-stack platform (Next.js, Tailwind, Firebase) from scratch to support over 100 members. It's got an authenticated recruiter portal that magically generates resume PDFs and Excel exports. I also wired up a Gmail API integration to spam—I mean, notify—members.
 
 ---
 
@@ -36,7 +34,7 @@ Wrote a sequence-labeling system in PyTorch mapping text to Ontonotes 5.0 semant
 
 **ELF Linker**  
 *C, Linux*  
-Literally built a linker in C. It merges multiple object files into a runnable executable by resolving symbols and handling relocations. Low-level systems programming is wild.
+Built a linker in C for Jae's ASP class. It merges multiple object files into a runnable executable by resolving symbols and handling relocations
 
 **Gemini-Backed Student Advisor**  
 *Flutter, Firebase, Gemini API*  
@@ -52,6 +50,6 @@ Built a login-gated advisor app powered by Gemini. Hooked it up to a RAG pipelin
 ---
 
 ## Flexes & Shiny Things
-- **Competitions**: HRT Trading Competition Winner; Bronze Medalist at the Iranian National Olympiad of Astrophysics & Astronomy; 2× Hackathon Winner (CUNY).
+- **Competitions**: HRT Trading Competition Winner; Bronze Medalist at the Iranian National Olympiad of Astrophysics & Astronomy;.
 - **Honors**: William Strong GS Scholar, GS Service Award, Peer Mentor, Dean's List (every semester).
 - **Certifications**: AI Technical Safety Fellowship (Collider), Bloomberg Finance Fundamentals (BFF).
