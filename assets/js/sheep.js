@@ -51,7 +51,24 @@ document.addEventListener("DOMContentLoaded", function() {
         sheep.style.top = Math.random() * (window.innerHeight - 50) + "px";
         sheep.style.zIndex = "9999";
         sheep.style.userSelect = "none";
-        sheep.style.pointerEvents = "none";
+        sheep.style.pointerEvents = "auto";
+        sheep.style.cursor = "pointer";
+        
+        sheep.addEventListener('click', () => {
+            const utterance = new SpeechSynthesisUtterance("baaa");
+            utterance.pitch = 1.5 + Math.random() * 0.5; // Randomize pitch slightly
+            utterance.rate = 0.8;
+            window.speechSynthesis.speak(utterance);
+            
+            // Make the sheep jump
+            sheep.style.transition = "transform 0.1s ease-out";
+            const currentTransform = sheep.style.transform;
+            sheep.style.transform = currentTransform + " translateY(-20px)";
+            setTimeout(() => {
+                sheep.style.transform = currentTransform;
+                setTimeout(() => { sheep.style.transition = ""; }, 100);
+            }, 100);
+        });
         // To make sure it doesn't cause horizontal scrollbar issues
         sheep.style.width = "60px";
         sheep.style.height = "50px";
