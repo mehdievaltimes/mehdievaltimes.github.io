@@ -176,6 +176,9 @@ collections:
   tabs:
     output: true
     sort_by: order
+  guides:
+    output: true
+    permalink: /guides/:path/
 
 defaults:
   - scope:
