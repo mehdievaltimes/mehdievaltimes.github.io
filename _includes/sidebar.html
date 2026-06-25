@@ -9,18 +9,24 @@
   <!-- .profile-wrapper -->
   <nav class="flex-column flex-grow-1 w-100 ps-0">
     <ul class="nav">
-      <li class="nav-item active"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home"></i> <span>HOME</span> </a></li>
-      <li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream"></i> <span>CATEGORIES</span> </a></li>
-      <li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tags"></i> <span>TAGS</span> </a></li>
-      <li class="nav-item"> <a href="/archives/" class="nav-link"> <i class="fa-fw fas fa-archive"></i> <span>ARCHIVES</span> </a></li>
-      <li class="nav-item"> <a href="/about/" class="nav-link"> <i class="fa-fw fas fa-info-circle"></i> <span>ABOUT</span> </a></li>
-      <li class="nav-item"> <a href="/projects/" class="nav-link"> <i class="fa-fw fas fa-code"></i> <span>PROJECTS</span> </a></li>
-      <li class="nav-item"> <a href="/guides/" class="nav-link"> <i class="fa-fw fas fa-book"></i> <span>GUIDES</span> </a></li>
-      <li class="nav-item"> <a href="/resume/" class="nav-link"> <i class="fa-fw fas fa-file-alt"></i> <span>RESUME</span> </a></li>
+      <li class="nav-item{% if page.layout == 'home' %} active{% endif %}">
+        <a href="/" class="nav-link">
+          <i class="fa-fw fas fa-home"></i>
+          <span>HOME</span>
+        </a>
+      </li>
+      {% for tab in site.tabs %}
+      <li class="nav-item{% if page.url == tab.url %} active{% endif %}">
+        <a href="{{ tab.url | relative_url }}" class="nav-link">
+          <i class="fa-fw {{ tab.icon | default: 'fas fa-file' }}"></i>
+          <span>{{ tab.title | upcase }}</span>
+        </a>
+      </li>
+      {% endfor %}
     </ul>
   </nav>
   <div class="sidebar-bottom d-flex flex-wrap align-items-center w-100">
-    <a href="javascript:void(0)" aria-label="Call Sheep Home" onclick="window.callSheepHome && window.callSheepHome()">
+    <a href="javascript:void(0)" aria-label="Toggle Sheep Home" id="call-sheep-home" onclick="window.toggleSheepHome && window.toggleSheepHome()">
       <i class="fas fa-home"></i>
     </a>
     <a href="https://github.com/mehdievaltimes" aria-label="github" target="_blank" rel="noopener noreferrer">

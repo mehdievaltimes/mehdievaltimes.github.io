@@ -48,9 +48,24 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
 
     const allSheepData = [];
+    let sheepAreHome = false;
 
-    window.callSheepHome = function() {
-        allSheepData.forEach(s => s.goHome());
+    window.toggleSheepHome = function() {
+        sheepAreHome = !sheepAreHome;
+        const btn = document.getElementById('call-sheep-home');
+        if (!btn) return;
+        
+        const icon = btn.querySelector('i');
+        
+        if (sheepAreHome) {
+            icon.className = 'fas fa-door-closed';
+            btn.style.color = 'var(--text-color)';
+            allSheepData.forEach(s => s.goHome());
+        } else {
+            icon.className = 'fas fa-home';
+            btn.style.color = '';
+            allSheepData.forEach(s => s.letOut());
+        }
     };
 
     for (let i = 0; i < numSheep; i++) {
@@ -146,7 +161,7 @@ document.addEventListener("DOMContentLoaded", function() {
         
         function animate() {
             if (isGoingHome) {
-                position += speed * direction * 0.8; 
+                position += speed * direction; 
                 sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
                 
                 if ((direction === 1 && position > homeTarget) || (direction === -1 && position < homeTarget)) {
@@ -195,9 +210,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 head.classList.add('head-sad');
                 sheep.style.cursor = "default";
                 sheep.style.pointerEvents = "none";
+                speed = 15 + Math.random() * 5; // run off really fast!
                 legs.forEach(l => {
                     l.style.animationPlayState = 'running';
-                    l.style.animationDuration = "0.8s"; 
+                    l.style.animationDuration = "0.1s"; // fast leg wiggle
                 });
                 
                 if (position > window.innerWidth / 2) {
@@ -207,6 +223,26 @@ document.addEventListener("DOMContentLoaded", function() {
                     direction = -1;
                     homeTarget = -100;
                 }
+            },
+            letOut: () => {
+                isGoingHome = false;
+                head.classList.remove('head-sad');
+                sheep.style.cursor = "grab";
+                sheep.style.pointerEvents = "auto";
+                speed = 0.4 + Math.random() * 0.4;
+                legs.forEach(l => {
+                    l.style.animationDuration = "0.5s";
+                    l.style.animationPlayState = 'running';
+                });
+                
+                // Re-orient them towards the screen if they went off
+                if (position >= window.innerWidth) {
+                    direction = -1;
+                } else if (position <= 0) {
+                    direction = 1;
+                }
+                
+                animate(); // resume animation loop just in case it stopped
             }
         });
     }
