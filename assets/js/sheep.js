@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const sheep = document.createElement("div");
         sheep.innerHTML = sheepSvg;
         sheep.style.position = "fixed";
-        sheep.style.bottom = (5 + Math.random() * 10) + "px";
+        sheep.style.top = Math.random() * (window.innerHeight - 50) + "px";
         sheep.style.zIndex = "9999";
         sheep.style.userSelect = "none";
         sheep.style.pointerEvents = "none";
