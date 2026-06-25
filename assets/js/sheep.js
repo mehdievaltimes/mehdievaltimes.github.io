@@ -52,24 +52,7 @@ document.addEventListener("DOMContentLoaded", function() {
         sheep.style.zIndex = "9999";
         sheep.style.userSelect = "none";
         sheep.style.pointerEvents = "auto";
-        sheep.style.cursor = "pointer";
-        
-        sheep.addEventListener('click', () => {
-            const utterance = new SpeechSynthesisUtterance("baaa");
-            utterance.pitch = 1.5 + Math.random() * 0.5; // Randomize pitch slightly
-            utterance.rate = 0.8;
-            window.speechSynthesis.speak(utterance);
-            
-            // Make the sheep jump
-            sheep.style.transition = "transform 0.1s ease-out";
-            const currentTransform = sheep.style.transform;
-            sheep.style.transform = currentTransform + " translateY(-20px)";
-            setTimeout(() => {
-                sheep.style.transform = currentTransform;
-                setTimeout(() => { sheep.style.transition = ""; }, 100);
-            }, 100);
-        });
-        // To make sure it doesn't cause horizontal scrollbar issues
+        sheep.style.cursor = "grab";
         sheep.style.width = "60px";
         sheep.style.height = "50px";
         
@@ -80,12 +63,73 @@ document.addEventListener("DOMContentLoaded", function() {
         let speed = 0.4 + Math.random() * 0.4;
         
         let isGrazing = false;
+        let isDragging = false;
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+        let isClick = false; 
         
         const head = sheep.querySelector('.head');
         const legs = sheep.querySelectorAll('.leg');
         
+        sheep.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            isClick = true;
+            sheep.style.cursor = "grabbing";
+            
+            const rect = sheep.getBoundingClientRect();
+            dragOffsetX = e.clientX - position;
+            dragOffsetY = e.clientY - rect.top;
+            
+            // Wiggle legs fast while dragged
+            legs.forEach(l => {
+                l.style.animationDuration = "0.15s";
+                l.style.animationPlayState = 'running';
+            });
+            head.classList.remove('head-anim');
+            isGrazing = false;
+            
+            e.preventDefault(); // Prevent text selection
+        });
+        
+        window.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                isClick = false; 
+                position = e.clientX - dragOffsetX;
+                let newTop = e.clientY - dragOffsetY;
+                
+                if (newTop < 0) newTop = 0;
+                if (newTop > window.innerHeight - 50) newTop = window.innerHeight - 50;
+                
+                sheep.style.top = newTop + "px";
+                sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
+            }
+        });
+        
+        window.addEventListener('mouseup', (e) => {
+            if (isDragging) {
+                isDragging = false;
+                sheep.style.cursor = "grab";
+                
+                legs.forEach(l => l.style.animationDuration = "0.5s");
+                
+                if (isClick) {
+                    const utterance = new SpeechSynthesisUtterance("baaa");
+                    utterance.pitch = 1.5 + Math.random() * 0.5;
+                    utterance.rate = 0.8;
+                    window.speechSynthesis.speak(utterance);
+                    
+                    sheep.style.transition = "transform 0.1s ease-out";
+                    sheep.style.transform = `translateX(${position}px) translateY(-20px) scaleX(${direction === 1 ? 1 : -1})`;
+                    setTimeout(() => {
+                        sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
+                        setTimeout(() => { sheep.style.transition = ""; }, 100);
+                    }, 100);
+                }
+            }
+        });
+        
         function animate() {
-            if (!isGrazing) {
+            if (!isGrazing && !isDragging) {
                 position += speed * direction;
                 
                 if (position > window.innerWidth + 50) {
@@ -94,20 +138,18 @@ document.addEventListener("DOMContentLoaded", function() {
                     position = window.innerWidth + 50;
                 }
                 
-                // SVG faces right naturally, so if direction is 1, scaleX(1). 
-                // If direction is -1 (left), scaleX(-1)
                 sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
                 
                 if (Math.random() < 0.002) {
                     isGrazing = true;
-                    // Stop walking animation
                     legs.forEach(l => l.style.animationPlayState = 'paused');
-                    // Start grazing animation
                     head.classList.add('head-anim');
                     
                     setTimeout(() => {
                         isGrazing = false;
-                        legs.forEach(l => l.style.animationPlayState = 'running');
+                        if (!isDragging) {
+                            legs.forEach(l => l.style.animationPlayState = 'running');
+                        }
                         head.classList.remove('head-anim');
                         if (Math.random() > 0.5) direction *= -1;
                     }, 3000 + Math.random() * 4000);
@@ -117,7 +159,6 @@ document.addEventListener("DOMContentLoaded", function() {
             requestAnimationFrame(animate);
         }
         
-        // initial state
         head.classList.remove('head-anim');
         animate();
     }
