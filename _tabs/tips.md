@@ -1,7 +1,7 @@
 ---
 layout: page
-title: Guides
-icon: fas fa-book
+title: Tips
+icon: fas fa-lightbulb
 order: 3
 ---
 
@@ -21,18 +21,8 @@ order: 3
     text-align: center;
     padding: 2rem;
   }
-  #mystery-wall input {
-    margin-top: 1rem;
-    padding: 0.5rem 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 5px;
-    background: var(--main-bg);
-    color: var(--text-color);
-    width: 300px;
-    max-width: 100%;
-  }
   #mystery-wall button {
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     padding: 0.5rem 2rem;
     border: none;
     border-radius: 5px;
@@ -47,32 +37,30 @@ order: 3
 
 <div id="mystery-wall">
   <h2 class="mb-4">Halt! Who goes there?</h2>
-  <p>To access the Guides, you must answer this question:</p>
-  <strong id="mystery-question" style="font-size: 1.2rem; color: var(--text-color);"></strong>
-  <br>
-  <input type="text" id="mystery-answer" placeholder="Your answer..." onkeypress="if(event.key === 'Enter') checkMysteryAnswer()">
-  <br>
+  <p>To access the Tips, you must complete this quote:</p>
+  <div id="mystery-question-container" style="font-size: 1.2rem; color: var(--text-color); line-height: 2;"></div>
+  
   <button onclick="checkMysteryAnswer()">Submit</button>
   <p id="mystery-error" style="color: #e74c3c; display: none; margin-top: 1rem;">Incorrect. Try again.</p>
 </div>
 
 <div id="mystery-content">
-  <p>Welcome to my Digital Garden! Here is a collection of living documents, guides, and notes I iterate on.</p>
+  <p>Welcome to my Digital Garden! Here is a collection of living documents, tips, and notes I iterate on.</p>
 
   <div id="post-list" class="flex-grow-1 px-xl-1">
-    {% for guide in site.guides %}
+    {% for tip in site.tips %}
       <article class="card-wrapper card">
-        <a href="{{ guide.url | relative_url }}" class="post-preview row g-0 flex-md-row">
+        <a href="{{ tip.url | relative_url }}" class="post-preview row g-0 flex-md-row">
           <div class="col-md-12">
             <div class="card-body d-flex flex-column">
-              <h1 class="card-title my-2 mt-md-0">{{ guide.title }}</h1>
+              <h1 class="card-title my-2 mt-md-0">{{ tip.title }}</h1>
               <div class="card-text content mt-0 mb-3">
-                <p>{{ guide.content | strip_html | truncatewords: 30 | escape }}</p>
+                <p>{{ tip.content | strip_html | truncatewords: 30 | escape }}</p>
               </div>
               <div class="post-meta flex-grow-1 d-flex align-items-end">
                 <div class="me-auto">
                   <i class="far fa-calendar fa-fw me-1"></i>
-                  <em>{{ guide.last_modified_at | default: guide.date | default: "Recently Updated" }}</em>
+                  <em>{{ tip.last_modified_at | default: tip.date | default: "Recently Updated" }}</em>
                 </div>
               </div>
             </div>
@@ -84,17 +72,24 @@ order: 3
 </div>
 
 <script>
+  const inputHtml = '<input type="text" id="mystery-answer" style="width: 100px; display: inline-block; text-align: center; border-bottom: 2px solid var(--text-color); border-top: none; border-left: none; border-right: none; background: transparent; color: var(--text-color); outline: none; padding: 0; font-size: inherit; font-weight: bold;" onkeypress="if(event.key === \\'Enter\\') checkMysteryAnswer()">';
+
   const riddles = [
-    { q: '"Don\'t make me a ____. You will ruin my life." (Fleabag)', a: "optimist" },
-    { q: '"There is no ____." (The Matrix)', a: "spoon" },
-    { q: '"I am the one who ____!" (Breaking Bad)', a: "knocks" },
-    { q: '"May the ____ be with you." (Star Wars)', a: "force" },
-    { q: '"I\'m going to make him an ____ he can\'t refuse." (The Godfather)', a: "offer" }
+    { q: '"Don\\'t make me a ' + inputHtml + '. You will ruin my life." (Fleabag)', a: "optimist" },
+    { q: '"There is no ' + inputHtml + '." (The Matrix)', a: "spoon" },
+    { q: '"I am the one who ' + inputHtml + '!" (Breaking Bad)', a: "knocks" },
+    { q: '"May the ' + inputHtml + ' be with you." (Star Wars)', a: "force" },
+    { q: '"I\\'m going to make him an ' + inputHtml + ' he can\\'t refuse." (The Godfather)', a: "offer" }
   ];
   
   let currentRiddle = riddles[Math.floor(Math.random() * riddles.length)];
   
-  document.getElementById('mystery-question').innerText = currentRiddle.q;
+  document.getElementById('mystery-question-container').innerHTML = currentRiddle.q;
+  
+  setTimeout(() => {
+    const input = document.getElementById('mystery-answer');
+    if (input) input.focus();
+  }, 100);
   
   if (sessionStorage.getItem('passedMysteryWall') === 'true') {
     document.getElementById('mystery-wall').style.display = 'none';
@@ -102,7 +97,10 @@ order: 3
   }
   
   function checkMysteryAnswer() {
-    const input = document.getElementById('mystery-answer').value.trim().toLowerCase();
+    const inputField = document.getElementById('mystery-answer');
+    if (!inputField) return;
+    
+    const input = inputField.value.trim().toLowerCase();
     if (input === currentRiddle.a.toLowerCase()) {
       sessionStorage.setItem('passedMysteryWall', 'true');
       document.getElementById('mystery-wall').style.display = 'none';
