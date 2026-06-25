@@ -48,22 +48,32 @@ document.addEventListener("DOMContentLoaded", function() {
     `;
 
     const allSheepData = [];
-    let sheepAreHome = false;
+    
+    let sheepAreHome = localStorage.getItem('sheepAreHome') === 'true';
 
-    window.toggleSheepHome = function() {
-        sheepAreHome = !sheepAreHome;
+    function updateButtonIcon() {
         const btn = document.getElementById('call-sheep-home');
         if (!btn) return;
-        
         const icon = btn.querySelector('i');
-        
         if (sheepAreHome) {
             icon.className = 'fas fa-door-closed';
             btn.style.color = 'var(--text-color)';
-            allSheepData.forEach(s => s.goHome());
         } else {
             icon.className = 'fas fa-home';
             btn.style.color = '';
+        }
+    }
+
+    updateButtonIcon();
+
+    window.toggleSheepHome = function() {
+        sheepAreHome = !sheepAreHome;
+        localStorage.setItem('sheepAreHome', sheepAreHome);
+        updateButtonIcon();
+        
+        if (sheepAreHome) {
+            allSheepData.forEach(s => s.goHome());
+        } else {
             allSheepData.forEach(s => s.letOut());
         }
     };
@@ -76,7 +86,6 @@ document.addEventListener("DOMContentLoaded", function() {
         const sheep = document.createElement("div");
         sheep.innerHTML = sheepSvg;
         sheep.style.position = "fixed";
-        sheep.style.top = Math.random() * (window.innerHeight - 50) + "px";
         sheep.style.zIndex = "9999";
         sheep.style.userSelect = "none";
         sheep.style.pointerEvents = "auto";
@@ -86,21 +95,40 @@ document.addEventListener("DOMContentLoaded", function() {
         
         document.body.appendChild(sheep);
         
-        let position = Math.random() * window.innerWidth;
         let direction = Math.random() > 0.5 ? 1 : -1;
         let speed = 0.4 + Math.random() * 0.4;
+        let homeTarget = direction === 1 ? window.innerWidth + 100 : -100;
+        
+        let isGoingHome = false;
+        let position;
+        
+        if (sheepAreHome) {
+            isGoingHome = true;
+            position = homeTarget;
+            sheep.style.cursor = "default";
+            sheep.style.pointerEvents = "none";
+        } else {
+            position = Math.random() * window.innerWidth;
+        }
+
+        sheep.style.top = Math.random() * (window.innerHeight - 50) + "px";
+        sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
         
         let isGrazing = false;
         let isDragging = false;
-        let isGoingHome = false;
-        let homeTarget = 0; 
-        
         let dragOffsetX = 0;
         let dragOffsetY = 0;
         let isClick = false; 
         
         const head = sheep.querySelector('.head');
         const legs = sheep.querySelectorAll('.leg');
+        
+        if (sheepAreHome) {
+            head.classList.add('head-sad');
+            legs.forEach(l => l.style.animationPlayState = 'paused');
+        } else {
+            head.classList.remove('head-anim');
+        }
         
         sheep.addEventListener('mousedown', (e) => {
             if (isGoingHome) return; 
@@ -161,12 +189,13 @@ document.addEventListener("DOMContentLoaded", function() {
         
         function animate() {
             if (isGoingHome) {
-                position += speed * direction; 
-                sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
-                
-                if ((direction === 1 && position > homeTarget) || (direction === -1 && position < homeTarget)) {
-                    legs.forEach(l => l.style.animationPlayState = 'paused');
-                    return; 
+                if ((direction === 1 && position >= homeTarget) || (direction === -1 && position <= homeTarget)) {
+                    if (legs[0].style.animationPlayState !== 'paused') {
+                        legs.forEach(l => l.style.animationPlayState = 'paused');
+                    }
+                } else {
+                    position += speed * direction; 
+                    sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
                 }
             } else if (!isGrazing && !isDragging) {
                 position += speed * direction;
@@ -198,7 +227,6 @@ document.addEventListener("DOMContentLoaded", function() {
             requestAnimationFrame(animate);
         }
         
-        head.classList.remove('head-anim');
         animate();
 
         allSheepData.push({
@@ -210,10 +238,10 @@ document.addEventListener("DOMContentLoaded", function() {
                 head.classList.add('head-sad');
                 sheep.style.cursor = "default";
                 sheep.style.pointerEvents = "none";
-                speed = 15 + Math.random() * 5; // run off really fast!
+                speed = 15 + Math.random() * 5; 
                 legs.forEach(l => {
                     l.style.animationPlayState = 'running';
-                    l.style.animationDuration = "0.1s"; // fast leg wiggle
+                    l.style.animationDuration = "0.1s"; 
                 });
                 
                 if (position > window.innerWidth / 2) {
@@ -235,14 +263,11 @@ document.addEventListener("DOMContentLoaded", function() {
                     l.style.animationPlayState = 'running';
                 });
                 
-                // Re-orient them towards the screen if they went off
                 if (position >= window.innerWidth) {
                     direction = -1;
                 } else if (position <= 0) {
                     direction = 1;
                 }
-                
-                animate(); // resume animation loop just in case it stopped
             }
         });
     }
