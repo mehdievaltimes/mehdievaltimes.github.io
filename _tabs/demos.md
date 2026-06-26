@@ -14,18 +14,62 @@ Welcome to the sandbox! The demos below run **100% locally in your browser** usi
 <style>
   .word-token {
     display: inline-block;
-    padding: 4px 8px;
+    padding: 6px 12px;
     margin: 4px;
-    border-radius: 6px;
+    border-radius: 8px;
     background-color: var(--card-bg, var(--main-bg));
-    border: 1px solid var(--border-color);
+    border: 2px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s, transform 0.1s;
     font-size: 1.1rem;
+    font-weight: 500;
     color: var(--text-color);
+  }
+  .word-token:hover {
+    transform: translateY(-2px);
   }
   .word-token.active {
     border-color: #e74c3c;
+    color: var(--text-color);
+  }
+
+  .matrix-table {
+    border-collapse: collapse;
+    margin: 2rem auto;
+  }
+  .matrix-cell {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 0.8rem;
+    border: 1px solid var(--border-color);
+    transition: transform 0.1s, border 0.1s;
+    cursor: crosshair;
+  }
+  .matrix-cell:hover {
+    transform: scale(1.1);
+    border: 2px solid var(--text-color);
+    z-index: 10;
+    position: relative;
+  }
+  .matrix-header-col {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+    color: var(--text-color);
+  }
+  .matrix-header-row {
+    padding: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    text-align: right;
+    white-space: nowrap;
     color: var(--text-color);
   }
 </style>
@@ -66,19 +110,27 @@ We use a feature extraction model (`all-MiniLM-L6-v2`) to turn text into a 384-d
 
 ## 3. The Live Attention Visualizer
 
-Type a sentence below to generate an interactive map! Hover over any word to see what other words it is paying "attention" to.
+Type a sentence below to generate an interactive map! **Hover over any word in the sentence below to see what it is paying attention to**, OR look at the full **N × N Matrix** grid beneath it.
 
 > [!NOTE]
 > **A Note on Approximation:** Standard WebAssembly models physically delete their internal attention tensors to save space. To simulate the "attention" map live in your browser, this visualizer actually computes the **Token-to-Token Semantic Similarity** across the final layer of the network. It tells us how much the *meaning* of one token was blended with the *meaning* of another token, which visually and functionally serves as a beautiful approximation of self-attention!
 
-<div id="matrix-app" style="margin: 2rem 0; padding: 2rem; background: var(--card-bg, var(--main-bg)); border: 1px solid var(--border-color); border-radius: 12px; text-align: center;">
+<div id="matrix-app" style="margin: 2rem 0; padding: 2rem; background: var(--card-bg, var(--main-bg)); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; overflow-x: auto;">
   <input type="text" id="matrix-input" placeholder="Type a sentence (e.g. The quick brown fox)..." class="form-control mb-4" style="font-size: 1.2rem; padding: 10px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: var(--main-bg); color: var(--text-color);" />
   <em class="text-muted" id="matrix-status">Loading Matrix Model...</em>
   
-  <div id="matrix-container" style="display: flex; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
+  <!-- Interactive Hover Row -->
+  <div id="matrix-hover-container" style="display: flex; justify-content: center; flex-wrap: wrap; margin-top: 1rem;">
     <!-- Tokens injected via JS -->
   </div>
   <p class="mt-4 text-muted small" id="matrix-helper" style="display: none;">Hover over a word to visualize its simulated attention weights.</p>
+  
+  <hr style="margin: 2rem 0; border-top: 1px solid var(--border-color);" />
+
+  <!-- Interactive NxN Grid -->
+  <div id="matrix-grid-container" style="display: flex; justify-content: center; overflow-x: auto;">
+    <!-- Table injected via JS -->
+  </div>
 </div>
 
 ---
@@ -180,12 +232,13 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
   })();
 
   // ==========================================
-  // 3. Live Attention Visualizer
+  // 3. Live Attention Visualizer (Hover + Matrix)
   // ==========================================
   (async function() {
     const statusEl = document.getElementById('matrix-status');
     const inputEl = document.getElementById('matrix-input');
-    const container = document.getElementById('matrix-container');
+    const hoverContainer = document.getElementById('matrix-hover-container');
+    const gridContainer = document.getElementById('matrix-grid-container');
     const helper = document.getElementById('matrix-helper');
     let extractor = null;
     let tokenizer = null;
@@ -213,7 +266,12 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
     const renderMatrix = async () => {
         if (!extractor || !tokenizer) return;
         const text = inputEl.value.trim();
-        if (!text) { container.innerHTML = ''; helper.style.display = 'none'; return; }
+        if (!text) { 
+            hoverContainer.innerHTML = ''; 
+            gridContainer.innerHTML = ''; 
+            helper.style.display = 'none'; 
+            return; 
+        }
 
         statusEl.style.display = 'block';
         statusEl.innerText = "Computing weights...";
@@ -246,24 +304,24 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                 weights.push(row);
             }
 
-            // Render spans
-            container.innerHTML = '';
+            // --- 3A: Render Hover Spans ---
+            hoverContainer.innerHTML = '';
             const spanElements = [];
             tokens.forEach((t, i) => {
                 const span = document.createElement('span');
                 span.className = 'word-token';
                 span.innerText = t;
                 spanElements.push(span);
-                container.appendChild(span);
+                hoverContainer.appendChild(span);
             });
 
-            // Add hover mechanics
             spanElements.forEach((span, i) => {
                 span.addEventListener('mouseenter', () => {
                     span.classList.add('active');
                     spanElements.forEach((otherToken, j) => {
                         if (i !== j) {
                             const w = weights[i][j];
+                            // Using the red/orange heatmap
                             otherToken.style.backgroundColor = `rgba(231, 76, 60, ${w})`;
                             if (w > 0.5) otherToken.style.color = "#fff";
                         }
@@ -278,6 +336,51 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                     });
                 });
             });
+
+            // --- 3B: Render NxN Table Grid ---
+            gridContainer.innerHTML = '';
+            const table = document.createElement('table');
+            table.className = 'matrix-table';
+            
+            const headerRow = document.createElement('tr');
+            headerRow.appendChild(document.createElement('th'));
+            tokens.forEach(t => {
+                const th = document.createElement('th');
+                th.className = 'matrix-header-col';
+                th.innerText = t;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            for (let i = 0; i < seq_length; i++) {
+                const tr = document.createElement('tr');
+                
+                const th = document.createElement('th');
+                th.className = 'matrix-header-row';
+                th.innerText = tokens[i];
+                tr.appendChild(th);
+
+                for (let j = 0; j < seq_length; j++) {
+                    const visualWeight = weights[i][j];
+                    const td = document.createElement('td');
+                    td.className = 'matrix-cell';
+                    
+                    // Restored the red/orange color for the matrix to match the hover!
+                    td.style.backgroundColor = `rgba(231, 76, 60, ${visualWeight})`;
+                    td.title = `${tokens[i]} -> ${tokens[j]}\nSimilarity: ${weights[i][j].toFixed(3)}`;
+                    
+                    td.innerText = weights[i][j].toFixed(1);
+                    if (visualWeight > 0.5) td.style.color = "white";
+                    else td.style.color = "transparent";
+
+                    td.addEventListener('mouseenter', () => td.style.color = (visualWeight>0.5?'white':'black'));
+                    td.addEventListener('mouseleave', () => td.style.color = (visualWeight>0.5?'white':'transparent'));
+
+                    tr.appendChild(td);
+                }
+                table.appendChild(tr);
+            }
+            gridContainer.appendChild(table);
 
             statusEl.style.display = 'none';
             helper.style.display = 'block';
@@ -325,6 +428,7 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
         allTokens.forEach((otherToken, j) => {
           if (i !== j) {
             const w = weights[i][j];
+            // Uses red/orange to match the live one
             otherToken.style.backgroundColor = `rgba(231, 76, 60, ${w})`;
             if(w > 0.5) otherToken.style.color = "#fff";
           }
