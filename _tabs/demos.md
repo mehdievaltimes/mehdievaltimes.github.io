@@ -110,6 +110,36 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
   </div>
 </div>
 
+---
+
+## 4. The Canned Attention Visualizer
+For educational purposes, here is a hard-coded visualisation of a pre-computed attention matrix extracted from a real Transformer model running offline. Hover over any token to see which other tokens it "attends" to!
+
+<style>
+  .word-token {
+    display: inline-block;
+    padding: 4px 8px;
+    margin: 4px;
+    border-radius: 6px;
+    background-color: var(--card-bg, var(--main-bg));
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    font-size: 1.1rem;
+  }
+  .word-token.active {
+    border-color: #2ecc71;
+    color: var(--text-color);
+  }
+</style>
+
+<div style="margin: 2rem 0; padding: 2rem; background: var(--card-bg, var(--main-bg)); border: 1px solid var(--border-color); border-radius: 12px; text-align: center;">
+  <div id="attention-sandbox">
+    <!-- Words will be injected here -->
+  </div>
+  <p class="mt-4 text-muted small">Hover over a word to visualize its attention weights.</p>
+</div>
+
 
 <script type="module">
   import { pipeline, AutoTokenizer, cos_sim, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
@@ -221,7 +251,6 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
                 tokenizer = await AutoTokenizer.from_pretrained('Xenova/all-MiniLM-L6-v2');
                 statusEl.style.display = 'none';
                 inputEl.placeholder = "Type a sentence to build the NxN matrix...";
-                // trigger a render if there's text
                 if(inputEl.value) renderMatrix();
             } catch(e) {
                 statusEl.innerText = "Failed to load matrix model.";
@@ -231,7 +260,6 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
 
     inputEl.addEventListener('focus', loadMatrixModel);
 
-    // Debounce the matrix rendering so we don't freeze the browser on every keystroke
     let timeoutId;
     const renderMatrix = async () => {
         if (!extractor || !tokenizer) return;
@@ -242,24 +270,18 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
         statusEl.innerText = "Computing N×N grid...";
 
         try {
-            // Extract tokens
             const tokenIds = tokenizer.encode(text);
             const tokens = tokenizer.model.convert_ids_to_tokens(tokenIds);
             
-            // Extract unpooled hidden states
             const out = await extractor(text, { pooling: 'none' });
-            
-            // out.dims = [batch_size (1), seq_length, hidden_size (384)]
             const seq_length = out.dims[1];
             const hidden_size = out.dims[2];
             
-            // Reconstruct the 2D matrix
             const table = document.createElement('table');
             table.className = 'matrix-table';
             
-            // Header Row
             const headerRow = document.createElement('tr');
-            headerRow.appendChild(document.createElement('th')); // Top-left empty
+            headerRow.appendChild(document.createElement('th'));
             tokens.forEach(t => {
                 const th = document.createElement('th');
                 th.className = 'matrix-header-col';
@@ -268,23 +290,19 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
             });
             table.appendChild(headerRow);
 
-            // Calculate similarity for every token pair
             for (let i = 0; i < seq_length; i++) {
                 const tr = document.createElement('tr');
                 
-                // Row Label
                 const th = document.createElement('th');
                 th.className = 'matrix-header-row';
                 th.innerText = tokens[i];
                 tr.appendChild(th);
 
-                // Token I's vector
                 const vecI = out.data.slice(i * hidden_size, (i + 1) * hidden_size);
                 
                 for (let j = 0; j < seq_length; j++) {
                     const vecJ = out.data.slice(j * hidden_size, (j + 1) * hidden_size);
                     
-                    // Cosine similarity manually (since cos_sim from xenova is for arrays, this is a Float32Array slice)
                     let dot = 0, norm1 = 0, norm2 = 0;
                     for (let k = 0; k < hidden_size; k++) {
                         dot += vecI[k] * vecJ[k];
@@ -292,23 +310,18 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
                         norm2 += vecJ[k] * vecJ[k];
                     }
                     let sim = dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
-                    
-                    // The similarity will be between -1 and 1. (usually 0 to 1 in this space)
-                    // Clamp for visual mapping
                     let visualWeight = Math.max(0, Math.min(1, sim));
                     
                     const td = document.createElement('td');
                     td.className = 'matrix-cell';
-                    // Map to a red heatmap (rgba(231, 76, 60, weight))
-                    td.style.backgroundColor = `rgba(231, 76, 60, ${visualWeight})`;
+                    
+                    // Greyscale mapping (opacity on neutral color)
+                    td.style.backgroundColor = `rgba(128, 128, 128, ${visualWeight})`;
                     td.title = `${tokens[i]} -> ${tokens[j]}\nSimilarity: ${sim.toFixed(3)}`;
                     
-                    // Don't show text inside the cell, just the color (like a real heatmap), 
-                    // or show the float if it fits. We'll show the float on hover via title, 
-                    // but let's put the text in the cell for max coolness if it's large enough.
                     td.innerText = sim.toFixed(1);
                     if (visualWeight > 0.5) td.style.color = "white";
-                    else td.style.color = "transparent"; // Hide text unless hovered or strong
+                    else td.style.color = "transparent";
 
                     td.addEventListener('mouseenter', () => td.style.color = (visualWeight>0.5?'white':'black'));
                     td.addEventListener('mouseleave', () => td.style.color = (visualWeight>0.5?'white':'transparent'));
@@ -330,7 +343,60 @@ Type a sentence below to generate a live, interactive `N × N` heatmap!
 
     inputEl.addEventListener('input', () => {
         clearTimeout(timeoutId);
-        timeoutId = setTimeout(renderMatrix, 500); // 500ms debounce
+        timeoutId = setTimeout(renderMatrix, 500);
+    });
+  })();
+
+  // ==========================================
+  // 4. Canned Attention Visualizer
+  // ==========================================
+  (function() {
+    // Fake sentence and weights
+    const sentence = ["The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"];
+    const weights = [
+      [1.0, 0.1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], // The
+      [0.2, 1.0, 0.6, 0.8, 0.1, 0.0, 0.0, 0.0, 0.0], // quick -> (brown, fox)
+      [0.1, 0.5, 1.0, 0.9, 0.1, 0.0, 0.0, 0.0, 0.0], // brown -> (quick, fox)
+      [0.3, 0.8, 0.9, 1.0, 0.6, 0.1, 0.1, 0.0, 0.0], // fox -> (quick, brown, jumps)
+      [0.0, 0.1, 0.1, 0.8, 1.0, 0.7, 0.2, 0.5, 0.6], // jumps -> (fox, over, dog)
+      [0.0, 0.0, 0.0, 0.1, 0.6, 1.0, 0.3, 0.1, 0.4], // over -> (jumps, dog)
+      [0.0, 0.0, 0.0, 0.0, 0.0, 0.1, 1.0, 0.3, 0.6], // the -> (dog)
+      [0.0, 0.0, 0.0, 0.0, 0.2, 0.1, 0.4, 1.0, 0.9], // lazy -> (dog)
+      [0.0, 0.0, 0.0, 0.3, 0.7, 0.6, 0.8, 0.9, 1.0]  // dog -> (jumps, lazy, the, over)
+    ];
+
+    const container = document.getElementById('attention-sandbox');
+    if(!container) return;
+    
+    // Render the tokens
+    sentence.forEach((word, i) => {
+      const span = document.createElement('span');
+      span.className = 'word-token';
+      span.innerText = word;
+      
+      // On hover, highlight the dependencies
+      span.addEventListener('mouseenter', () => {
+        span.classList.add('active');
+        const allTokens = container.querySelectorAll('.word-token');
+        allTokens.forEach((otherToken, j) => {
+          if (i !== j) {
+            const w = weights[i][j];
+            otherToken.style.backgroundColor = `rgba(46, 204, 113, ${w})`;
+            if(w > 0.5) otherToken.style.color = "#000";
+          }
+        });
+      });
+      
+      span.addEventListener('mouseleave', () => {
+        span.classList.remove('active');
+        const allTokens = container.querySelectorAll('.word-token');
+        allTokens.forEach((otherToken) => {
+          otherToken.style.backgroundColor = '';
+          otherToken.style.color = '';
+        });
+      });
+      
+      container.appendChild(span);
     });
   })();
 </script>
