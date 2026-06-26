@@ -1,6 +1,6 @@
 ---
 title: The Halle Berry Neuron
-date: 2026-06-25 18:05:00 -0400
+date: 2026-06-26 01:46:00 -0400
 ---
 
 The discovery of the "Spiderman Neuron" in AI models is actually a direct parallel to a famous discovery in human neuroscience: the **Halle Berry Neuron**.
