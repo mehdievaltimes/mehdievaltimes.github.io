@@ -50,6 +50,6 @@ Built a login-gated advisor app powered by Gemini. Hooked it up to a RAG pipelin
 ---
 
 ## Flexes & Shiny Things
-- **Competitions**: HRT Trading Competition Winner; Bronze Medalist at the Iranian National Olympiad of Astrophysics & Astronomy;.
+- **Competitions**: HRT Trading Competition Winner; Bronze Medalist at the Iranian National Olympiad of Astrophysics & Astronomy.
 - **Honors**: William Strong GS Scholar, GS Service Award, Peer Mentor, Dean's List (every semester).
 - **Certifications**: AI Technical Safety Fellowship (Collider), Bloomberg Finance Fundamentals (BFF).
