@@ -12,14 +12,23 @@ order: 3
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: var(--main-bg);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     z-index: 99999;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+  }
+  .mystery-card {
+    background: var(--card-bg, var(--main-bg));
+    border: 1px solid var(--border-color);
+    padding: 3rem;
+    border-radius: 12px;
     text-align: center;
-    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    max-width: 90%;
   }
   #mystery-wall button {
     margin-top: 1.5rem;
@@ -30,18 +39,17 @@ order: 3
     color: #fff;
     cursor: pointer;
   }
-  #mystery-content {
-    display: none;
-  }
 </style>
 
 <div id="mystery-wall">
-  <h2 class="mb-4">Halt! Who goes there?</h2>
-  <p>To access the Tips, you must complete this quote:</p>
-  <div id="mystery-question-container" style="font-size: 1.2rem; color: var(--text-color); line-height: 2;"></div>
-  
-  <button onclick="checkMysteryAnswer()">Submit</button>
-  <p id="mystery-error" style="color: #e74c3c; display: none; margin-top: 1rem;">Incorrect. Try again.</p>
+  <div class="mystery-card">
+    <h2 class="mb-4">Halt! Who goes there?</h2>
+    <p>To access the Tips, you must complete this quote:</p>
+    <div id="mystery-question-container" style="font-size: 1.2rem; color: var(--text-color); line-height: 2;"></div>
+    
+    <button onclick="checkMysteryAnswer()">Submit</button>
+    <p id="mystery-error" style="color: #e74c3c; display: none; margin-top: 1rem;">Incorrect. Try again.</p>
+  </div>
 </div>
 
 <div id="mystery-content">
