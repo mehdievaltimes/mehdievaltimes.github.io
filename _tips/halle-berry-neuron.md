@@ -3,7 +3,7 @@ title: The Halle Berry Neuron
 date: 2026-06-26 01:46:00 -0400
 ---
 
-The discovery of the "Spiderman Neuron" in AI models is actually a direct parallel to a famous discovery in human neuroscience: the **Halle Berry Neuron**.
+The discovery of the "Spiderman Neuron" in AI models is actually a direct parallel to a famous discovery in human neuroscience: the **[Halle Berry Neuron](https://www.caltech.edu/about/news/single-cell-recognition-halle-berry-brain-cell-1013)**.
 
 In 2005, researchers studying epileptic patients with implanted brain electrodes discovered a single neuron in a patient's medial temporal lobe that fired *exclusively* in response to Halle Berry. 
 
