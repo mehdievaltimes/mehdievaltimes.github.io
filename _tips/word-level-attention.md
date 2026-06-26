@@ -1,6 +1,6 @@
 ---
 title: Mapping Token to Word Attention
-date: 2026-06-25 18:10:00 -0400
+date: 2026-06-25 11:54:00 -0400
 ---
 
 Because Large Language Models use subword tokenization (like BPE), a word like `indubitably` might be split into `in`, `du`, `bit`, `ably`. If you try to visualize the raw attention matrix, you get a massive `Token × Token` grid that looks like a noisy, unreadable mess to human eyes.
