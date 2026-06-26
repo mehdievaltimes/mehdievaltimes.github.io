@@ -84,7 +84,7 @@ order: 3
     {% for tip in site.tips %}
       <div class="tweet-card">
         <div class="tweet-content content">
-          {{ tip.content }}
+          {{ tip.content | markdownify }}
         </div>
         <div class="tweet-date">
           {{ tip.last_modified_at | default: tip.date | date: "%l:%M %p · %b %d, %Y" | default: "Recently" }}
