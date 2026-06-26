@@ -83,7 +83,11 @@ Hover over **"it"** to see which noun the model mathematically decided the prono
 </div>
 
 <script type="module">
-  import { pipeline, AutoTokenizer, cos_sim } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
+  import { pipeline, AutoTokenizer, cos_sim, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
+
+  // Prevent transformers.js from trying to fetch models from the local server (which causes 404s)
+  // and force it to go straight to the Hugging Face Hub.
+  env.allowLocalModels = false;
 
   // ==========================================
   // 1. Tokenizer Sandbox Logic
