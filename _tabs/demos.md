@@ -361,21 +361,27 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                 tr.appendChild(th);
 
                 for (let j = 0; j < seq_length; j++) {
-                    const visualWeight = weights[i][j];
                     const td = document.createElement('td');
-                    td.className = 'matrix-cell';
                     
-                    // Restored the red/orange color for the matrix to match the hover!
-                    td.style.backgroundColor = `rgba(231, 76, 60, ${visualWeight})`;
-                    td.title = `${tokens[i]} -> ${tokens[j]}\nSimilarity: ${weights[i][j].toFixed(3)}`;
-                    
-                    td.innerText = weights[i][j].toFixed(1);
-                    if (visualWeight > 0.5) td.style.color = "white";
-                    else td.style.color = "transparent";
+                    if (j > i) {
+                        // Upper triangle (redundant symmetric data) - hide it
+                        td.style.border = 'none';
+                        td.style.backgroundColor = 'transparent';
+                    } else {
+                        // Lower triangle
+                        const visualWeight = weights[i][j];
+                        td.className = 'matrix-cell';
+                        
+                        td.style.backgroundColor = `rgba(231, 76, 60, ${visualWeight})`;
+                        td.title = `${tokens[i]} -> ${tokens[j]}\nSimilarity: ${weights[i][j].toFixed(3)}`;
+                        
+                        td.innerText = weights[i][j].toFixed(1);
+                        if (visualWeight > 0.5) td.style.color = "white";
+                        else td.style.color = "transparent";
 
-                    td.addEventListener('mouseenter', () => td.style.color = (visualWeight>0.5?'white':'black'));
-                    td.addEventListener('mouseleave', () => td.style.color = (visualWeight>0.5?'white':'transparent'));
-
+                        td.addEventListener('mouseenter', () => td.style.color = (visualWeight>0.5?'white':'black'));
+                        td.addEventListener('mouseleave', () => td.style.color = (visualWeight>0.5?'white':'transparent'));
+                    }
                     tr.appendChild(td);
                 }
                 table.appendChild(tr);
