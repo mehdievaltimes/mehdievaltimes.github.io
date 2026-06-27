@@ -76,15 +76,8 @@ Welcome to the sandbox! The demos below run **100% locally in your browser** usi
 
 ---
 
-## 1. The Tokenizer Sandbox
-Before an LLM can understand language or pay attention to it, it has to chop words up into subword "tokens." Type any sentence below and watch how the `bert-base-uncased` tokenizer slices your text into pieces in real-time. Notice how rare words (like *indubitably*) are shattered into multiple tokens!
-
-<div id="tokenizer-app" style="margin: 2rem 0; padding: 2rem; background: var(--card-bg, var(--main-bg)); border: 1px solid var(--border-color); border-radius: 12px;">
-  <input type="text" id="token-input" placeholder="Type a sentence here..." class="form-control mb-3" style="font-size: 1.2rem; padding: 10px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: var(--main-bg); color: var(--text-color);" />
-  <div id="token-output" style="display: flex; flex-wrap: wrap; gap: 8px; min-height: 40px; align-items: center; margin-top: 1rem;">
-    <em class="text-muted" id="token-status">Loading Tokenizer...</em>
-  </div>
-</div>
+## 1. Tokenization
+Before an LLM can understand language or pay attention to it, it has to chop words up into subword "tokens." You can visualize exactly how models like GPT-4 slice up rare words (like *indubitably*) using [OpenAI's official Tokenizer Sandbox](https://platform.openai.com/tokenizer).
 
 ---
 
@@ -152,37 +145,7 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
   // Prevent local 404s
   env.allowLocalModels = false;
 
-  // ==========================================
-  // 1. Tokenizer Sandbox
-  // ==========================================
-  (async function() {
-    const statusEl = document.getElementById('token-status');
-    const inputEl = document.getElementById('token-input');
-    const outputEl = document.getElementById('token-output');
-    try {
-      const tokenizer = await AutoTokenizer.from_pretrained('Xenova/bert-base-uncased');
-      statusEl.style.display = 'none';
-      inputEl.placeholder = "Type a sentence here (Tokenizer Ready!)...";
-      const renderTokens = () => {
-        const text = inputEl.value;
-        if (!text) { outputEl.innerHTML = ''; return; }
-        const ids = tokenizer.encode(text);
-        const tokens = tokenizer.model.convert_ids_to_tokens(ids);
-        outputEl.innerHTML = '';
-        tokens.forEach((t, i) => {
-          const badge = document.createElement('span');
-          badge.className = 'word-token';
-          badge.style.cursor = 'default';
-          badge.innerText = t;
-          outputEl.appendChild(badge);
-        });
-      };
-      inputEl.addEventListener('input', renderTokens);
-      renderTokens();
-    } catch (e) {
-      statusEl.innerText = "Error loading tokenizer.";
-    }
-  })();
+
 
   // ==========================================
   // 2. Semantic Brain
