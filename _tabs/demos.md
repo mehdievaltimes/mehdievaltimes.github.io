@@ -152,6 +152,15 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
   // Prevent local 404s
   env.allowLocalModels = false;
 
+  // Fix GitHub Pages hanging on WASM loading:
+  // GitHub Pages doesn't support SharedArrayBuffer (requires cross-origin isolation headers),
+  // so multi-threaded WASM will hang indefinitely. We force single-threaded WASM here.
+  env.backends.onnx.wasm.numThreads = 1;
+  
+  // Explicitly point to the JSdelivr CDN for the ONNX WebAssembly binaries 
+  // so it doesn't 404 by trying to fetch them from the GitHub Pages root.
+  env.backends.onnx.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/';
+
   function cos_sim(arr1, arr2) {
       let dot = 0, norm1 = 0, norm2 = 0;
       for (let i = 0; i < arr1.length; i++) {
