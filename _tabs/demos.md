@@ -96,6 +96,9 @@ We use a feature extraction model (`all-MiniLM-L6-v2`) to turn text into a 384-d
     </div>
     <span id="similarity-score" style="font-weight: bold; font-size: 1.2rem; min-width: 60px;">0.00</span>
   </div>
+  <div id="sem-progress-container" style="display: none; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-top: 10px;">
+    <div id="sem-progress-bar" style="height: 100%; width: 0%; background: #3498db; transition: width 0.1s;"></div>
+  </div>
   <em class="text-muted small mt-3 d-block" id="sem-status">Loading Semantic Model (80MB)... This may take a moment when you first type.</em>
 </div>
 
@@ -110,6 +113,10 @@ Type a sentence below to generate an interactive map! **Hover over any word in t
 
 <div id="matrix-app" style="margin: 2rem 0; padding: 2rem; background: var(--card-bg, var(--main-bg)); border: 1px solid var(--border-color); border-radius: 12px; text-align: center; overflow-x: auto;">
   <input type="text" id="matrix-input" placeholder="Type a sentence (e.g. The quick brown fox)..." class="form-control mb-4" style="font-size: 1.2rem; padding: 10px; width: 100%; border: 1px solid var(--border-color); border-radius: 8px; background: var(--main-bg); color: var(--text-color);" />
+  
+  <div id="matrix-progress-container" style="display: none; background: var(--border-color); height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+    <div id="matrix-progress-bar" style="height: 100%; width: 0%; background: #3498db; transition: width 0.1s;"></div>
+  </div>
   <em class="text-muted" id="matrix-status">Loading Matrix Model...</em>
   
   <!-- Interactive Hover Row -->
@@ -138,14 +145,12 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
   <p class="mt-4 text-muted small">Hover over a word to visualize its attention weights.</p>
 </div>
 
-
+<!-- Scripts for the Transformers.js models -->
 <script type="module">
   import { pipeline, AutoTokenizer, cos_sim, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
 
   // Prevent local 404s
   env.allowLocalModels = false;
-
-
 
   // ==========================================
   // 2. Semantic Brain
@@ -156,46 +161,69 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
     const input2 = document.getElementById('sem-input-2');
     const bar = document.getElementById('similarity-bar');
     const scoreText = document.getElementById('similarity-score');
+    const progressContainer = document.getElementById('sem-progress-container');
+    const progressBar = document.getElementById('sem-progress-bar');
+    
     let extractor = null;
     let isExtracting = false;
+    
     const loadPipeline = async () => {
         if (!extractor && !isExtracting) {
             isExtracting = true;
-            statusEl.innerText = "Downloading Semantic Model (80MB)... Please wait.";
+            statusEl.innerText = "Downloading Semantic Model... Please wait.";
             statusEl.style.color = "#e67e22";
+            progressContainer.style.display = 'block';
+            
             try {
-                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+                    progress_callback: (data) => {
+                        if (data.status === 'progress' && data.progress !== undefined) {
+                            progressBar.style.width = `${data.progress}%`;
+                        } else if (data.status === 'ready') {
+                            progressBar.style.width = `100%`;
+                        }
+                    }
+                });
                 statusEl.innerText = "Model loaded successfully! Type to compute similarity.";
                 statusEl.style.color = "#2ecc71";
+                progressContainer.style.display = 'none';
             } catch(e) {
-                statusEl.innerText = "Failed to load model.";
+                console.error("Semantic Brain Error:", e);
+                statusEl.innerText = "Failed to load model. Please check console.";
                 statusEl.style.color = "#e74c3c";
             }
         }
     };
+    
     input1.addEventListener('focus', loadPipeline);
     input2.addEventListener('focus', loadPipeline);
+    
     const computeSimilarity = async () => {
         if (!extractor) return;
         const text1 = input1.value;
         const text2 = input2.value;
         if (!text1 || !text2) { bar.style.width = '0%'; scoreText.innerText = "0.00"; return; }
-        const out1 = await extractor(text1, { pooling: 'mean', normalize: true });
-        const out2 = await extractor(text2, { pooling: 'mean', normalize: true });
-        let score = cos_sim(out1.data, out2.data);
-        score = Math.max(0, Math.min(1, score));
-        scoreText.innerText = score.toFixed(2);
-        bar.style.width = `${score * 100}%`;
-        if (score > 0.7) bar.style.backgroundColor = '#2ecc71';
-        else if (score > 0.4) bar.style.backgroundColor = '#f1c40f';
-        else bar.style.backgroundColor = '#e74c3c';
+        try {
+            const out1 = await extractor(text1, { pooling: 'mean', normalize: true });
+            const out2 = await extractor(text2, { pooling: 'mean', normalize: true });
+            let score = cos_sim(out1.data, out2.data);
+            score = Math.max(0, Math.min(1, score));
+            scoreText.innerText = score.toFixed(2);
+            bar.style.width = `${score * 100}%`;
+            if (score > 0.7) bar.style.backgroundColor = '#2ecc71';
+            else if (score > 0.4) bar.style.backgroundColor = '#f1c40f';
+            else bar.style.backgroundColor = '#e74c3c';
+        } catch(e) {
+            console.error("Error computing similarity:", e);
+        }
     };
+    
     input1.addEventListener('input', computeSimilarity);
     input2.addEventListener('input', computeSimilarity);
   })();
 
   // ==========================================
-  // 3. Live Attention Visualizer (Hover + Matrix)
+  // 3. Live Attention Visualizer
   // ==========================================
   (async function() {
     const statusEl = document.getElementById('matrix-status');
@@ -203,6 +231,9 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
     const hoverContainer = document.getElementById('matrix-hover-container');
     const gridContainer = document.getElementById('matrix-grid-container');
     const helper = document.getElementById('matrix-helper');
+    const progressContainer = document.getElementById('matrix-progress-container');
+    const progressBar = document.getElementById('matrix-progress-bar');
+    
     let extractor = null;
     let tokenizer = null;
     let isExtracting = false;
@@ -210,14 +241,28 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
     const loadMatrixModel = async () => {
         if (!extractor && !isExtracting) {
             isExtracting = true;
-            statusEl.innerText = "Preparing Matrix Model (80MB)... Please wait.";
+            statusEl.innerText = "Preparing Matrix Model... Please wait.";
+            progressContainer.style.display = 'block';
+            
             try {
-                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+                // Initialize both concurrently or sequentially with progress
+                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
+                    progress_callback: (data) => {
+                        if (data.status === 'progress' && data.progress !== undefined) {
+                            progressBar.style.width = `${data.progress}%`;
+                        } else if (data.status === 'ready') {
+                            progressBar.style.width = `100%`;
+                        }
+                    }
+                });
                 tokenizer = await AutoTokenizer.from_pretrained('Xenova/all-MiniLM-L6-v2');
+                
                 statusEl.style.display = 'none';
+                progressContainer.style.display = 'none';
                 inputEl.placeholder = "Type a sentence to visualize attention...";
                 if(inputEl.value) renderMatrix();
             } catch(e) {
+                console.error("Matrix Model Error:", e);
                 statusEl.innerText = "Failed to load matrix model.";
             }
         }
@@ -248,7 +293,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
             const seq_length = out.dims[1];
             const hidden_size = out.dims[2];
             
-            // Precompute weights
             const weights = [];
             for (let i = 0; i < seq_length; i++) {
                 const row = [];
@@ -267,7 +311,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                 weights.push(row);
             }
 
-            // --- 3A: Render Hover Spans ---
             hoverContainer.innerHTML = '';
             const spanElements = [];
             tokens.forEach((t, i) => {
@@ -284,7 +327,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                     spanElements.forEach((otherToken, j) => {
                         if (i !== j) {
                             const w = weights[i][j];
-                            // Using the red/orange heatmap
                             otherToken.style.backgroundColor = `rgba(231, 76, 60, ${w})`;
                             if (w > 0.5) otherToken.style.color = "#fff";
                         }
@@ -300,7 +342,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                 });
             });
 
-            // --- 3B: Render NxN Table Grid ---
             gridContainer.innerHTML = '';
             const table = document.createElement('table');
             table.className = 'matrix-table';
@@ -317,7 +358,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
 
             for (let i = 0; i < seq_length; i++) {
                 const tr = document.createElement('tr');
-                
                 const th = document.createElement('th');
                 th.className = 'matrix-header-row';
                 th.innerText = tokens[i];
@@ -325,19 +365,14 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
 
                 for (let j = 0; j < seq_length; j++) {
                     const td = document.createElement('td');
-                    
                     if (j > i) {
-                        // Upper triangle (redundant symmetric data) - hide it
                         td.style.border = 'none';
                         td.style.backgroundColor = 'transparent';
                     } else {
-                        // Lower triangle
                         const visualWeight = weights[i][j];
                         td.className = 'matrix-cell';
-                        
                         td.style.backgroundColor = `rgba(231, 76, 60, ${visualWeight})`;
                         td.title = `${tokens[i]} -> ${tokens[j]}\nSimilarity: ${weights[i][j].toFixed(3)}`;
-                        
                         td.innerText = weights[i][j].toFixed(1);
                         if (visualWeight > 0.5) td.style.color = "white";
                         else td.style.color = "transparent";
@@ -365,10 +400,10 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
         timeoutId = setTimeout(renderMatrix, 500);
     });
   })();
+</script>
 
-  // ==========================================
-  // 4. Canned Attention Visualizer
-  // ==========================================
+<!-- Script for Canned Visualizer (Runs independently of the Transformers.js module) -->
+<script>
   (function() {
     const sentence = ["The", "quick", "brown", "fox", "jumps", "over", "the", "lazy", "dog"];
     const weights = [
@@ -397,7 +432,6 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
         allTokens.forEach((otherToken, j) => {
           if (i !== j) {
             const w = weights[i][j];
-            // Uses red/orange to match the live one
             otherToken.style.backgroundColor = `rgba(231, 76, 60, ${w})`;
             if(w > 0.5) otherToken.style.color = "#fff";
           }
