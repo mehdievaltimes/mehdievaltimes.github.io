@@ -147,10 +147,20 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
 
 <!-- Scripts for the Transformers.js models -->
 <script type="module">
-  import { pipeline, AutoTokenizer, cos_sim, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
+  import { pipeline, AutoTokenizer, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.14.0/dist/transformers.min.js';
 
   // Prevent local 404s
   env.allowLocalModels = false;
+
+  function cos_sim(arr1, arr2) {
+      let dot = 0, norm1 = 0, norm2 = 0;
+      for (let i = 0; i < arr1.length; i++) {
+          dot += arr1[i] * arr2[i];
+          norm1 += arr1[i] * arr1[i];
+          norm2 += arr2[i] * arr2[i];
+      }
+      return dot / (Math.sqrt(norm1) * Math.sqrt(norm2));
+  }
 
   // ==========================================
   // 2. Semantic Brain
