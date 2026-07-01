@@ -151,12 +151,34 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
 
   // Prevent local 404s
   env.allowLocalModels = false;
+  env.useBrowserCache = true;
 
-  // Fix for GitHub Pages / Safari strict privacy settings:
-  // Sometimes the browser's Cache API silently hangs when trying to save the model,
-  // causing the progress bar to stay at 0% forever. Disabling the browser cache forces 
-  // it to just load the model directly into memory and bypass the issue.
-  env.useBrowserCache = false;
+  // --- UI DEBUGGER ---
+  // Create a debug log container on the page so we can see exactly where it hangs.
+  const debugDiv = document.createElement('pre');
+  debugDiv.style.cssText = 'background: #1e1e1e; color: #00ff00; padding: 10px; border-radius: 5px; font-size: 12px; max-height: 200px; overflow-y: auto; margin-bottom: 20px; white-space: pre-wrap; word-wrap: break-word;';
+  debugDiv.innerText = "--- SYSTEM LOGS ---\n";
+  const mainContent = document.querySelector('.post-content') || document.body;
+  mainContent.insertBefore(debugDiv, mainContent.firstChild);
+
+  function logToUI(msg) {
+      debugDiv.innerText += `[${new Date().toISOString().split('T')[1].slice(0,-1)}] ${msg}\n`;
+      debugDiv.scrollTop = debugDiv.scrollHeight;
+  }
+  
+  // Override console.error
+  const originalError = console.error;
+  console.error = function(...args) {
+      logToUI("ERROR: " + args.join(" "));
+      originalError.apply(console, args);
+  };
+  
+  window.addEventListener('error', function(e) {
+      logToUI(`Uncaught Error: ${e.message} at ${e.filename}:${e.lineno}`);
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+      logToUI(`Unhandled Promise Rejection: ${e.reason}`);
+  });
 
   function cos_sim(arr1, arr2) {
       let dot = 0, norm1 = 0, norm2 = 0;
@@ -191,8 +213,10 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
             progressContainer.style.display = 'block';
             
             try {
+                logToUI("Starting Semantic Brain pipeline download...");
                 extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                     progress_callback: (data) => {
+                        logToUI(`Semantic Brain [${data.status}]: ${data.file || ''} - ${data.progress ? data.progress.toFixed(1) + '%' : ''}`);
                         if (data.status === 'progress' && data.progress !== undefined) {
                             progressBar.style.width = `${data.progress}%`;
                         } else if (data.status === 'ready') {
@@ -200,11 +224,14 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                         }
                     }
                 });
+                logToUI("Semantic Brain pipeline loaded successfully.");
                 statusEl.innerText = "Model loaded successfully! Type to compute similarity.";
                 statusEl.style.color = "#2ecc71";
                 progressContainer.style.display = 'none';
+                if(input1.value && input2.value) computeSimilarity();
             } catch(e) {
-                console.error("Semantic Brain Error:", e);
+                logToUI(`Semantic Brain Error: ${e.message || e}`);
+                console.error("Semantic Model Error:", e);
                 statusEl.innerText = "Failed to load model. Please check console.";
                 statusEl.style.color = "#e74c3c";
             }
@@ -261,9 +288,11 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
             progressContainer.style.display = 'block';
             
             try {
+                logToUI("Starting Matrix Model pipeline download...");
                 // Initialize both concurrently or sequentially with progress
                 extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                     progress_callback: (data) => {
+                        logToUI(`Matrix Model [${data.status}]: ${data.file || ''} - ${data.progress ? data.progress.toFixed(1) + '%' : ''}`);
                         if (data.status === 'progress' && data.progress !== undefined) {
                             progressBar.style.width = `${data.progress}%`;
                         } else if (data.status === 'ready') {
@@ -271,13 +300,17 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
                         }
                     }
                 });
+                
+                logToUI("Starting Matrix tokenizer download...");
                 tokenizer = await AutoTokenizer.from_pretrained('Xenova/all-MiniLM-L6-v2');
+                logToUI("Matrix Model & Tokenizer loaded successfully.");
                 
                 statusEl.style.display = 'none';
                 progressContainer.style.display = 'none';
                 inputEl.placeholder = "Type a sentence to visualize attention...";
                 if(inputEl.value) renderMatrix();
             } catch(e) {
+                logToUI(`Matrix Model Error: ${e.message || e}`);
                 console.error("Matrix Model Error:", e);
                 statusEl.innerText = "Failed to load matrix model.";
             }
