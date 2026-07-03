@@ -153,6 +153,9 @@ For educational purposes, here is a hard-coded visualisation of a pre-computed a
   env.allowLocalModels = false;
   env.useBrowserCache = true;
 
+  // Explicitly set the WASM path to the CDN to prevent 404s on GitHub Pages
+  env.backends.onnx.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/';
+
   // --- UI DEBUGGER ---
   // Create a debug log container on the page so we can see exactly where it hangs.
   const debugDiv = document.createElement('pre');
