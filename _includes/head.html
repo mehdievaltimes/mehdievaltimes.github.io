@@ -57,6 +57,14 @@
   <!-- JS -->
   <script src="/assets/js/dist/theme.min.js"></script>
   <script defer src="https://cdn.jsdelivr.net/combine/npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/dayjs@1.11.18/dayjs.min.js,npm/dayjs@1.11.18/locale/en.js,npm/dayjs@1.11.18/plugin/relativeTime.js,npm/dayjs@1.11.18/plugin/localizedFormat.js"></script>
-  <script defer src="/assets/js/dist/home.min.js"></script>
+  {% case page.layout %}
+    {% when 'home', 'categories', 'post', 'page' %}
+      {% assign js = page.layout %}
+    {% when 'archives', 'category', 'tag' %}
+      {% assign js = 'misc' %}
+    {% else %}
+      {% assign js = 'commons' %}
+  {% endcase %}
+  <script defer src="/assets/js/dist/{{ js }}.min.js"></script>
 
 </head>
