@@ -176,9 +176,9 @@ collections:
   tabs:
     output: true
     sort_by: order
-  mehdeets:
+  tweets:
     output: true
-    permalink: /mehdeets/:path/
+    permalink: /tweets/:path/
 
 defaults:
   - scope:
