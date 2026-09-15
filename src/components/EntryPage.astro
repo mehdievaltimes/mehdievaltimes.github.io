@@ -1,0 +1,27 @@
+---
+import { render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import { type Entry, excerpt, fmtDate, readingTime, href } from '../lib';
+
+const { entry, newer, older } = Astro.props as { entry: Entry; newer?: Entry; older?: Entry };
+const { Content } = await render(entry);
+const isPost = entry.collection === 'posts';
+const label = (e: Entry) => e.data.title ?? excerpt(e, 48);
+---
+<Base title={entry.data.title ?? excerpt(entry, 60)} description={excerpt(entry, 160)}>
+  <article>
+    <header class="post-head">
+      {entry.data.title && <h1>{entry.data.title}</h1>}
+      <div class="meta">
+        <time datetime={entry.data.date.toISOString()}>{fmtDate(entry.data.date)}</time>
+        {isPost && <span> · {readingTime(entry)}</span>}
+        {entry.data.draft && <span class="tag-draft"> · draft (not published)</span>}
+      </div>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+  <nav class="post-foot">
+    {older ? <a href={href(older)}>← {label(older)}</a> : <a href={`/${entry.collection}`}>← all {entry.collection}</a>}
+    {newer ? <a href={href(newer)}>{label(newer)} →</a> : <span />}
+  </nav>
+</Base>

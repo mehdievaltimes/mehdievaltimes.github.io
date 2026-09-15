@@ -1,0 +1,14 @@
+---
+import { render } from 'astro:content';
+import { type Entry, fmtDate, href } from '../lib';
+const { entry } = Astro.props as { entry: Entry };
+const { Content } = await render(entry);
+---
+<li class="entry note" id={entry.id}>
+  <div class="meta">
+    <a href={href(entry)}><time datetime={entry.data.date.toISOString()}>{fmtDate(entry.data.date)}</time></a>
+    {entry.data.draft && <span class="tag-draft">· draft</span>}
+  </div>
+  {entry.data.title && <h2><a href={href(entry)}>{entry.data.title}</a></h2>}
+  <div class="prose"><Content /></div>
+</li>
