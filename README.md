@@ -7,10 +7,12 @@ npm install
 npm run dev      # http://localhost:4321
 ```
 
-## Posting
+## Writing
 
-Everything lives in `src/content/writing/`. There is no difference between a "post" and a "tweet":
-one Markdown file, one required field.
+Two kinds of content, two folders:
+
+- `src/content/posts/` — written-out pieces. Needs `title` and `date`.
+- `src/content/thoughts/` — anything short or half-formed. Only `date` is required.
 
 ```md
 ---
@@ -20,20 +22,22 @@ date: 2026-09-14
 the whole thing can just be one sentence.
 ```
 
-- **No title** → it shows up in the feed in full, like a tweet.
-- **Title + short body** (≤180 words) → also shown in full.
-- **Title + long body** → shown as title + excerpt, links to its page.
 - `draft: true` → visible only in `npm run dev`. Nothing leaves your machine.
-- `unlisted: true` → published at its URL (share it with whoever) but not in the feed or RSS.
+- `unlisted: true` → published at its URL but not in lists or RSS.
 - Math works: `$x^2$` and `$$\int f$$`.
 
-Shortcuts:
+**From the browser:** go to `/thoughts/new`, write, hit publish. It opens GitHub's "new file" page
+prefilled; commit it and the site redeploys. (The page is public but does nothing without push access to the repo.)
+
+**From the terminal:**
 
 ```sh
-npm run new                          # blank untitled note
-npm run new "On Tokenization"        # titled post
-npm run new -- --draft "Hot take"    # draft
-npm run new -- --now "a quick thought"  # note with the text already in it
+npm run new                              # blank thought
+npm run new -- --now "a quick thought"   # thought with text in it
+npm run new -- --post "On Tokenization"  # post
+npm run new -- --draft --post "Hot take" # draft
 ```
 
-No comments, no view counts, no likes. Edit or delete anything whenever; old URLs under `/posts/<slug>/` keep working as long as the filename does.
+`src/pages/now.md` is the "what I'm doing now" page.
+
+No comments, no view counts, no likes.

@@ -3,18 +3,19 @@ import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 import { site } from '../lib';
 
-interface Props { title?: string; description?: string; sheep?: boolean }
-const { title, description = site.description, sheep = true } = Astro.props;
+interface Props { title?: string; description?: string; sheep?: boolean; noindex?: boolean }
+const { title, description = site.description, sheep = true, noindex = false } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  ['/', 'writing'],
-  ['/about', 'about'],
+  ['/posts', 'posts'],
+  ['/thoughts', 'thoughts'],
+  ['/now', 'now'],
   ['/projects', 'projects'],
   ['/demos', 'demos'],
 ];
 const current = (href: string) =>
-  href === '/' ? path === '/' || path.startsWith('/posts') : path.startsWith(href);
+  path.startsWith(href);
 ---
 <!doctype html>
 <html lang="en">
@@ -23,6 +24,7 @@ const current = (href: string) =>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="icon" href="/img/avatar.png" />
     <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
