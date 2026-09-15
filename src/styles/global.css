@@ -105,3 +105,8 @@ h1 { font-size: 2.3rem; margin: 0 0 .5rem; }
 .card .meta { margin-top: .6rem; }
 input[type='text'] { width: 100%; font: 1rem var(--sans); padding: .7rem .85rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); outline: none; }
 input[type='text']:focus { border-color: var(--accent); }
+
+.section-head { display: flex; justify-content: space-between; align-items: baseline; margin: 3rem 0 .25rem; }
+.section-head h2 { font-size: 1rem; font-family: var(--sans); font-weight: 600; margin: 0; }
+.section-head a { font-size: .88rem; color: var(--muted); text-decoration: none; }
+.feed + .section-head { margin-top: 4rem; }

@@ -1,0 +1,85 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../lib';
+---
+<Base title="New thought" sheep={false} noindex>
+  <header class="post-head">
+    <h1>New thought</h1>
+    <p class="meta">write it, hit publish, GitHub commits it, site redeploys in ~1 min</p>
+  </header>
+
+  <form id="thought-form" class="compose">
+    <textarea id="body" rows="8" placeholder="what’s on your mind?" required></textarea>
+    <input type="text" id="title" placeholder="title (optional)" />
+    <div class="compose-row">
+      <label><input type="checkbox" id="draft" /> save as draft</label>
+      <label><input type="checkbox" id="unlisted" /> unlisted</label>
+      <span class="meta" id="count">0 words</span>
+    </div>
+    <div class="compose-row">
+      <button type="submit" class="btn">Publish via GitHub →</button>
+      <button type="button" class="btn ghost" id="copy">Copy markdown</button>
+    </div>
+    <details>
+      <summary class="meta">preview file</summary>
+      <pre id="preview"></pre>
+    </details>
+  </form>
+
+  <script is:inline define:vars={{ repo: site.repo }}>
+    const $ = (id) => document.getElementById(id);
+    const KEY = 'thought-draft';
+    try { const saved = JSON.parse(localStorage.getItem(KEY) || '{}'); $('body').value = saved.body || ''; $('title').value = saved.title || ''; } catch {}
+
+    const pad = (n) => String(n).padStart(2, '0');
+    function build() {
+      const d = new Date();
+      const off = -d.getTimezoneOffset();
+      const tz = `${off >= 0 ? '+' : '-'}${pad(Math.floor(Math.abs(off) / 60))}:${pad(Math.abs(off) % 60)}`;
+      const date = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}:00${tz}`;
+      const title = $('title').value.trim();
+      const slugBase = title
+        ? title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)
+        : `${date.slice(0, 10)}-${pad(d.getHours())}${pad(d.getMinutes())}`;
+      const fm = ['---', `date: ${date}`];
+      if (title) fm.push(`title: ${JSON.stringify(title)}`);
+      if ($('draft').checked) fm.push('draft: true');
+      if ($('unlisted').checked) fm.push('unlisted: true');
+      fm.push('---', '', $('body').value.trim(), '');
+      return { filename: `src/content/thoughts/${slugBase}.md`, content: fm.join('\n') };
+    }
+    function update() {
+      const { filename, content } = build();
+      $('preview').textContent = `${filename}\n\n${content}`;
+      const n = $('body').value.split(/\s+/).filter(Boolean).length;
+      $('count').textContent = `${n} word${n === 1 ? '' : 's'}`;
+      try { localStorage.setItem(KEY, JSON.stringify({ body: $('body').value, title: $('title').value })); } catch {}
+    }
+    $('thought-form').addEventListener('input', update);
+    update();
+
+    $('thought-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const { filename, content } = build();
+      const url = `https://github.com/${repo}/new/main?filename=${encodeURIComponent(filename)}&value=${encodeURIComponent(content)}`;
+      window.open(url, '_blank', 'noopener');
+      try { localStorage.removeItem(KEY); } catch {}
+    });
+    $('copy').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(build().content);
+      $('copy').textContent = 'Copied';
+      setTimeout(() => ($('copy').textContent = 'Copy markdown'), 1500);
+    });
+  </script>
+</Base>
+
+<style>
+  .compose { display: grid; gap: .8rem; }
+  textarea { width: 100%; font: 1.15rem/1.6 var(--serif); padding: .9rem 1rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); resize: vertical; outline: none; }
+  textarea:focus { border-color: var(--accent); }
+  .compose-row { display: flex; gap: 1.2rem; align-items: center; flex-wrap: wrap; font-size: .92rem; color: var(--muted); }
+  .compose-row .meta { margin-left: auto; }
+  .btn { font: 500 .95rem var(--sans); padding: .6rem 1rem; border-radius: 8px; border: 1px solid var(--accent); background: var(--accent); color: var(--bg); cursor: pointer; }
+  .btn.ghost { background: transparent; color: var(--fg); border-color: var(--faint); }
+  pre { font: .8rem var(--mono); background: var(--card); padding: 1rem; border-radius: 8px; white-space: pre-wrap; }
+</style>

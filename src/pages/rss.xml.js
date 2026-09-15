@@ -1,8 +1,10 @@
 import rss from '@astrojs/rss';
-import { getEntries, site, excerpt } from '../lib';
+import { getEntries, site, excerpt, href } from '../lib';
 
 export async function GET(context) {
-  const entries = await getEntries();
+  const entries = [...(await getEntries('posts')), ...(await getEntries('thoughts'))].sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+  );
   return rss({
     title: site.name,
     description: site.description,
@@ -11,7 +13,7 @@ export async function GET(context) {
       title: e.data.title ?? excerpt(e, 60),
       pubDate: e.data.date,
       description: excerpt(e, 400),
-      link: `/posts/${e.id}/`,
+      link: href(e),
     })),
   });
 }
