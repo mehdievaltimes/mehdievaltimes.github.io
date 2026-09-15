@@ -1,0 +1,38 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import { getEntries, excerpt, fmtDate, readingTime, isShort } from '../../lib';
+
+export async function getStaticPaths() {
+  const entries = await getEntries({ includeUnlisted: true });
+  const listed = entries.filter((e) => !e.data.unlisted);
+  return entries.map((entry) => {
+    const i = listed.indexOf(entry);
+    return {
+      params: { slug: entry.id },
+      props: { entry, newer: i > 0 ? listed[i - 1] : undefined, older: i >= 0 ? listed[i + 1] : undefined },
+    };
+  });
+}
+
+const { entry, newer, older } = Astro.props;
+const { Content } = await render(entry);
+const label = (e: typeof entry) => e.data.title ?? excerpt(e, 48);
+---
+<Base title={entry.data.title ?? excerpt(entry, 60)} description={excerpt(entry, 160)}>
+  <article>
+    <header class="post-head">
+      {entry.data.title && <h1>{entry.data.title}</h1>}
+      <div class="meta">
+        <time datetime={entry.data.date.toISOString()}>{fmtDate(entry.data.date)}</time>
+        {!isShort(entry) && <span> · {readingTime(entry)}</span>}
+        {entry.data.draft && <span class="tag-draft"> · draft (not published)</span>}
+      </div>
+    </header>
+    <div class="prose"><Content /></div>
+  </article>
+  <nav class="post-foot">
+    {older ? <a href={`/posts/${older.id}/`}>← {label(older)}</a> : <span />}
+    {newer ? <a href={`/posts/${newer.id}/`}>{label(newer)} →</a> : <span />}
+  </nav>
+</Base>
