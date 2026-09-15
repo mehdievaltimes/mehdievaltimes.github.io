@@ -1,0 +1,16 @@
+---
+import Base from '../layouts/Base.astro';
+import FeedItem from '../components/FeedItem.astro';
+import { getEntries } from '../lib';
+
+const entries = await getEntries();
+---
+<Base>
+  <section class="intro">
+    <p>Hey, I’m Mehdi. I study math and CS at Columbia and think about how neural networks work on the inside.</p>
+    <p class="sub">This is where I put things as I think them: essays, notes, half-formed ideas. Some are polished. Most aren’t.</p>
+  </section>
+  <ul class="feed">
+    {entries.map((entry) => <FeedItem entry={entry} />)}
+  </ul>
+</Base>

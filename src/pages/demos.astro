@@ -1,0 +1,70 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Demos" sheep={false}>
+  <header class="post-head">
+    <h1>The mechanistic sandbox</h1>
+    <p class="meta">runs 100% in your browser via transformers.js · first load downloads the model (~80MB)</p>
+  </header>
+
+  <div class="prose">
+    <h2>1. Tokenization</h2>
+    <p>Before an LLM can understand language, it chops words into subword “tokens.” See how GPT-4 slices up rare words like <em>indubitably</em> in <a href="https://platform.openai.com/tokenizer">OpenAI’s tokenizer sandbox</a>.</p>
+
+    <h2>2. Embeddings</h2>
+    <p>How does a network know that <em>“The monarch rested”</em> is close to <em>“The king sat”</em> when they share no words? We embed both with <code>all-MiniLM-L6-v2</code> into 384 dimensions and take the cosine similarity.</p>
+  </div>
+  <div class="card demo">
+    <input type="text" id="sem-input-1" placeholder="The king sat on the throne" />
+    <input type="text" id="sem-input-2" placeholder="The monarch rested on his chair" />
+    <div class="sim-row">
+      <div class="track"><div id="similarity-bar"></div></div>
+      <span id="similarity-score">0.00</span>
+    </div>
+    <div id="sem-progress-container" class="progress" style="display:none"><div id="sem-progress-bar"></div></div>
+    <p class="meta" id="sem-status">Click a box to load the model.</p>
+  </div>
+
+  <div class="prose">
+    <h2>3. Live attention (sort of)</h2>
+    <p>Type a sentence and hover a token to see what it “attends” to. Honest caveat: WASM builds drop the attention tensors, so this shows token-to-token similarity of final-layer states, which is a decent visual proxy for attention, not the real thing.</p>
+  </div>
+  <div class="card demo" style="text-align:center">
+    <input type="text" id="matrix-input" placeholder="The quick brown fox" />
+    <div id="matrix-progress-container" class="progress" style="display:none"><div id="matrix-progress-bar"></div></div>
+    <p class="meta" id="matrix-status">Click the box to load the model.</p>
+    <div id="matrix-hover-container" class="tokens"></div>
+    <p class="meta" id="matrix-helper" style="display:none">Hover a token.</p>
+    <div id="matrix-grid-container" style="display:flex;justify-content:center;overflow-x:auto"></div>
+  </div>
+
+  <div class="prose">
+    <h2>4. Canned attention</h2>
+    <p>A hard-coded attention pattern from a real transformer, for when you don’t want to download anything.</p>
+  </div>
+  <div class="card demo" style="text-align:center">
+    <div id="attention-sandbox" class="tokens"></div>
+  </div>
+
+  <script is:inline type="module" src="/js/demos.js"></script>
+  <script is:inline src="/js/attention-canned.js"></script>
+</Base>
+
+<style is:global>
+  .demo { margin: 1.25rem 0 2.5rem; display: grid; gap: .6rem; }
+  .sim-row { display: flex; align-items: center; gap: 1rem; margin-top: .5rem; }
+  .track { flex: 1; height: 10px; background: var(--faint); border-radius: 99px; overflow: hidden; }
+  #similarity-bar { height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+  #similarity-score { font: 500 1.1rem var(--mono); min-width: 3.5rem; text-align: right; }
+  .progress { height: 4px; background: var(--faint); border-radius: 99px; overflow: hidden; }
+  .progress > div { height: 100%; width: 0; background: var(--accent); transition: width .1s; }
+  .demo .meta { margin: 0; }
+  .tokens { display: flex; flex-wrap: wrap; justify-content: center; gap: .4rem; }
+  .word-token { padding: .3rem .7rem; border-radius: 6px; border: 1px solid var(--faint); background: var(--bg); cursor: pointer; font: .95rem var(--mono); transition: background-color .15s, border-color .15s; }
+  .word-token.active { border-color: var(--accent); }
+  .matrix-table { border-collapse: collapse; margin: 1.5rem auto; }
+  .matrix-cell { width: 34px; height: 34px; text-align: center; font: .7rem var(--mono); border: 1px solid var(--faint); cursor: crosshair; }
+  .matrix-cell:hover { outline: 2px solid var(--fg); position: relative; }
+  .matrix-header-col { writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px; font: .75rem var(--mono); text-align: left; white-space: nowrap; }
+  .matrix-header-row { padding: 6px; font: .75rem var(--mono); text-align: right; white-space: nowrap; }
+</style>

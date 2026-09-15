@@ -1,0 +1,81 @@
+---
+import '../styles/global.css';
+import 'katex/dist/katex.min.css';
+import { site } from '../lib';
+
+interface Props { title?: string; description?: string; sheep?: boolean }
+const { title, description = site.description, sheep = true } = Astro.props;
+const fullTitle = title ? `${title} · ${site.name}` : site.name;
+const path = Astro.url.pathname.replace(/\/$/, '') || '/';
+const nav = [
+  ['/', 'writing'],
+  ['/about', 'about'],
+  ['/projects', 'projects'],
+  ['/demos', 'demos'],
+];
+const current = (href: string) =>
+  href === '/' ? path === '/' || path.startsWith('/posts') : path.startsWith(href);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <link rel="icon" href="/img/avatar.png" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
+    <meta property="og:title" content={title ?? site.name} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" />
+    <script is:inline>
+      try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch {}
+    </script>
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-GCWJMRKY64"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date()); gtag('config', 'G-GCWJMRKY64');
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="site-header">
+        <a class="logo" href="/">{site.short}<span>.</span></a>
+        <nav>
+          {nav.map(([href, label]) => (
+            <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
+          ))}
+          <button class="theme-btn" id="theme-btn" aria-label="Toggle dark mode">◐</button>
+        </nav>
+      </header>
+      <main><slot /></main>
+      <footer class="site-footer">
+        <span>© {new Date().getFullYear()} {site.name}</span>
+        <span class="links">
+          {sheep && <button class="linkish" id="call-sheep-home" onclick="window.toggleSheepHome && window.toggleSheepHome()">send the sheep home</button>}
+          <a href="https://github.com/mehdievaltimes">github</a>
+          <a href="https://www.linkedin.com/in/mehdishak">linkedin</a>
+          <a href="https://instagram.com/mehdievaltimes">instagram</a>
+          <a href="/rss.xml">rss</a>
+        </span>
+      </footer>
+    </div>
+    <script is:inline>
+      document.getElementById('theme-btn').addEventListener('click', () => {
+        const root = document.documentElement;
+        const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+        root.dataset.theme = dark ? 'light' : 'dark';
+        try { localStorage.setItem('theme', root.dataset.theme); } catch {}
+      });
+    </script>
+    {sheep && <script is:inline src="/js/sheep.js"></script>}
+  </body>
+</html>
