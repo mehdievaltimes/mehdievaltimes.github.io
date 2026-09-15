@@ -1,0 +1,20 @@
+{
+  "name": "mehdievaltimes.github.io",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "new": "node scripts/new.mjs"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.1",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.3.2",
+    "katex": "^0.18.7",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0"
+  }
+}

@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import PostItem from '../components/PostItem.astro';
+import ThoughtItem from '../components/ThoughtItem.astro';
+import { getEntries } from '../lib';
+
+const posts = (await getEntries('posts')).slice(0, 5);
+const thoughts = (await getEntries('thoughts')).slice(0, 3);
+---
+<Base>
+  <section class="intro">
+    <p>Hey, I’m Mehdi. I study math and CS at Columbia and think about how neural networks work on the inside.</p>
+    <p class="sub">Posts are the written-out stuff. Thoughts are whatever’s on my mind. <a href="/now">Here’s what I’m doing now.</a></p>
+  </section>
+
+  <div class="section-head"><h2>Posts</h2><a href="/posts">all posts →</a></div>
+  <ul class="feed">{posts.map((entry) => <PostItem entry={entry} brief />)}</ul>
+
+  <div class="section-head"><h2>Recent thoughts</h2><a href="/thoughts">all thoughts →</a></div>
+  <ul class="feed">{thoughts.map((entry) => <ThoughtItem entry={entry} />)}</ul>
+</Base>

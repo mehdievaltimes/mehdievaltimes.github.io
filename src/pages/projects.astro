@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+
+type Repo = { name: string; html_url: string; description: string | null; language: string | null; stargazers_count: number; fork: boolean; pushed_at: string };
+
+// Fetched at build time, so the page is instant and never shows "Loading…".
+let repos: Repo[] = [];
+try {
+  const res = await fetch('https://api.github.com/users/mehdievaltimes/repos?sort=pushed&per_page=30');
+  if (res.ok) repos = await res.json();
+} catch {}
+repos = repos.filter((r) => !r.fork && r.name !== 'mehdievaltimes.github.io').slice(0, 8);
+---
+<Base title="Projects">
+  <header class="post-head"><h1>Projects</h1></header>
+  {repos.length ? (
+    <div class="cards">
+      {repos.map((r) => (
+        <a class="card" href={r.html_url} style="text-decoration:none;display:block">
+          <h3>{r.name}</h3>
+          <p>{r.description ?? 'No description yet.'}</p>
+          <div class="meta">{[r.language, r.stargazers_count ? `★ ${r.stargazers_count}` : null].filter(Boolean).join(' · ')}</div>
+        </a>
+      ))}
+    </div>
+  ) : (
+    <p>See everything on <a href="https://github.com/mehdievaltimes">GitHub</a>.</p>
+  )}
+</Base>
