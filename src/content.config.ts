@@ -18,9 +18,11 @@ const writing = defineCollection({
 const reading = defineCollection({
   loader: glob({ pattern: '**/*.{md,yml,yaml}', base: './src/content/reading' }),
   schema: z.object({
-    week: z.number(),
-    starts: z.coerce.date(),
+    week: z.number().optional(), // omit for a whole-course list
+    title: z.string().optional(), // shown instead of "Week N"
+    starts: z.coerce.date().optional(),
     course: z.string().optional(),
+    order: z.number().default(0), // higher sorts first
     note: z.string().optional(),
     items: z.array(
       z.object({
