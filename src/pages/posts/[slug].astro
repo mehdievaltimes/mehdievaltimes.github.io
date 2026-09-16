@@ -3,7 +3,7 @@ import EntryPage from '../../components/EntryPage.astro';
 import { getEntries } from '../../lib';
 
 export async function getStaticPaths() {
-  const entries = await getEntries('posts', { includeUnlisted: true });
+  const entries = await getEntries({ includeUnlisted: true });
   const listed = entries.filter((e) => !e.data.unlisted);
   return entries.map((entry) => {
     const i = listed.indexOf(entry);
