@@ -9,8 +9,19 @@ export default defineConfig({
   integrations: [sitemap()],
   // Old URLs from when thoughts were their own section.
   redirects: {
+    // Sections that no longer exist.
     '/thoughts': '/',
     '/thoughts/[slug]': '/posts/[slug]',
+    // Old Jekyll/Chirpy URLs.
+    '/about': '/now',
+    '/resume': '/now',
+    '/projects': '/',
+    '/tweets': '/',
+    '/tags': '/',
+    '/categories': '/',
+    '/archives': '/',
+    '/rss.xml': '/',
+    '/feed.xml': '/',
   },
   markdown: {
     remarkPlugins: [remarkMath],
