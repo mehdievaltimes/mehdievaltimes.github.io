@@ -1,7 +1,6 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 
-export type Kind = 'posts' | 'thoughts';
-export type Entry = CollectionEntry<Kind>;
+export type Entry = CollectionEntry<'writing'>;
 
 export const site = {
   name: 'Mehdi Shakibapour',
@@ -10,15 +9,19 @@ export const site = {
   repo: 'mehdievaltimes/mehdievaltimes.github.io',
 };
 
-export const words = (e: Entry) => (e.body ?? '').split(/\s+/).filter(Boolean).length;
-export const readingTime = (e: Entry) => `${Math.max(1, Math.round(words(e) / 230))} min`;
-export const href = (e: Entry) => `/${e.collection}/${e.id}/`;
+// A piece is "short" if it reads fine inline in the feed.
+const SHORT_WORDS = 180;
 
-export async function getEntries<K extends Kind>(kind: K, { includeUnlisted = false } = {}) {
-  const all = await getCollection(kind, ({ data }: Entry) =>
+export const words = (e: Entry) => (e.body ?? '').split(/\s+/).filter(Boolean).length;
+export const isShort = (e: Entry) => !e.data.title || words(e) <= SHORT_WORDS;
+export const readingTime = (e: Entry) => `${Math.max(1, Math.round(words(e) / 230))} min`;
+export const href = (e: Entry) => `/posts/${e.id}/`;
+
+export async function getEntries({ includeUnlisted = false } = {}) {
+  const all = await getCollection('writing', ({ data }) =>
     (import.meta.env.DEV || !data.draft) && (includeUnlisted || !data.unlisted),
   );
-  return (all as Entry[]).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()) as CollectionEntry<K>[];
+  return all.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
 
 export function excerpt(e: Entry, n = 240) {
