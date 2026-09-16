@@ -9,33 +9,34 @@ npm run dev      # http://localhost:4321
 
 ## Writing
 
-Two kinds of content, two folders:
-
-- `src/content/posts/` — written-out pieces. Needs `title` and `date`.
-- `src/content/thoughts/` — anything short or half-formed. Only `date` is required.
+Everything lives in `src/content/writing/`. There is no difference between a "post" and a "thought":
+one Markdown file, one required field.
 
 ```md
 ---
-date: 2026-09-14
+date: 2026-09-16
 ---
 
 the whole thing can just be one sentence.
 ```
 
+- **No title** → shows up in the feed in full, like a tweet.
+- **Title + short body** (≤180 words) → also shown in full.
+- **Title + long body** → title and excerpt, links to its own page at `/posts/<slug>/`.
 - `draft: true` → visible only in `npm run dev`. Nothing leaves your machine.
-- `unlisted: true` → published at its URL but not in lists or RSS.
+- `unlisted: true` → published at its URL but not in the feed.
 - Math works: `$x^2$` and `$$\int f$$`.
 
-**From the browser:** go to `/thoughts/new`, write, hit publish. It opens GitHub's "new file" page
-prefilled; commit it and the site redeploys. (The page is public but does nothing without push access to the repo.)
+**From the browser:** go to `/new`, write, hit publish. It opens GitHub's "new file" page prefilled;
+commit it and the site redeploys. (The page is public but does nothing without push access to the repo.)
 
 **From the terminal:**
 
 ```sh
-npm run new                              # blank thought
-npm run new -- --now "a quick thought"   # thought with text in it
-npm run new -- --post "On Tokenization"  # post
-npm run new -- --draft --post "Hot take" # draft
+npm run new                              # blank note
+npm run new -- --now "a quick thought"   # note with text in it
+npm run new "On Tokenization"            # titled piece
+npm run new -- --draft "Hot take"        # draft
 ```
 
 `src/pages/now.md` is the "what I'm doing now" page.
