@@ -2,7 +2,6 @@
 title: "Legalean: Proving That Two Statutes Contradict Each Other"
 date: 2026-09-16
 tags: [lean, formal-methods, law]
-draft: true
 ---
 
 Two laws can tell you opposite things. Arizona's S.B. 1070 § 5(C) made it a misdemeanor for an unauthorized immigrant to apply for or perform work. Federal immigration law had deliberately declined to criminalize that same act — Congress penalized employers, not workers. In *Arizona v. United States* the Supreme Court struck § 5(C) down for exactly that reason.
