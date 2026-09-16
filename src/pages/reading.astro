@@ -3,7 +3,11 @@ import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
 import { fmtDate } from '../lib';
 
-const weeks = (await getCollection('reading')).sort((a, b) => b.data.starts.valueOf() - a.data.starts.valueOf());
+const key = (w) => [w.data.order, w.data.week ?? 0, w.data.starts?.valueOf() ?? 0];
+const weeks = (await getCollection('reading')).sort((a, b) => {
+  const [ao, aw, as] = key(a), [bo, bw, bs] = key(b);
+  return bo - ao || bw - aw || bs - as;
+});
 const total = weeks.reduce((n, w) => n + w.data.items.length, 0);
 ---
 <Base title="Reading" description="What I'm reading, by week.">
@@ -17,8 +21,8 @@ const total = weeks.reduce((n, w) => n + w.data.items.length, 0);
   {weeks.map((w) => (
     <section class="week">
       <div class="section-head">
-        <h2>Week {w.data.week}{w.data.course ? ` · ${w.data.course}` : ''}</h2>
-        <span class="meta">{fmtDate(w.data.starts)}</span>
+        <h2>{w.data.title ?? `Week ${w.data.week}`}{w.data.course ? ` · ${w.data.course}` : ''}</h2>
+        {w.data.starts && <span class="meta">{fmtDate(w.data.starts)}</span>}
       </div>
       {w.data.note && <p class="excerpt">{w.data.note}</p>}
       <ul class="reading">
