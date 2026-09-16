@@ -1,0 +1,32 @@
+title: "PhD prep · 4. Scalable oversight and alignment methods"
+note: How models actually get trained to behave, and why that doesn't obviously scale.
+order: 6
+items:
+  - title: "Scalable agent alignment via reward modeling: a research direction"
+    author: Leike et al., 2018
+    url: https://arxiv.org/abs/1811.07871
+  - title: AI safety via debate
+    author: Irving, Christiano & Amodei, 2018
+    url: https://arxiv.org/abs/1805.00899
+  - title: Self-critiquing models for assisting human evaluators
+    author: Saunders et al., 2022
+    url: https://arxiv.org/abs/2206.05802
+  - title: Training language models to follow instructions with human feedback (InstructGPT)
+    author: Ouyang et al., 2022
+    url: https://arxiv.org/abs/2203.02155
+  - title: Training a Helpful and Harmless Assistant with RLHF
+    author: Bai et al., 2022
+    url: https://arxiv.org/abs/2204.05862
+  - title: "Constitutional AI: Harmlessness from AI Feedback"
+    author: Bai et al., 2022
+    url: https://arxiv.org/abs/2212.08073
+  - title: Discovering Latent Knowledge in Language Models Without Supervision
+    author: Burns et al., 2022
+    url: https://arxiv.org/abs/2212.03827
+    note: eliciting latent knowledge, made concrete
+  - title: "Weak-to-Strong Generalization: Eliciting Strong Capabilities With Weak Supervision"
+    author: Burns et al., 2023
+    url: https://arxiv.org/abs/2312.09390
+  - title: Towards Understanding Sycophancy in Language Models
+    author: Sharma et al., 2023
+    url: https://arxiv.org/abs/2310.13548

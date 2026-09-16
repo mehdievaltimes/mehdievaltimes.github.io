@@ -1,0 +1,50 @@
+title: Where to find new work
+note: Standing sources. Check the first three weekly; the rest when you have time.
+order: 5
+items:
+  - title: Alignment Forum
+    url: https://www.alignmentforum.org/
+    note: where a lot of this work appears months before it's a paper
+  - title: Anthropic research
+    url: https://www.anthropic.com/research
+    note: plus transformer-circuits.pub for interpretability
+  - title: Transformer Circuits Thread
+    url: https://transformer-circuits.pub/
+  - title: Google DeepMind blog
+    url: https://deepmind.google/blog/
+  - title: METR blog
+    url: https://metr.org/blog/
+    note: autonomy and dangerous-capability evals
+  - title: Apollo Research blog
+    url: https://www.apolloresearch.ai/blog
+    note: scheming and deception evals
+  - title: Redwood Research blog
+    url: https://blog.redwoodresearch.org/
+    note: AI control
+  - title: Epoch AI
+    url: https://epoch.ai/
+    note: compute, scaling and forecasting data — overlaps your AGI Future course
+  - title: arXiv cs.LG new submissions
+    url: https://arxiv.org/list/cs.LG/recent
+    note: skim titles daily, it takes five minutes
+  - title: Neuronpedia
+    url: https://www.neuronpedia.org/
+    note: browse SAE features instead of only reading about them
+  - title: "ARENA: Alignment Research Engineer Accelerator materials"
+    url: https://arena-chapter1-transformer-interp.streamlit.app/
+    note: implement the interp exercises — this is what actually gets you hired
+  - title: Neel Nanda, getting started in mech interp
+    url: https://www.neelnanda.io/mechanistic-interpretability/getting-started
+  - title: BlueDot AI Safety Fundamentals
+    url: https://bluedot.org/
+    note: the standard structured course
+  - title: MIT AI Alignment (MAIA) AISF curriculum
+    url: https://aialignment.mit.edu/aisf/
+    optional: true
+  - title: "80,000 Hours: essential AI risk resources"
+    url: https://80000hours.org/articles/11-essential-resources-ai-risk/
+    optional: true
+  - title: NeurIPS / ICML / ICLR safety workshops
+    url: https://arxiv.org/list/cs.LG/recent
+    note: workshop pages are the fastest way to see what a subfield is arguing about this year
+    optional: true

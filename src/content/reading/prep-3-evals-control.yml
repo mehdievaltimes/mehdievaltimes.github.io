@@ -1,0 +1,45 @@
+title: "PhD prep · 3. Evaluations, control, and scheming"
+note: The empirical core of frontier-lab safety work, and where most jobs are.
+order: 7
+items:
+  - title: Discovering Language Model Behaviors with Model-Written Evaluations
+    author: Perez et al., 2022
+    url: https://arxiv.org/abs/2212.09251
+  - title: Red Teaming Language Models with Language Models
+    author: Perez et al., 2022
+    url: https://arxiv.org/abs/2202.03286
+  - title: Model evaluation for extreme risks
+    author: Shevlane et al., 2023
+    url: https://arxiv.org/abs/2305.15324
+  - title: "Taken out of context: On measuring situational awareness in LLMs"
+    author: Berglund et al., 2023
+    url: https://arxiv.org/abs/2309.00667
+    note: directly relevant to your "does the model know it's being tested" note
+  - title: "AI Control: Improving Safety Despite Intentional Subversion"
+    author: Greenblatt et al., 2023
+    url: https://arxiv.org/abs/2312.06942
+    note: the founding control paper — assume the model is scheming and box it anyway
+  - title: "Sleeper Agents: Training Deceptive LLMs that Persist Through Safety Training"
+    author: Hubinger et al., 2024
+    url: https://arxiv.org/abs/2401.05566
+  - title: Evaluating Frontier Models for Dangerous Capabilities
+    author: Phuong et al., 2024
+    url: https://arxiv.org/abs/2403.13793
+  - title: Sabotage Evaluations for Frontier Models
+    author: Benton et al., 2024
+    url: https://arxiv.org/abs/2410.21514
+  - title: Frontier Models are Capable of In-context Scheming
+    author: Meinke et al., 2024
+    url: https://arxiv.org/abs/2412.04984
+  - title: Alignment faking in large language models
+    author: Greenblatt et al., 2024
+    url: https://arxiv.org/abs/2412.14093
+    note: the empirical version of the thing you wrote about
+  - title: Towards evaluations-based safety cases for AI scheming
+    author: Balesni et al., 2024
+    url: https://arxiv.org/abs/2411.03336
+  - title: Adversarial Policies Beat Superhuman Go AIs
+    author: Wang et al., 2022
+    url: https://arxiv.org/abs/2211.00241
+    optional: true
+    note: superhuman does not mean robust
