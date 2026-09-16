@@ -59,7 +59,7 @@ That's the *Plyler v. Doe* pair, and the `6` matters. Texas's school-enrollment 
 
 ## Field preemption is a different animal
 
-Halfway through I hit a kind of conflict the exclusion axioms can't express. Federal alien-registration law doesn't just *disagree* with Arizona's § 3 — it occupies the field, so any state rule there collides with it *even one that agrees*. Both rules say `prohibited`. There is no deontic contradiction at all. It's still preempted.
+Halfway through I hit a kind of conflict the exclusion axioms can't express. Federal alien-registration law doesn't just disagree with Arizona's § 3 — it occupies the field, so any state rule there collides with it even one that agrees. Both rules say `prohibited`. There is no deontic contradiction at all. It's still preempted.
 
 ```lean
 axiom ExclusivelyFederal : Prop → Prop
@@ -82,10 +82,8 @@ Exact matching trades one failure mode for another: a typo now silently hides a 
 
 ## What "formally verified" does not mean
 
-Lean verifies that the *formalized* rules are inconsistent. It never verifies that the formalization is faithful to the statute, and that step is manual. *Plyler*'s actual rule is a standard applied to a state's justification, not a flat ban; encoding it as an unconditional `prohibited` makes it look more absolute than it is.
+Lean verifies that the formalized rules are inconsistent. It never verifies that the formalization is faithful to the statute, and that step is manual.
 
 Worse, `exclusive: true` — the flag that triggers field preemption — is a judicial holding, not statutory text. Congress does not write "we occupy this field"; courts infer it. Marking a rule exclusive feeds a legal conclusion into the tool and then derives consequences from it. The derivation is machine-checked; the premise is a judgment call, and a wrong one propagates silently.
 
 And jurisdiction isn't in Lean at all. The modalities carry no scope, so nothing in the encoding knows federal law outranks state law. `scopes.py` enforces that before a theorem is ever generated. Lean checks the deontic and arithmetic core; Python supplies the jurisdictional premise. "Formally verified" should be read against that boundary — which is, I think, the honest version of the claim most neurosymbolic legal-AI work makes.
-
-Current corpus: 24 rules, 13 Lean-verified conflicts — six contradictions and seven field preemptions — and two pairs the tool correctly reports as compatible, both of which courts upheld. No API key, no network, no third-party Python. `python3 check_conflicts.py` runs the whole thing.
