@@ -55,7 +55,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const allSheepData = [];
     
-    let sheepAreHome = localStorage.getItem('sheepAreHome') === 'true';
+    // Sheep stay home unless someone has asked for them before.
+    let stored = null;
+    try { stored = localStorage.getItem('sheepAreHome'); } catch {}
+    let sheepAreHome = stored === null ? true : stored === 'true';
 
     function updateButtonIcon() {
         const btn = document.getElementById('call-sheep-home');
@@ -67,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.toggleSheepHome = function() {
         sheepAreHome = !sheepAreHome;
-        localStorage.setItem('sheepAreHome', sheepAreHome);
+        try { localStorage.setItem('sheepAreHome', sheepAreHome); } catch {}
         updateButtonIcon();
         
         if (sheepAreHome) {
@@ -253,6 +256,12 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             letOut: () => {
                 isGoingHome = false;
+                // Sheep that start the page at home are parked off-screen; drop them
+                // back onto the page so letting them out is immediate, not a two-second walk.
+                if (position < 0 || position > window.innerWidth - 60) {
+                    position = Math.random() * (window.innerWidth - 60);
+                    sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
+                }
                 head.classList.remove('head-sad');
                 sheep.style.cursor = "grab";
                 sheep.style.pointerEvents = "auto";
