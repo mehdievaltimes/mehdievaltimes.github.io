@@ -14,4 +14,25 @@ const writing = defineCollection({
   }),
 });
 
-export const collections = { writing };
+// Weekly reading list: one file per week, used as a directory of what I owe myself.
+const reading = defineCollection({
+  loader: glob({ pattern: '**/*.{md,yml,yaml}', base: './src/content/reading' }),
+  schema: z.object({
+    week: z.number(),
+    starts: z.coerce.date(),
+    course: z.string().optional(),
+    note: z.string().optional(),
+    items: z.array(
+      z.object({
+        title: z.string(),
+        author: z.string().optional(),
+        url: z.string().optional(),
+        course: z.string().optional(),
+        note: z.string().optional(),
+        optional: z.boolean().default(false),
+      }),
+    ).default([]),
+  }),
+});
+
+export const collections = { writing, reading };

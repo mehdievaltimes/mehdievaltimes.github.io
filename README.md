@@ -41,4 +41,24 @@ npm run new -- --draft "Hot take"        # draft
 
 `src/pages/now.md` is the "what I'm doing now" page.
 
+## Reading list
+
+One file per week in `src/content/reading/`, shown at `/reading`. Checkboxes are remembered per browser.
+
+```yml
+# src/content/reading/week-03.yml
+week: 3
+starts: 2026-09-22
+note: optional one-liner about the week
+items:
+  - title: Attention Is All You Need
+    author: Vaswani et al.
+    url: https://arxiv.org/abs/1706.03762
+    course: Computation and the Brain
+    note: skim the encoder-decoder diagram
+    optional: false
+```
+
+Only `title` is required on an item; only `week` and `starts` on the week.
+
 No comments, no view counts, no likes.
