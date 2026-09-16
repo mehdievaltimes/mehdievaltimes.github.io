@@ -1,6 +1,6 @@
-title: "PhD prep · 4. Scalable oversight and alignment methods"
+title: "Scalable oversight and alignment methods"
 note: How models actually get trained to behave, and why that doesn't obviously scale.
-order: 6
+order: 17
 items:
   - title: "Scalable agent alignment via reward modeling: a research direction"
     author: Leike et al., 2018

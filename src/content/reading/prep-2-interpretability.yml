@@ -1,6 +1,6 @@
-title: "PhD prep · 2. Mechanistic interpretability"
-note: Your stated interest. Read roughly in this order — each builds on the last.
-order: 8
+title: "Mechanistic interpretability"
+note: Roughly in order — each one builds on the last.
+order: 20
 items:
   - title: "Zoom In: An Introduction to Circuits"
     author: Olah et al., 2020
@@ -8,7 +8,7 @@ items:
   - title: A Mathematical Framework for Transformer Circuits
     author: Elhage et al., 2021
     url: https://transformer-circuits.pub/2021/framework/index.html
-    note: work through the QK/OV decomposition by hand
+    note: worth working through the QK/OV decomposition by hand
   - title: In-context Learning and Induction Heads
     author: Olsson et al., 2022
     url: https://arxiv.org/abs/2209.11895
@@ -31,7 +31,7 @@ items:
   - title: "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
     author: Bricken et al., 2023
     url: https://transformer-circuits.pub/2023/monosemantic-features/index.html
-    note: the SAE paper you already started writing about
+    note: dictionary learning applied to a real model
   - title: Scaling Monosemanticity (Claude 3 Sonnet features)
     author: Templeton et al., 2024
     url: https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html
@@ -49,7 +49,7 @@ items:
   - title: Open Problems in Mechanistic Interpretability
     author: Sharkey et al., 2025
     url: https://arxiv.org/abs/2501.16496
-    note: 29 authors, 18 orgs — mine this for PhD proposals
+    note: 29 authors, 18 orgs — the clearest map of what is still unsolved
   - title: A Practical Review of Mechanistic Interpretability for Transformer-Based Language Models
     author: Rai et al., 2024
     url: https://arxiv.org/abs/2407.02646

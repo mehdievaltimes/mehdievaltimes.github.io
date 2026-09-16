@@ -26,8 +26,8 @@ import Base from '../layouts/Base.astro';
   </div>
 
   <div class="prose">
-    <h2>3. Live attention (sort of)</h2>
-    <p>Type a sentence and hover a token to see what it “attends” to. Honest caveat: WASM builds drop the attention tensors, so this shows token-to-token similarity of final-layer states, which is a decent visual proxy for attention, not the real thing.</p>
+    <h2>3. Live token-similarity map</h2>
+    <p>Type a sentence and hover a token to see which other tokens its final-layer representation is closest to. This is <em>not</em> attention: the WASM build drops the attention tensors, so what you get is cosine similarity between final-layer token states — a rough visual proxy, and worth knowing the difference.</p>
   </div>
   <div class="card demo" style="text-align:center">
     <input type="text" id="matrix-input" placeholder="The quick brown fox" />
@@ -39,8 +39,8 @@ import Base from '../layouts/Base.astro';
   </div>
 
   <div class="prose">
-    <h2>4. Canned attention</h2>
-    <p>A hard-coded attention pattern from a real transformer, for when you don’t want to download anything.</p>
+    <h2>4. Canned attention pattern</h2>
+    <p>A hard-coded pattern, illustrative only, for when you don’t want to download a model.</p>
   </div>
   <div class="card demo" style="text-align:center">
     <div id="attention-sandbox" class="tokens"></div>

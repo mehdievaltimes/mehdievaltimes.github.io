@@ -4,32 +4,55 @@ import { getCollection } from 'astro:content';
 import { fmtDate } from '../lib';
 
 const key = (w) => [w.data.order, w.data.week ?? 0, w.data.starts?.valueOf() ?? 0];
-const weeks = (await getCollection('reading')).sort((a, b) => {
+const sections = (await getCollection('reading')).sort((a, b) => {
   const [ao, aw, as] = key(a), [bo, bw, bs] = key(b);
   return bo - ao || bw - aw || bs - as;
 });
-const total = weeks.reduce((n, w) => n + w.data.items.length, 0);
+const total = sections.reduce((n, s) => n + s.data.items.length, 0);
+const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? ` · ${s.data.course}` : '');
 ---
-<Base title="Reading" description="What I'm reading, by week.">
+<Base title="Reading" description="Course readings, a PhD-prep path, and where I find new work.">
   <header class="post-head">
     <h1>Reading</h1>
-    <p class="meta">{total} item{total === 1 ? '' : 's'} · <span id="read-count">0</span> read · click anything to check it off</p>
+    <p class="meta">{total} items · <span id="read-count">0</span> read · click anything to check it off</p>
   </header>
 
-  {weeks.length === 0 && <p class="excerpt">Nothing here yet.</p>}
+  <p class="lede">
+    Most of this is a self-directed path toward research in mechanistic interpretability and
+    evaluations, plus the security and CTF material next to it; the sections marked coursework are
+    assigned reading. What I'm looking for in most of these: whether a claim about a model's
+    internals is actually measurable, or only behavioural.
+  </p>
 
-  {weeks.map((w) => (
-    <section class="week">
+  <div class="controls">
+    <input type="text" id="filter" placeholder="filter by title, author, note…" autocomplete="off" />
+    <label class="toggle"><input type="checkbox" id="hide-read" /> hide read</label>
+  </div>
+
+  <nav class="jump" aria-label="Sections">
+    {sections.map((s) => (
+      <a href={`#${s.id}`} data-jump={s.id}>{s.data.title ?? `Week ${s.data.week}`}</a>
+    ))}
+  </nav>
+
+  {sections.length === 0 && <p class="excerpt">Nothing here yet.</p>}
+
+  {sections.map((s) => (
+    <section class="week" id={s.id} data-section={s.id}>
       <div class="section-head">
-        <h2>{w.data.title ?? `Week ${w.data.week}`}{w.data.course ? ` · ${w.data.course}` : ''}</h2>
-        {w.data.starts && <span class="meta">{fmtDate(w.data.starts)}</span>}
+        <h2><a href={`#${s.id}`} class="anchor">{label(s)}</a></h2>
+        <span class="meta">
+          <span class="tag">{s.data.kind === 'course' ? 'coursework' : 'self-directed'}</span>
+          <span class="sec-count" data-for={s.id}>0/{s.data.items.length}</span>
+          {s.data.starts && <> · {fmtDate(s.data.starts)}</>}
+        </span>
       </div>
-      {w.data.note && <p class="excerpt">{w.data.note}</p>}
+      {s.data.note && <p class="excerpt">{s.data.note}</p>}
       <ul class="reading">
-        {w.data.items.map((it, i) => (
-          <li>
+        {s.data.items.map((it) => (
+          <li data-text={[it.title, it.author, it.note, it.course, s.data.course, s.data.title].filter(Boolean).join(' ').toLowerCase()}>
             <label>
-              <input type="checkbox" data-key={`${w.id}:${i}`} />
+              <input type="checkbox" data-key={`${s.id}:${it.url ?? it.title}`} data-section={s.id} />
               <span class="item">
                 <span class="title">
                   {it.url ? <a href={it.url} rel="noopener">{it.title}</a> : it.title}
@@ -44,28 +67,118 @@ const total = weeks.reduce((n, w) => n + w.data.items.length, 0);
     </section>
   ))}
 
+  <p class="meta reset-line">
+    Progress is saved in this browser only.
+    <button class="linkish" id="copy-md">copy as markdown</button> ·
+    <button class="linkish" id="reset">reset</button>
+  </p>
+
   <script is:inline>
-    const KEY = 'reading-done';
-    let done = {};
-    try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
-    const boxes = [...document.querySelectorAll('.reading input')];
-    const count = () => (document.getElementById('read-count').textContent = String(boxes.filter((b) => b.checked).length));
-    boxes.forEach((b) => {
-      b.checked = !!done[b.dataset.key];
-      b.closest('li').classList.toggle('done', b.checked);
-      b.addEventListener('change', () => {
-        done[b.dataset.key] = b.checked;
-        b.closest('li').classList.toggle('done', b.checked);
-        try { localStorage.setItem(KEY, JSON.stringify(done)); } catch {}
-        count();
+    (() => {
+      const KEY = 'reading-done';
+      let done = {};
+      try { done = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
+      const save = () => { try { localStorage.setItem(KEY, JSON.stringify(done)); } catch {} };
+
+      const boxes = [...document.querySelectorAll('.reading input')];
+      const counts = [...document.querySelectorAll('.sec-count')];
+      const hideRead = document.getElementById('hide-read');
+      const filter = document.getElementById('filter');
+
+      function paint() {
+        boxes.forEach((b) => b.closest('li').classList.toggle('done', b.checked));
+        document.getElementById('read-count').textContent = String(boxes.filter((b) => b.checked).length);
+        counts.forEach((c) => {
+          const mine = boxes.filter((b) => b.dataset.section === c.dataset.for);
+          c.textContent = `${mine.filter((b) => b.checked).length}/${mine.length}`;
+        });
+      }
+
+      function apply() {
+        const q = filter.value.trim().toLowerCase();
+        const hide = hideRead.checked;
+        document.querySelectorAll('.reading li').forEach((li) => {
+          const box = li.querySelector('input');
+          const match = !q || li.dataset.text.includes(q);
+          li.hidden = !match || (hide && box.checked);
+        });
+        const url = new URL(location.href);
+        q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+        hide ? url.searchParams.set('hide', '1') : url.searchParams.delete('hide');
+        history.replaceState(null, '', url);
+        document.querySelectorAll('section.week').forEach((sec) => {
+          const any = [...sec.querySelectorAll('.reading li')].some((li) => !li.hidden);
+          sec.hidden = !any;
+          const jump = document.querySelector(`[data-jump="${sec.dataset.section}"]`);
+          if (jump) jump.hidden = !any;
+        });
+      }
+
+      boxes.forEach((b) => {
+        b.checked = !!done[b.dataset.key];
+        b.addEventListener('change', () => {
+          done[b.dataset.key] = b.checked;
+          save(); paint(); apply();
+        });
       });
-    });
-    count();
+
+      filter.addEventListener('input', apply);
+      hideRead.addEventListener('change', apply);
+      document.getElementById('reset').addEventListener('click', () => {
+        done = {}; save();
+        boxes.forEach((b) => (b.checked = false));
+        paint(); apply();
+      });
+      // "/" focuses the filter, like every tool you already use.
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== filter) { e.preventDefault(); filter.focus(); }
+      });
+
+      // copy whatever is currently visible, as markdown
+      document.getElementById('copy-md').addEventListener('click', async () => {
+        const out = [];
+        document.querySelectorAll('section.week').forEach((sec) => {
+          if (sec.hidden) return;
+          out.push(`## ${sec.querySelector('h2').textContent.trim()}`, '');
+          sec.querySelectorAll('.reading li').forEach((li) => {
+            if (li.hidden) return;
+            const a = li.querySelector('.title a');
+            const title = li.querySelector('.title').textContent.trim();
+            const meta = li.querySelector('.item .meta').textContent.trim();
+            out.push(`- ${a ? `[${title}](${a.href})` : title}${meta ? ` — ${meta}` : ''}`);
+          });
+          out.push('');
+        });
+        const btn = document.getElementById('copy-md');
+        try {
+          await navigator.clipboard.writeText(out.join('\n'));
+          btn.textContent = 'copied';
+        } catch {
+          btn.textContent = 'copy failed';
+        }
+        setTimeout(() => (btn.textContent = 'copy as markdown'), 1500);
+      });
+
+      const params = new URLSearchParams(location.search);
+      if (params.get('q')) filter.value = params.get('q');
+      if (params.get('hide')) hideRead.checked = true;
+      paint(); apply();
+    })();
   </script>
 </Base>
 
 <style>
-  .week { margin-bottom: 2.5rem; }
+  .section-head .tag { margin-right: .5rem; }
+  .lede { font-family: var(--serif); font-size: 1.12rem; line-height: 1.6; color: var(--muted); margin: 0 0 2rem; }
+  .controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
+  .controls input[type='text'] { flex: 1; min-width: 12rem; }
+  .toggle { font-size: .9rem; color: var(--muted); display: flex; gap: .4rem; align-items: center; cursor: pointer; white-space: nowrap; }
+  .toggle input { accent-color: var(--accent); }
+  .jump { display: flex; flex-wrap: wrap; gap: .5rem; margin-bottom: 2.5rem; }
+  .jump a { font: .8rem var(--mono); color: var(--muted); text-decoration: none; border: 1px solid var(--faint); border-radius: 99px; padding: .25rem .7rem; }
+  .jump a:hover { color: var(--accent); border-color: var(--accent); }
+  .week { margin-bottom: 2.5rem; scroll-margin-top: 1.5rem; }
+  .anchor { text-decoration: none; }
   ul.reading { list-style: none; margin: .5rem 0 0; padding: 0; }
   ul.reading li { border-top: 1px solid var(--faint); }
   ul.reading label { display: flex; gap: .7rem; align-items: baseline; padding: .7rem .2rem; cursor: pointer; }
@@ -74,4 +187,5 @@ const total = weeks.reduce((n, w) => n + w.data.items.length, 0);
   .title { font-family: var(--serif); font-size: 1.1rem; }
   li.done .title { opacity: .45; text-decoration: line-through; }
   li.done .meta { opacity: .45; }
+  .reset-line { margin-top: 3rem; }
 </style>
