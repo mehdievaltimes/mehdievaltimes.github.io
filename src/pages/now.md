@@ -5,8 +5,8 @@ updated: September 2026
 ---
 
 - Finishing my B.A. in Math & CS at Columbia (graduating May 2027).
-- Head of Technology at [Columbia GSBS](https://columbiagsbs.com).
-- Tutoring / TA-ing math and physics.
-- Reading about mechanistic interpretability and writing [notes](/) about it.
+- Taking **Computation and the Brain** and **Anticipating the AI Future** this semester — the [reading list](/reading) lives here.
+- Building [legalean](https://github.com/mehdievaltimes/legalean): it turns statutory text into deontic-logic rules and uses the Lean 4 kernel to prove where laws conflict.
+- Reading about mechanistic interpretability and writing notes about it.
 
 Email: mehdi.s at columbia dot edu
