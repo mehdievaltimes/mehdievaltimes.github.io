@@ -1,14 +1,59 @@
 ---
 import Base from '../layouts/Base.astro';
 import FeedItem from '../components/FeedItem.astro';
-import { getEntries } from '../lib';
+import { getCollection } from 'astro:content';
+import { getEntries, site } from '../lib';
 
 const entries = await getEntries();
+const reading = await getCollection('reading');
+const readingCount = reading.reduce((n, s) => n + s.data.items.length, 0);
+const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
 ---
-<Base>
+<Base description="Mehdi Shakibapour — math and CS at Columbia, writing about mechanistic interpretability, evaluations and AI safety.">
   <section class="intro">
-    <p>Hey, I’m Mehdi. I study math and CS at Columbia and think about how neural networks work on the inside.</p>
-    <p class="sub">Essays, notes, half-formed ideas — all in one place. <a href="/now">Here’s what I’m doing now.</a></p>
+    <p>
+      Hey, I’m Mehdi — math and CS at Columbia, graduating May 2027. I work on mechanistic
+      interpretability: what a model’s internals actually encode, and whether safety claims about a
+      model can be checked from the inside rather than taken on behaviour.
+    </p>
+    <p class="sub">
+      Essays and half-formed notes below. I keep a <a href={`/reading#${reading.length ? 'prep-2-interpretability' : ''}`}>reading list</a> of
+      {' '}{readingCount} papers I’m working through, and <a href="/now">what I’m doing now</a>.
+      {' '}<a href={`mailto:${site.email}`}>Email me</a> if any of it is wrong.
+    </p>
   </section>
+  <nav class="filters" aria-label="Filter writing">
+    <button class="chip active" data-filter="all">all</button>
+    <button class="chip" data-filter="essay">essays</button>
+    <button class="chip" data-filter="note">notes</button>
+    {tags.map((t) => <button class="chip" data-tag={t}>{t}</button>)}
+  </nav>
+
   <ul class="feed">{entries.map((entry) => <FeedItem entry={entry} />)}</ul>
+  <p class="meta" id="empty" hidden>Nothing tagged that. <button class="linkish" data-filter="all">show everything</button></p>
+
+  <script is:inline>
+    (() => {
+      const chips = [...document.querySelectorAll('.chip, .linkish[data-filter]')];
+      const items = [...document.querySelectorAll('.feed .entry')];
+      function apply(kind, tag) {
+        items.forEach((li) => {
+          const okKind = kind === 'all' || li.dataset.kind === kind;
+          const okTag = !tag || li.dataset.tags.split(' ').includes(tag);
+          li.hidden = !(okKind && okTag);
+        });
+        document.getElementById('empty').hidden = items.some((li) => !li.hidden);
+        document.querySelectorAll('.chip').forEach((c) => {
+          c.classList.toggle('active', tag ? c.dataset.tag === tag : c.dataset.filter === kind);
+        });
+        const url = new URL(location.href);
+        tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
+        kind && kind !== 'all' ? url.searchParams.set('kind', kind) : url.searchParams.delete('kind');
+        history.replaceState(null, '', url);
+      }
+      chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter || 'all', c.dataset.tag)));
+      const q = new URLSearchParams(location.search);
+      if (q.get('tag') || q.get('kind')) apply(q.get('kind') || 'all', q.get('tag'));
+    })();
+  </script>
 </Base>

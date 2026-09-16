@@ -1,6 +1,7 @@
 ---
 title: The Spiderman Neuron
 date: 2026-06-26 02:21:00 -0400
+tags: [interpretability, vision]
 ---
 
 In 2021, [OpenAI researchers](https://openai.com/index/multimodal-neurons/) were digging into the internal representations of their CLIP model (a multimodal network trained to link images and text), looking for **Concept Cells**.

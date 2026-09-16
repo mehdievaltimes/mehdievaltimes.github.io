@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
+    // Respect people who asked their OS for less motion: no roaming sheep for them.
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const btn = document.getElementById('call-sheep-home');
+        if (btn) btn.remove();
+        return;
+    }
     const numSheep = 15;
     
     const sheepSvg = `

@@ -6,7 +6,7 @@ const { entry } = Astro.props as { entry: Entry };
 const short = isShort(entry);
 const { Content } = short ? await render(entry) : { Content: null };
 ---
-<li class:list={['entry', { note: short }]} id={entry.id}>
+<li class:list={['entry', { note: short }]} id={entry.id} data-tags={entry.data.tags.join(' ')} data-kind={short ? 'note' : 'essay'}>
   <div class="meta">
     <a href={href(entry)}><time datetime={entry.data.date.toISOString()}>{fmtDate(entry.data.date)}</time></a>
     {!short && <span>· {readingTime(entry)}</span>}
@@ -14,4 +14,7 @@ const { Content } = short ? await render(entry) : { Content: null };
   </div>
   {entry.data.title && <h2><a href={href(entry)}>{entry.data.title}</a></h2>}
   {short && Content ? <div class="prose"><Content /></div> : <p class="excerpt">{excerpt(entry)}</p>}
+  {entry.data.tags.length > 0 && (
+    <p class="tags">{entry.data.tags.map((t) => <span class="tag">{t}</span>)}</p>
+  )}
 </li>

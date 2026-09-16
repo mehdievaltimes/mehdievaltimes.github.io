@@ -1,7 +1,7 @@
 ---
 title: "On Tokenization"
 date: 2026-01-07
-tags: [LLMs, AI, NLP, Transformers, Machine-Learning]
+tags: [llms, nlp, tokenization]
 ---
 I’m sure you have all seen some version of this meme:
 

@@ -32,7 +32,7 @@ items:
     note: browse SAE features instead of only reading about them
   - title: "ARENA: Alignment Research Engineer Accelerator materials"
     url: https://arena-chapter1-transformer-interp.streamlit.app/
-    note: implement the interp exercises — this is what actually gets you hired
+    note: implementing the exercises beats reading about them
   - title: Neel Nanda, getting started in mech interp
     url: https://www.neelnanda.io/mechanistic-interpretability/getting-started
   - title: BlueDot AI Safety Fundamentals
@@ -45,6 +45,5 @@ items:
     url: https://80000hours.org/articles/11-essential-resources-ai-risk/
     optional: true
   - title: NeurIPS / ICML / ICLR safety workshops
-    url: https://arxiv.org/list/cs.LG/recent
     note: workshop pages are the fastest way to see what a subfield is arguing about this year
     optional: true
