@@ -1,0 +1,56 @@
+title: "PhD prep · 2. Mechanistic interpretability"
+note: Your stated interest. Read roughly in this order — each builds on the last.
+order: 8
+items:
+  - title: "Zoom In: An Introduction to Circuits"
+    author: Olah et al., 2020
+    url: https://distill.pub/2020/circuits/zoom-in/
+  - title: A Mathematical Framework for Transformer Circuits
+    author: Elhage et al., 2021
+    url: https://transformer-circuits.pub/2021/framework/index.html
+    note: work through the QK/OV decomposition by hand
+  - title: In-context Learning and Induction Heads
+    author: Olsson et al., 2022
+    url: https://arxiv.org/abs/2209.11895
+  - title: Toy Models of Superposition
+    author: Elhage et al., 2022
+    url: https://arxiv.org/abs/2209.10652
+    note: why features are polysemantic in the first place
+  - title: "Interpretability in the Wild: a Circuit for Indirect Object Identification in GPT-2 small"
+    author: Wang et al., 2022
+    url: https://arxiv.org/abs/2211.00593
+  - title: Locating and Editing Factual Associations in GPT (ROME)
+    author: Meng et al., 2022
+    url: https://arxiv.org/abs/2202.05262
+  - title: Progress measures for grokking via mechanistic interpretability
+    author: Nanda et al., 2023
+    url: https://arxiv.org/abs/2301.05217
+  - title: Towards Automated Circuit Discovery for Mechanistic Interpretability
+    author: Conmy et al., 2023
+    url: https://arxiv.org/abs/2304.14997
+  - title: "Towards Monosemanticity: Decomposing Language Models With Dictionary Learning"
+    author: Bricken et al., 2023
+    url: https://transformer-circuits.pub/2023/monosemantic-features/index.html
+    note: the SAE paper you already started writing about
+  - title: Scaling Monosemanticity (Claude 3 Sonnet features)
+    author: Templeton et al., 2024
+    url: https://transformer-circuits.pub/2024/scaling-monosemanticity/index.html
+  - title: Improving Dictionary Learning with Gated Sparse Autoencoders
+    author: Rajamanoharan et al., 2024
+    url: https://arxiv.org/abs/2404.16014
+    optional: true
+  - title: "Circuit Tracing: Revealing Computational Graphs in Language Models"
+    author: Ameisen et al., 2025
+    url: https://transformer-circuits.pub/2025/attribution-graphs/methods.html
+  - title: On the Biology of a Large Language Model
+    author: Lindsey et al., 2025
+    url: https://transformer-circuits.pub/2025/attribution-graphs/biology.html
+    note: the attribution-graph case studies; read with the methods paper
+  - title: Open Problems in Mechanistic Interpretability
+    author: Sharkey et al., 2025
+    url: https://arxiv.org/abs/2501.16496
+    note: 29 authors, 18 orgs — mine this for PhD proposals
+  - title: A Practical Review of Mechanistic Interpretability for Transformer-Based Language Models
+    author: Rai et al., 2024
+    url: https://arxiv.org/abs/2407.02646
+    optional: true

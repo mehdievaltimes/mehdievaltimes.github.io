@@ -1,0 +1,37 @@
+title: "PhD prep · 1. Foundations and threat models"
+note: Start here. These are the arguments everyone in the field assumes you've read.
+order: 9
+items:
+  - title: Concrete Problems in AI Safety
+    author: Amodei et al., 2016
+    url: https://arxiv.org/abs/1606.06565
+    note: the paper that named the subfields
+  - title: "Risks from Learned Optimization in Advanced Machine Learning Systems"
+    author: Hubinger et al., 2019
+    url: https://arxiv.org/abs/1906.01820
+    note: mesa-optimization and deceptive alignment
+  - title: Unsolved Problems in ML Safety
+    author: Hendrycks et al., 2021
+    url: https://arxiv.org/abs/2109.13916
+  - title: "The Alignment Problem from a Deep Learning Perspective"
+    author: Ngo, Chan & Mindermann, 2022
+    url: https://arxiv.org/abs/2209.00626
+    note: the cleanest modern statement of the core argument
+  - title: Is Power-Seeking AI an Existential Risk?
+    author: Carlsmith, 2022
+    url: https://arxiv.org/abs/2206.13353
+  - title: "Goal Misgeneralization: Why Correct Specifications Aren't Enough For Correct Goals"
+    author: Shah et al., 2022
+    url: https://arxiv.org/abs/2210.01790
+  - title: An Overview of Catastrophic AI Risks
+    author: Hendrycks et al., 2023
+    url: https://arxiv.org/abs/2306.12001
+    optional: true
+  - title: Managing extreme AI risks amid rapid progress
+    author: Bengio et al., 2023
+    url: https://arxiv.org/abs/2310.17688
+    optional: true
+  - title: Foundational Challenges in Assuring Alignment and Safety of Large Language Models
+    author: Anwar et al., 2024
+    url: https://arxiv.org/abs/2404.09932
+    note: 200 pages, but the best map of open problems — skim for a thesis topic
