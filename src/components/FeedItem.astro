@@ -1,0 +1,17 @@
+---
+import { render } from 'astro:content';
+import { type Entry, isShort, excerpt, fmtDate, readingTime, href } from '../lib';
+
+const { entry } = Astro.props as { entry: Entry };
+const short = isShort(entry);
+const { Content } = short ? await render(entry) : { Content: null };
+---
+<li class:list={['entry', { note: short }]} id={entry.id}>
+  <div class="meta">
+    <a href={href(entry)}><time datetime={entry.data.date.toISOString()}>{fmtDate(entry.data.date)}</time></a>
+    {!short && <span>· {readingTime(entry)}</span>}
+    {entry.data.draft && <span class="tag-draft">· draft</span>}
+  </div>
+  {entry.data.title && <h2><a href={href(entry)}>{entry.data.title}</a></h2>}
+  {short && Content ? <div class="prose"><Content /></div> : <p class="excerpt">{excerpt(entry)}</p>}
+</li>

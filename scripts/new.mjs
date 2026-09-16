@@ -1,15 +1,14 @@
 #!/usr/bin/env node
-// npm run new                          -> blank thought
-// npm run new -- --now "a thought"     -> thought with the text already in it
-// npm run new -- --post "Some title"   -> post
-// add --draft to any of these           -> only visible in `npm run dev`
+// npm run new                        -> blank untitled note
+// npm run new "Some title"            -> titled piece
+// npm run new -- --now "a thought"    -> note with the text already in it
+// add --draft to any of these         -> only visible in `npm run dev`
 import { writeFileSync, existsSync } from 'node:fs';
 
 const args = process.argv.slice(2);
 const draft = args.includes('--draft');
 const now = args.includes('--now');
-const post = args.includes('--post');
-const dir = `src/content/${post ? 'posts' : 'thoughts'}`;
+const dir = 'src/content/writing';
 const text = args.filter((a) => !a.startsWith('--')).join(' ').trim();
 
 const d = new Date();
@@ -26,7 +25,6 @@ let path = `${dir}/${slug}.md`;
 for (let i = 2; existsSync(path); i++) path = `${dir}/${slug}-${i}.md`;
 
 const fm = ['---', `date: ${stamp}T${time}:00${tz}`];
-if (post && !title) { console.error('posts need a title'); process.exit(1); }
 if (title) fm.push(`title: ${JSON.stringify(title)}`);
 if (draft) fm.push('draft: true');
 fm.push('---', '', now ? text : '', '');

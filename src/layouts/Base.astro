@@ -8,14 +8,12 @@ const { title, description = site.description, sheep = true, noindex = false } =
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  ['/posts', 'posts'],
-  ['/thoughts', 'thoughts'],
+  ['/', 'writing'],
   ['/now', 'now'],
-  ['/projects', 'projects'],
   ['/demos', 'demos'],
 ];
 const current = (href: string) =>
-  path.startsWith(href);
+  href === '/' ? path === '/' || path.startsWith('/posts') : path.startsWith(href);
 ---
 <!doctype html>
 <html lang="en">
@@ -27,7 +25,6 @@ const current = (href: string) =>
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <link rel="icon" href="/img/avatar.png" />
-    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <meta property="og:title" content={title ?? site.name} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -66,7 +63,6 @@ const current = (href: string) =>
           <a href="https://github.com/mehdievaltimes">github</a>
           <a href="https://www.linkedin.com/in/mehdishak">linkedin</a>
           <a href="https://instagram.com/mehdievaltimes">instagram</a>
-          <a href="/rss.xml">rss</a>
         </span>
       </footer>
     </div>
