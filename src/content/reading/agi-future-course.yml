@@ -1,0 +1,97 @@
+title: Course reading list
+course: Anticipating Our AGI Future (COMS 6998 E018)
+note: Steven Yin, Fall 2026. No week-by-week assignment on the syllabus; listed in syllabus order.
+order: 10
+items:
+  - title: Artificial Intelligence and Economic Growth
+    author: Aghion, Jones & Jones
+    note: Oct 2017
+    url: https://web.stanford.edu/~chadj/AJJ-AIandGrowth.pdf
+  - title: "Training Compute-Optimal Large Language Models (Chinchilla)"
+    author: Hoffmann et al.
+    note: Mar 2022
+    url: https://arxiv.org/abs/2203.15556
+  - title: "GPTs are GPTs: An Early Look at the Labor Market Impact Potential of LLMs"
+    author: Eloundou et al.
+    note: Mar 2023
+    url: https://arxiv.org/abs/2303.10130
+  - title: "Explosive Growth from AI Automation: A Review of the Arguments"
+    author: Erdil & Besiroglu
+    note: Sep 2023
+    url: https://arxiv.org/abs/2309.11690
+  - title: "The A.I. Dilemma: Growth versus Existential Risk"
+    author: Jones
+    note: Nov 2023
+    url: https://web.stanford.edu/~chadj/existentialrisk.pdf
+  - title: "GATE: Modeling the Trajectory of AI and Automation"
+    author: Epoch AI
+    note: Mar 2025
+    url: https://epoch.ai/blog/announcing-gate
+  - title: Measuring AI Ability to Complete Long Tasks
+    author: Kwa et al. (METR)
+    note: Mar 2025
+    url: https://metr.org/blog/2025-03-19-measuring-ai-ability-to-complete-long-tasks/
+  - title: AI 2027
+    author: Kokotajlo et al.
+    note: Apr 2025
+    url: https://ai-2027.com/
+  - title: AI as Normal Technology
+    author: Narayanan & Kapoor
+    note: Apr 2025
+    url: https://www.aisnakeoil.com/p/ai-as-normal-technology
+  - title: Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity
+    author: Becker et al. (METR)
+    note: Jul 2025
+    url: https://arxiv.org/abs/2507.09089
+  - title: "Canaries in the Coal Mine? Six Facts about the Recent Employment Effects of AI"
+    author: Brynjolfsson, Chandar & Chen
+    note: Aug 2025
+    url: https://digitaleconomy.stanford.edu/wp-content/uploads/2025/08/Canaries_BrynjolfssonChandarChen.pdf
+  - title: Transformative AI, Existential Risk, and Real Interest Rates
+    author: Chow, Halperin & Mazlish
+    note: Aug 2025
+    url: https://www.basilhalperin.com/papers/agi_emh.pdf
+  - title: How People Use ChatGPT
+    author: Chatterji et al.
+    note: Sep 2025
+    url: https://cdn.openai.com/pdf/a253471f-8260-40c6-a2cc-aa93fe9f142e/economic-research-chatgpt-usage-paper.pdf
+  - title: What Will AI Look Like in 2030?
+    author: Epoch AI
+    note: Sep 2025
+    url: https://epoch.ai/files/AI_2030.pdf
+  - title: Capital in the 22nd Century
+    author: Trammell & Patel
+    note: Dec 2025
+    url: https://philiptrammell.substack.com/p/capital-in-the-22nd-century
+  - title: "State of AI: An Empirical 100 Trillion Token Study with OpenRouter"
+    author: Aubakirova et al.
+    note: Jan 2026
+    url: https://arxiv.org/abs/2601.10088
+  - title: When Does Automating AI Research Produce Explosive Growth?
+    author: Davidson et al.
+    note: Apr 2026
+    url: https://thomas-houlden.com/assets/Davidson,%20Halperin,%20Houlden,%20and%20Korinek%20(2026).pdf
+  - title: Is Labor a Luxury in the Long Run?
+    author: Trammell
+    note: May 2026
+    url: https://www.forethought.org/research/is-labor-a-luxury-in-the-long-run
+  - title: The Politics of Jobless Prosperity
+    author: Hall
+    note: May 2026
+    url: https://freesystems.substack.com/p/the-politics-of-jobless-prosperity
+  - title: "AI 2040: Plan A"
+    author: Larsen et al.
+    note: Jul 2026
+    url: https://ai-2040.com/
+  - title: The Economics of Recursive Self-Improvement
+    author: Cunningham & Althoff (Elasticity Institute)
+    note: Jul 2026
+    url: https://elasticity.institute/rsi-paper.pdf
+  - title: The Hugging Face incident and the road ahead
+    author: OpenAI
+    note: Aug 2026
+    url: https://openai.com/index/hugging-face-incident-and-the-road-ahead/
+  - title: Understanding AI and Productivity
+    author: Chad Syverson
+    note: Aug 2026
+    url: https://agglomerations.eig.org/p/understanding-ai-and-productivity
