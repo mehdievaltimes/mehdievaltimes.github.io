@@ -6,8 +6,7 @@ tags: [lean, formal-methods, law]
 
 Two laws can tell you opposite things. Arizona's S.B. 1070 § 5(C) made it a misdemeanor for an unauthorized immigrant to apply for or perform work. Federal immigration law had deliberately declined to criminalize that same act — Congress penalized employers, not workers. In *Arizona v. United States* the Supreme Court struck § 5(C) down for exactly that reason.
 
-That's a contradiction a machine should be able to check. So I built [Legalean](https://github.com/mehdievaltimes/legalean): it turns statutory excerpts into structured deontic rules and hands each candidate pair to the Lean 4 kernel. A conflict is reported only if Lean accepts a proof of `False` from the two rules. Not a similarity score, not a Python `assert` — a proof term that type-checks.
-
+That's a contradiction a machine should be able to check. So I built [Legalean](https://github.com/mehdievaltimes/legalean): it turns statutory excerpts into structured deontic rules and hands each candidate pair to the Lean 4 kernel.
 ## The pipeline
 
 ```
@@ -56,7 +55,7 @@ theorem conflict_us_const_equal_protection_education_vs_tx_educ_code_21_031
   allowed_prohibited_excl (Activity 6) (ruleA 6 (by omega)) (ruleB 6 trivial)
 ```
 
-That's the *Plyler v. Doe* pair, and the `6` matters. Texas's school-enrollment statute carried an age floor, so Python computes a witness satisfying `age > 5` and Lean re-checks with `omega` that the witness really satisfies the premise, rather than taking Python's word for it. If the witness is bogus, the file doesn't compile and the pair is dropped. That's the actual guarantee: not "my filter found a conflict" but "the kernel accepted a derivation."
+That's the *Plyler v. Doe* pair, and the `6` matters. Texas's school-enrollment statute carried an age floor, so Python computes a witness satisfying `age > 5` and Lean re-checks with `omega` that the witness really satisfies the premise. If the witness is bogus, the file doesn't compile and the pair is dropped. That's the actual guarantee.
 
 ## Field preemption is a different animal
 
