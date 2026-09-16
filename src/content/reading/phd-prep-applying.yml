@@ -1,0 +1,94 @@
+title: "Applying to a PhD"
+note: "Every link below was fetched and confirmed to resolve in September 2026; two items the brief asked for — OpenAI's Residency page and Open Philanthropy's (now Coefficient Giving) career-development funding page — are omitted because both return 403 and could not be verified."
+kind: self
+order: 12
+items:
+  - title: "Applying to Ph.D. Programs in Computer Science"
+    author: "Mor Harchol-Balter, CMU (last updated 2014)"
+    url: https://www.cs.cmu.edu/~harchol/gradschooltalk.pdf
+    note: "The canonical guide — the PDF's own cover page reads \"Applying to Ph.D."
+  - title: "CMU Computer Science Department — Doctoral Admissions"
+    url: https://www.csd.cs.cmu.edu/academics/doctoral/admissions
+    note: "A concrete worked example of how a top-5 CS program actually runs admissions.m. EST), final deadline Dec 9 2026 (3 p.m."
+  - title: "CS PhD Statements of Purpose (cs-sop)"
+    url: https://cs-sop.notion.site/cs-sop/CS-PhD-Statements-of-Purpose-df39955313834889b7ac5411c37b958d
+    note: "Crowdsourced archive of real SOPs from admitted CS PhD students, filterable by school and subfield. The short domain cs-sop.org redirects here, so this is the canonical address."
+  - title: "shaily99/advice — curated grad-school and research advice links"
+    author: "Shaily Bhatt, PhD student at CMU LTI (community-contributed)"
+    url: https://github.com/shaily99/advice
+    note: "Corrected attribution: the repository is maintained by Shaily Bhatt (CMU Language Technologies Institute), not Shailee Jain."
+    optional: true
+  - title: "CSRankings"
+    author: "Emery Berger et al."
+    url: https://csrankings.org/
+    note: "Described on the page as a metrics-based ranking of top CS institutions based on faculty publications at selective conferences."
+  - title: "NSF Graduate Research Fellowship Program (GRFP)"
+    url: https://www.nsf.gov/funding/initiatives/grfp
+    note: "Time-critical, and the dates check out against the 2027 NSF GRFP notice: all reference letters due Oct 16 2026 (8 p.m."
+  - title: "A Survival Guide to a PhD"
+    author: "Andrej Karpathy (Sep 7, 2016)"
+    url: https://karpathy.github.io/2016/09/07/phd/
+    note: "Written on finishing a Stanford CV/ML PhD. The sections on picking problems ('t-shaped' breadth plus depth), choosing an advisor along the axes of fame vs."
+  - title: "You and Your Research"
+    author: "Richard W. Hamming, Bell Communications Research (Bellcore) Colloquium Seminar, 7 March 1986; transcribed by J. F. Kaiser"
+    url: https://www.cs.virginia.edu/~robins/YouAndYourResearch.html
+    note: "The classic talk on why some researchers do first-rate work and others don't."
+  - title: "How to do Research At the MIT AI Lab (AI Working Paper 316)"
+    author: "David Chapman (ed.), MIT Artificial Intelligence Laboratory, October 1988"
+    url: https://dspace.mit.edu/handle/1721.1/41487
+    note: "DSpace metadata confirms author Chapman, David; issued October 1988; MIT AI Laboratory Working Papers, WP-316; full text at AI_WP_316.pdf."
+    optional: true
+  - title: "How to write a great research paper"
+    author: "Simon Peyton Jones, Microsoft Research"
+    url: https://www.microsoft.com/en-us/research/academic-program/write-great-research-paper/
+    note: "The page describes seven concrete suggestions for improving a research paper, with slides and a recording of the talk."
+  - title: "Whitesides' Group: Writing a Paper"
+    author: "George M. Whitesides, Advanced Materials 16(15):1375-1377 (2004)"
+    url: https://intra.ece.ucr.edu/~rlake/Whitesides_writing_res_paper.pdf
+    note: "A short essay (four-page PDF, embedded title 'Whitesides' Group: Writing a Paper', created 2004) on the outline-first method: build the paper as a skeleton of figures and section headings, iterated with an advisor before any prose exists."
+    optional: true
+  - title: "NeurIPS 2026 Reviewer Guidelines"
+    url: https://neurips.cc/Conferences/2026/ReviewerGuidelines
+    note: "The rubric submissions are judged against — worth reading as an author to pre-empt reviews."
+    optional: true
+  - title: "MATS (ML Alignment & Theory Scholars)"
+    url: https://www.matsprogram.org/
+    note: "Corrected to the figures the site actually publishes: 12 weeks full-time in Berkeley, CA and London, UK with a named mentor, $1,250/week stipend, catered meals and housing (housing stipend in London), $2k/week compute, and an optional 6-12 month funded extension that over 80% of fellows are accepted into."
+  - title: "Anthropic Fellows Program for AI Safety Research"
+    author: "Anthropic Alignment Science team"
+    url: https://alignment.anthropic.com/2025/anthropic-fellows-program-2026/
+    note: "Four months, full-time, aimed at producing a public output such as a paper, with an Anthropic researcher as mentor: $3,850/week stipend (2,310 GBP / 4,300 CAD) plus ~$15k/month compute."
+  - title: "Astra Fellowship — Constellation"
+    author: "Constellation Institute"
+    url: https://constellation.org/programs/astra
+    note: "URL corrected: www.constellation.org/programs/astra-fellowship now redirects to constellation.org/programs/astra, and the org brands itself Constellation Institute."
+  - title: "Redwood Research — Careers"
+    url: https://www.redwoodresearch.org/careers
+    note: "Redwood's AI control agenda is one of the most PhD-legible research programs in safety."
+    optional: true
+  - title: "GovAI — Opportunities and Fellowships"
+    author: "Centre for the Governance of AI"
+    url: https://www.governance.ai/opportunities
+    note: "The main pipeline for AI governance and policy-adjacent work: fellowships in DC and the UK, plus a research scholar track. Deadlines move — check the page."
+  - title: "LASR Labs"
+    url: https://www.lasrlabs.org/
+    note: "Fully confirmed and the most immediately actionable item here: 13-week London programme, teams of three to four supervised by an experienced AI safety researcher taking a project from proposal to publication, £15,000 stipend plus food, office space and travel, based at the London Initiative for Safe AI."
+  - title: "SPAR (Supervised Program for Alignment Research)"
+    url: https://sparai.org/
+    note: "Part-time and remote, 5-40 hrs/week over three months, so it stacks on top of coursework or a job, ending in a Demo Day with a career fair."
+  - title: "ARENA (Alignment Research Engineer Accelerator)"
+    url: https://www.arena.education/
+    note: "Corrected from the FAQ: a 4-5 week in-person bootcamp in London, run as a programme of the London Initiative for Safe AI, that builds the ML engineering stack safety labs hire on."
+  - title: "Apart Research"
+    url: https://www.apartresearch.com/
+    note: "Lowest-barrier entry point in the field: monthly remote research sprints, with 8,000+ participants from 26 nationalities across 50+ Apart Sprints, and the top 2% continuing through the Apart Fellowship (or Partnered Fellowships with external mentors) into peer-reviewed papers at NeurIPS, ICLR, ACL and EMNLP."
+  - title: "NSF Research Experiences for Undergraduates (REU)"
+    url: https://www.nsf.gov/funding/opportunities/reu-research-experiences-undergraduates
+    note: "Program page linking to the searchable directory of active REU Sites (nsf.gov/crssprgm/reu/reu_search.cfm), including CISE REU Sites."
+  - title: "AI Safety Training and Fellowship Directory"
+    author: "aisafety.com (community-maintained)"
+    url: https://aisafety.com/training
+    note: "The single best deadline tracker for this space."
+  - title: "80,000 Hours Job Board"
+    url: https://jobs.80000hours.org/
+    note: "Where research assistantships, pre-doctoral roles and fellowship openings at safety orgs get posted first."

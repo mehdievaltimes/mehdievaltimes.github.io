@@ -11,14 +11,16 @@ const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
 ---
 <Base description="Mehdi Shakibapour — math and CS at Columbia, writing about mechanistic interpretability, evaluations and AI safety.">
   <section class="intro">
+    <h1>Mehdi Shakibapour</h1>
     <p>
-      Hey, I’m Mehdi — math and CS at Columbia, graduating May 2027. I work on mechanistic
-      interpretability: what a model’s internals actually encode, and whether safety claims about a
-      model can be checked from the inside rather than taken on behaviour.
+      Math and CS at Columbia, graduating May 2027. I work on mechanistic interpretability: what a
+      model’s internals actually encode, and whether a safety claim about a model can be checked
+      from the inside rather than taken on behaviour.
     </p>
     <p class="sub">
-      Essays and half-formed notes below. I keep a <a href={`/reading#${reading.length ? 'prep-2-interpretability' : ''}`}>reading list</a> of
-      {' '}{readingCount} papers I’m working through, and <a href="/now">what I’m doing now</a>.
+      Essays and half-formed notes below. I keep a <a href="/reading">reading list</a> of
+      {' '}{readingCount} papers and resources I’m working through, and
+      {' '}<a href="/now">what I’m doing now</a>.
       {' '}<a href={`mailto:${site.email}`}>Email me</a> if any of it is wrong.
     </p>
   </section>

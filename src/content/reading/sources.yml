@@ -1,5 +1,5 @@
 title: Where to find new work
-note: Standing sources. Check the first three weekly; the rest when you have time.
+note: Standing sources. I check the first three most weeks.
 order: 5
 items:
   - title: Alignment Forum
@@ -23,7 +23,7 @@ items:
     note: AI control
   - title: Epoch AI
     url: https://epoch.ai/
-    note: compute, scaling and forecasting data — overlaps your AGI Future course
+    note: compute, scaling and forecasting data — overlaps the AGI Future course
   - title: arXiv cs.LG new submissions
     url: https://arxiv.org/list/cs.LG/recent
     note: skim titles daily, it takes five minutes

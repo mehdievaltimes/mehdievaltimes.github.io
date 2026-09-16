@@ -43,12 +43,15 @@ npm run new -- --draft "Hot take"        # draft
 
 ## Reading list
 
-One file per week in `src/content/reading/`, shown at `/reading`. Checkboxes are remembered per browser.
+One file per section in `src/content/reading/`, shown at `/reading`. Sections sort by `order` (highest first).
+Checkboxes are remembered per browser; the filter and hide-read state live in the URL, so a filtered view is shareable.
 
 ```yml
 # src/content/reading/week-03.yml
-week: 3
+week: 3          # or title: "Some section name"
 starts: 2026-09-22
+kind: course     # or self (default) — shown as a chip
+order: 10
 note: optional one-liner about the week
 items:
   - title: Attention Is All You Need

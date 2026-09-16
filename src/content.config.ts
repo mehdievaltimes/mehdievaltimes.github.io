@@ -22,6 +22,7 @@ const reading = defineCollection({
     title: z.string().optional(), // shown instead of "Week N"
     starts: z.coerce.date().optional(),
     course: z.string().optional(),
+    kind: z.enum(['course', 'self']).default('self'),
     order: z.number().default(0), // higher sorts first
     note: z.string().optional(),
     items: z.array(

@@ -1,6 +1,6 @@
-title: "PhD prep · 3. Evaluations, control, and scheming"
+title: "Evaluations, control and scheming"
 note: The empirical core of frontier-lab safety work.
-order: 10
+order: 18
 items:
   - title: Discovering Language Model Behaviors with Model-Written Evaluations
     author: Perez et al., 2022
