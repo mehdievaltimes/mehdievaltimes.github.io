@@ -1,6 +1,6 @@
-title: "PhD prep · 3. Evaluations, control, and scheming"
-note: The empirical core of frontier-lab safety work, and where most jobs are.
-order: 7
+title: "Evaluations, control and scheming"
+note: The empirical core of frontier-lab safety work.
+order: 18
 items:
   - title: Discovering Language Model Behaviors with Model-Written Evaluations
     author: Perez et al., 2022
@@ -14,7 +14,7 @@ items:
   - title: "Taken out of context: On measuring situational awareness in LLMs"
     author: Berglund et al., 2023
     url: https://arxiv.org/abs/2309.00667
-    note: directly relevant to your "does the model know it's being tested" note
+    note: the "does the model know it is being tested" question, made measurable
   - title: "AI Control: Improving Safety Despite Intentional Subversion"
     author: Greenblatt et al., 2023
     url: https://arxiv.org/abs/2312.06942
@@ -34,7 +34,7 @@ items:
   - title: Alignment faking in large language models
     author: Greenblatt et al., 2024
     url: https://arxiv.org/abs/2412.14093
-    note: the empirical version of the thing you wrote about
+    note: the empirical version of the deceptive-alignment worry
   - title: Towards evaluations-based safety cases for AI scheming
     author: Balesni et al., 2024
     url: https://arxiv.org/abs/2411.03336

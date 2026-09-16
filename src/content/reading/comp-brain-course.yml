@@ -1,0 +1,110 @@
+title: "Computation and the Brain"
+note: "A reconstruction, not the official syllabus: COMS E6998 has no public syllabus, so this is rebuilt from the course's scope and the public reading list of Vempala's sibling course at Georgia Tech. Every link was checked."
+course: "COMS E6998"
+kind: course
+order: 14
+items:
+  - title: "Readings — CS 8803/4803 \"Computation and the Brain\" (Vempala, Georgia Tech)"
+    url: https://computationandbrain.wordpress.com/readings/
+    note: "The anchor for this reconstruction: the only public reading list for a course of this exact title and lineage. Papadimitriou guest-lectured; several items below are taken verbatim from it."
+  - title: "Brain computation by assemblies of neurons"
+    author: "Papadimitriou, Vempala, Mitropolsky, Collins & Maass, 2020 (PNAS)"
+    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC7322080/
+    note: "The single most central paper. Defines the Assembly Calculus (project, reciprocal-project, associate, merge) over a random-graph model with Hebbian plasticity."
+  - title: "Random Projection in the Brain and Computation with Assemblies of Neurons"
+    author: "Papadimitriou & Vempala, 2019 (ITCS)"
+    url: https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITCS.2019.57
+    note: "The theory paper underneath the PNAS one: random-projection-and-cap preserves overlap, and assembly projection provably converges under modest plasticity."
+  - title: "Assemblies of neurons learn to classify well-separated distributions"
+    author: "Dabagia, Papadimitriou & Vempala, 2022 (COLT)"
+    url: https://arxiv.org/abs/2110.03171
+    note: "Proves assemblies can do unsupervised/lightly-supervised classification; validated on synthetic data and MNIST. The learning-theory face of the assembly line of work."
+  - title: "Computation with Sequences in a Model of the Brain"
+    author: "Dabagia, Papadimitriou & Vempala, 2023"
+    url: https://arxiv.org/abs/2306.03812
+    note: "Extends assemblies to time and precedence: sequence memorization, learning finite state machines, and universality."
+    optional: true
+  - title: "A model for structured information representation in neural networks (assembly pointers / variable binding)"
+    author: "Müller, Papadimitriou, Maass & Legenstein, 2020 (eNeuro)"
+    url: https://arxiv.org/abs/1611.03698
+    note: "The Maass/Legenstein side of the program: binding words to semantic roles emerges in a generic spiking network through Hebbian plasticity. Bridges assemblies to spiking-neuron realism."
+  - title: "Cortical Learning via Prediction"
+    author: "Papadimitriou & Vempala, 2015 (COLT)"
+    url: https://proceedings.mlr.press/v40/Papadimitriou15.pdf
+    note: "Earlier Papadimitriou-Vempala model, on the GT list; useful for seeing how the assembly framework was arrived at."
+    optional: true
+  - title: "Memorization and Association on a Realistic Neural Model"
+    author: "Valiant, 2005 (Neural Computation)"
+    url: https://people.seas.harvard.edu/~valiant/memassoc-eccc.pdf
+    note: "Valiant's neuroidal model made concrete — the direct intellectual ancestor of the Assembly Calculus. On the GT list. (Author-hosted preprint; its embedded PDF metadata carries a stale draft title.)"
+  - title: "Circuits of the Mind"
+    author: "Valiant, 1994 (Oxford University Press)"
+    url: https://archive.org/details/circuitsofmind0000vali
+    note: "The neuroidal model in full. Read at least the framing chapters on the 'neuroidal tabula rasa' and the constraints (sparsity, fan-out, timing) any brain algorithm must respect."
+  - title: "The Organization of Behavior: A Neuropsychological Theory"
+    author: "Hebb, 1949"
+    url: https://archive.org/details/organizationofbe00hebbrich
+    note: "Origin of both Hebbian plasticity and the cell assembly. Chapters 4-5 are the load-bearing ones for this course."
+  - title: "Neural Syntax: Cell Assemblies, Synapsembles, and Readers"
+    author: "Buzsáki, 2010 (Neuron)"
+    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC3005627/
+    note: "The experimental neuroscientist's case that assemblies are the brain's real syntactic unit, with the reader-centric definition. The empirical warrant for the whole framework."
+  - title: "Highly Nonrandom Features of Synaptic Connectivity in Local Cortical Circuits"
+    author: "Song, Sjöström, Reigl, Nelson & Chklovskii, 2005 (PLoS Biology)"
+    url: https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.0030068
+    note: "Why G(n,p) is the wrong null model: overrepresented reciprocal connections and heavy-tailed weights. Sets up the random-graph-with-corrections modeling the course relies on."
+  - title: "Neural networks and physical systems with emergent collective computational abilities"
+    author: "Hopfield, 1982 (PNAS)"
+    url: https://pmc.ncbi.nlm.nih.gov/articles/PMC346238/
+    note: "Associative memory as an energy-minimizing dynamical system — the canonical predecessor model that assemblies are usually contrasted against."
+  - title: "Emergence of simple-cell receptive field properties by learning a sparse code for natural images"
+    author: "Olshausen & Field, 1996 (Nature)"
+    url: https://www.nature.com/articles/381607a0
+    note: "Sparse coding: V1 receptive fields fall out of an efficiency objective over natural images. On the GT list."
+  - title: "Single units and sensation: a neuron doctrine for perceptual psychology?"
+    author: "Barlow, 1972 (Perception)"
+    url: https://www.cs.jhu.edu/~ayuille1/JHUcourses/ProbabilisticModelsOfVisualCognition2020/Lec4/BarlowSparsity1972.pdf
+    note: "The sparse/explicit coding manifesto that frames the grandmother-cell debate the concept-cell papers later settle empirically. Stable course-page PDF (Yuille, JHU); Sage bot-blocks."
+  - title: "Invariant visual representation by single neurons in the human brain"
+    author: "Quian Quiroga, Reddy, Kreiman, Koch & Fried, 2005 (Nature)"
+    url: https://www.nature.com/articles/nature03687
+    note: "The 'Halle Berry neuron' paper. Sparse, abstract, multimodal single-neuron responses in human MTL — the empirical hook Papadimitriou repeatedly uses to motivate assemblies."
+  - title: "Concept cells: the building blocks of declarative memory functions"
+    author: "Quian Quiroga, 2012 (Nature Reviews Neuroscience)"
+    url: https://www.nature.com/articles/nrn3251
+    note: "The review that reframes 2005: concept cells as substrate for association and episodic memory, not grandmother cells."
+    optional: true
+  - title: "From Understanding Computation to Understanding Neural Circuitry (AI Memo 357)"
+    author: "Marr & Poggio, 1976 (MIT AI Lab)"
+    url: https://dspace.mit.edu/handle/1721.1/5782
+    note: "The original statement of the levels-of-analysis argument, predating Marr's Vision. The methodological charter for a course premised on the brain being computational."
+  - title: "The Brain Basis of Language Processing: From Structure to Function"
+    author: "Friederici, 2011 (Physiological Reviews)"
+    url: https://www.ehu.eus/HEB/KEPA/Advanced_2012/2011_Friederici_The%20brain%20basis%20of%20language%20processing%20From%20structure%20to%20function.pdf
+    note: "The neuroanatomy of the language network that the biologically plausible parser is trying to respect. Course-hosted PDF; the publisher site bot-blocks."
+  - title: "A Biologically Plausible Parser"
+    author: "Mitropolsky, Collins & Papadimitriou, 2021 (TACL)"
+    url: https://aclanthology.org/2021.tacl-1.81/
+    note: "Syntax implemented directly in the Assembly Calculus — parses nontrivial English with neurons and synapses only. The course's flagship 'language in the brain' result."
+  - title: "The Architecture of a Biologically Plausible Language Organ"
+    author: "Mitropolsky & Papadimitriou, 2023"
+    url: https://arxiv.org/abs/2306.15364
+    note: "Acquisition rather than parsing: learning nouns, verbs and their meanings from grounded input with Hebbian plasticity and no backpropagation."
+    optional: true
+  - title: "Predicting Human Brain Activity Associated with the Meanings of Nouns"
+    author: "Mitchell et al., 2008 (Science)"
+    url: https://www.cs.cmu.edu/~tom/pubs/science2008.pdf
+    note: "Semantic decoding: a compositional model predicts fMRI activation for nouns the model never saw. Author-hosted PDF; science.org bot-blocks."
+  - title: "Natural speech reveals the semantic maps that tile human cerebral cortex"
+    author: "Huth, de Heer, Griffiths, Theunissen & Gallant, 2016 (Nature)"
+    url: https://www.nature.com/articles/nature17637
+    note: "The large-scale successor to Mitchell et al.: voxel-wise semantic maps consistent across subjects."
+    optional: true
+  - title: "A deep learning framework for neuroscience"
+    author: "Richards et al., 2019 (Nature Neuroscience)"
+    url: https://www.nature.com/articles/s41593-019-0520-2
+    note: "The NeuroAI counter-proposal: study brains via objective functions, learning rules and architectures rather than circuit mechanism. Worth reading against Marr & Poggio."
+  - title: "A critique of pure learning and what artificial neural networks can learn from animal brains"
+    author: "Zador, 2019 (Nature Communications)"
+    url: https://www.nature.com/articles/s41467-019-11786-6
+    note: "The genomic-bottleneck argument: innate structured connectivity, not clever learning rules, explains animal competence. Pairs naturally with the random-graph-with-priors view of cortex."

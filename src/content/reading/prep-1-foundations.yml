@@ -1,6 +1,6 @@
-title: "PhD prep · 1. Foundations and threat models"
-note: Start here. These are the arguments everyone in the field assumes you've read.
-order: 9
+title: "Foundations and threat models"
+note: The arguments the rest of the field takes as given.
+order: 19
 items:
   - title: Concrete Problems in AI Safety
     author: Amodei et al., 2016
@@ -34,4 +34,4 @@ items:
   - title: Foundational Challenges in Assuring Alignment and Safety of Large Language Models
     author: Anwar et al., 2024
     url: https://arxiv.org/abs/2404.09932
-    note: 200 pages, but the best map of open problems — skim for a thesis topic
+    note: 200 pages, but the best map of open problems — a long survey, best skimmed for open problems

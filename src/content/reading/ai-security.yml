@@ -1,0 +1,106 @@
+title: "AI × security"
+note: "Twenty-five papers tracing how machine learning became an attack surface — from the first adversarial examples through jailbreaks, agent exploitation, and AI systems that now find real memory-safety bugs on their own."
+kind: self
+order: 16
+items:
+  - title: "Intriguing properties of neural networks"
+    author: "Szegedy et al., 2013"
+    url: https://arxiv.org/abs/1312.6199
+    note: "The origin. Imperceptible perturbations flip any classifier, and they transfer between independently trained models. Read it for the framing, not the method."
+  - title: "Explaining and Harnessing Adversarial Examples"
+    author: "Goodfellow, Shlens & Szegedy, 2014"
+    url: https://arxiv.org/abs/1412.6572
+    note: "FGSM, plus the linearity hypothesis: adversarial examples aren't exotic, they fall out of locally linear models in high dimensions. One gradient step is the whole attack."
+  - title: "Towards Evaluating the Robustness of Neural Networks"
+    author: "Carlini & Wagner, 2016"
+    url: https://arxiv.org/abs/1608.04644
+    note: "The C&W attack. Formulates evasion as constrained optimization and demolishes defensive distillation. The paper that established attack-as-optimization as the standard lens."
+  - title: "Towards Deep Learning Models Resistant to Adversarial Attacks"
+    author: "Madry et al., 2017"
+    url: https://arxiv.org/abs/1706.06083
+    note: "PGD and the min-max saddle-point formulation. Adversarial training from here is still, nearly a decade on, the only defense that reliably survives. The most useful single paper in the section."
+  - title: "Obfuscated Gradients Give a False Sense of Security: Circumventing Defenses to Adversarial Examples"
+    author: "Athalye, Carlini & Wagner, 2018"
+    url: https://arxiv.org/abs/1802.00420
+    note: "Breaks 7 of 9 ICLR 2018 defenses by identifying a shared failure mode: defenses that make gradients useless rather than making models robust. The closest thing the field has to a CTF writeup."
+  - title: "On Evaluating Adversarial Robustness"
+    author: "Carlini et al., 2019"
+    url: https://arxiv.org/abs/1902.06705
+    note: "A methodology checklist distilled from years of broken defenses. Treat it as a threat-modeling discipline, not a paper — it generalizes directly to evaluating LLM safety claims."
+  - title: "Certified Adversarial Robustness via Randomized Smoothing"
+    author: "Cohen, Rosenfeld & Kolter, 2019"
+    url: https://arxiv.org/abs/1902.02918
+    note: "The counterweight to the whole break-the-defense genre: a provable guarantee that scales to ImageNet. Understand why the certificate is tight and why the radius stays small."
+  - title: "BadNets: Identifying Vulnerabilities in the Machine Learning Model Supply Chain"
+    author: "Gu, Dolan-Gavitt & Garg, 2017"
+    url: https://arxiv.org/abs/1708.06733
+    note: "Backdoors as a supply-chain problem. A trigger patch produces targeted misclassification while clean accuracy stays perfect, so the model passes every obvious test."
+  - title: "Spectral Signatures in Backdoor Attacks"
+    author: "Tran, Li & Madry, 2018"
+    url: https://arxiv.org/abs/1811.00636
+    note: "The defense side: poisoned inputs leave a detectable trace in the covariance spectrum of learned representations. Elegant, and a good model for how detection arguments get made."
+  - title: "Poisoning Web-Scale Training Datasets is Practical"
+    author: "Carlini et al., 2023"
+    url: https://arxiv.org/abs/2302.10149
+    note: "Two attacks — expired-domain and Wikipedia snapshot-timing — that would have let anyone poison LAION and friends for a few hundred dollars. Pure operational security thinking applied to ML."
+  - title: "Stealing Machine Learning Models via Prediction APIs"
+    author: "Tramèr et al., 2016"
+    url: https://arxiv.org/abs/1609.02943
+    note: "The founding extraction paper. Query a prediction API enough times and the model can be reconstructed, sometimes exactly. Establishes confidence scores as the leak channel."
+  - title: "Stealing Part of a Production Language Model"
+    author: "Carlini et al., 2024"
+    url: https://arxiv.org/abs/2403.06634
+    note: "Recovers the embedding projection layer and hidden dimension of GPT-3.5 and PaLM-2 through the public API for under $20. The logit-bias trick is genuinely clever — closest thing here to a side-channel attack."
+  - title: "Membership Inference Attacks against Machine Learning Models"
+    author: "Shokri et al., 2016"
+    url: https://arxiv.org/abs/1610.05820
+    note: "Was this record in the training set? The shadow-model technique that made privacy leakage empirically measurable and now underpins most ML privacy auditing."
+  - title: "The Secret Sharer: Evaluating and Testing Unintended Memorization in Neural Networks"
+    author: "Carlini et al., 2018"
+    url: https://arxiv.org/abs/1802.08232
+    note: "Introduces exposure as a metric by planting canaries in training data and measuring how well models regurgitate them. Predates LLMs and predicts their central privacy problem."
+  - title: "Extracting Training Data from Large Language Models"
+    author: "Carlini et al., 2020"
+    url: https://arxiv.org/abs/2012.07805
+    note: "Verbatim extraction of PII, code, and UUIDs from GPT-2 using sampling plus membership-inference-style filtering. Memorization goes from theoretical to demonstrated."
+  - title: "Universal and Transferable Adversarial Attacks on Aligned Language Models"
+    author: "Zou et al., 2023"
+    url: https://arxiv.org/abs/2307.15043
+    note: "GCG. Greedy coordinate gradient search finds suffixes that jailbreak open models and transfer to closed ones. The direct descendant of PGD, and proof the adversarial-examples problem never left."
+  - title: "Jailbroken: How Does LLM Safety Training Fail?"
+    author: "Wei, Haghtalab & Steinhardt, 2023"
+    url: https://arxiv.org/abs/2307.02483
+    note: "Two failure modes — competing objectives and mismatched generalization — that explain why jailbreaks work and why scale alone won't close them. The conceptual complement to GCG."
+  - title: "Not what you've signed up for: Compromising Real-World LLM-Integrated Applications with Indirect Prompt Injection"
+    author: "Greshake et al., 2023"
+    url: https://arxiv.org/abs/2302.12173
+    note: "The taxonomy paper for indirect injection: poison a webpage or email and the victim's own model executes it. The clearest statement that LLM systems lack a control/data separation."
+  - title: "AgentDojo: A Dynamic Environment to Evaluate Prompt Injection Attacks and Defenses for LLM Agents"
+    author: "Debenedetti et al., 2024"
+    url: https://arxiv.org/abs/2406.13352
+    note: "A real benchmark for tool-using agents under attack, with utility and security measured jointly. Extensible, actively maintained, and a natural place to try new attacks."
+  - title: "Defeating Prompt Injections by Design"
+    author: "Debenedetti et al., 2025"
+    url: https://arxiv.org/abs/2503.18813
+    note: "CaMeL: borrow capability-based security and information-flow control from systems security instead of asking the model to behave. The most promising structural answer so far."
+    optional: true
+  - title: "LLM Agents can Autonomously Exploit One-day Vulnerabilities"
+    author: "Fang et al., 2024"
+    url: https://arxiv.org/abs/2404.08144
+    note: "GPT-4 exploits 87% of tested CVEs given the description, and 7% without. Contested methodology, worth reading critically — the gap between those numbers is the actual finding."
+  - title: "Cybench: A Framework for Evaluating Cybersecurity Capabilities and Risks of Language Models"
+    author: "Zhang et al., 2024"
+    url: https://arxiv.org/abs/2408.08926
+    note: "40 tasks from four competition CTFs with subtask decomposition and first-solve-time difficulty calibration. CTF work rendered as a capability eval."
+  - title: "From Naptime to Big Sleep: Using Large Language Models To Catch Vulnerabilities In Real-World Code"
+    author: "Google Project Zero & DeepMind, 2024"
+    url: https://projectzero.google/2024/10/from-naptime-to-big-sleep.html
+    note: "First public case of an AI agent finding an unknown exploitable memory-safety bug in widely used software — a stack buffer underflow in SQLite. The trace of the agent's reasoning is the good part."
+  - title: "AI-Powered Fuzzing: Breaking the Bug Hunting Barrier"
+    author: "Google Open Source Security Team, 2023"
+    url: https://security.googleblog.com/2023/08/ai-powered-fuzzing-breaking-bug-hunting.html
+    note: "LLM-generated fuzz targets across 160 C/C++ projects in OSS-Fuzz, up to 29% more line coverage than human-written harnesses. The unglamorous, highest-leverage use of models in security."
+  - title: "DARPA AI Cyber Challenge (AIxCC)"
+    author: "DARPA, 2023–2025"
+    url: https://www.darpa.mil/research/programs/ai-cyber
+    note: "Two-year competition for autonomous find-and-patch systems, concluded at DEF CON 33 in August 2025. Winning systems are open-sourced — read their code, not just the results."

@@ -1,0 +1,122 @@
+title: "CTFs and low-level security"
+note: "Built for someone who has already written an ELF linker in C and taken a security course — so it skips \"what is a stack\" and starts where exploitation actually gets hard; every URL below was re-checked and returns HTTP 200 at the canonical address given, hands-on practice is marked required and background reading is marked optional."
+kind: self
+order: 15
+items:
+  - title: "pwn.college"
+    author: "Arizona State University (Yan Shoshitaishvili et al.)"
+    url: https://pwn.college/
+    note: "The best structured starting point: dojos from shellcode through kernel exploitation, with auto-graded challenges on real infrastructure."
+  - title: "Nightmare — a binary exploitation / reverse engineering course"
+    author: "guyinatuxedo"
+    url: https://guyinatuxedo.github.io/
+    note: "Worked solutions to ~80 real CTF pwn challenges, ordered by technique. The heap sections (tcache, fastbin dup, house-of-* chains) are the most approachable written treatment of glibc malloc internals anywhere."
+  - title: "ROP Emporium"
+    url: https://ropemporium.com/
+    note: "Eight challenges that teach ROP and nothing else — same puzzle escalating across x86, x86_64, ARM, MIPS. Strips away bug-hunting to leave pure chain construction. A weekend of work."
+  - title: "OverTheWire Wargames"
+    url: https://overthewire.org/wargames/
+    note: "Start at Narnia and Behemoth; Bandit is shell basics. Fusion and Utumno are genuinely hard. All over SSH, no setup."
+  - title: "pwnable.kr"
+    url: https://pwnable.kr/
+    note: "Korean classic. The 'Toddler's Bottle' tier is quick, but 'Rookiss' and 'Grotesque' include kernel and race-condition challenges that hold up. Puzzle-flavored and memorable."
+  - title: "pwnable.tw"
+    url: https://pwnable.tw/
+    note: "The harder sibling of pwnable.kr and closer to modern CTF difficulty — current glibc, full mitigations, no hand-holding. Good calibration for competition readiness."
+  - title: "picoCTF"
+    author: "Carnegie Mellon University"
+    url: https://picoctf.org/
+    note: "Year-round practice gym plus an annual competition."
+  - title: "Exploit Education"
+    url: https://exploit.education/
+    note: "Downloadable VMs (Phoenix, Nebula, Fusion) covering stack, heap, format-string and networked-service exploitation."
+  - title: "CryptoHack"
+    url: https://cryptohack.org/
+    note: "Interactive crypto challenges with a genuinely good progression through lattices, elliptic curves and padding oracles."
+  - title: "Cryptopals Crypto Challenges"
+    author: "Thomas Ptacek, Sean Devlin, Alex Balducci, Marcin Wielgoszewski"
+    url: https://cryptopals.com/
+    note: "Eight sets (Basics through Abstract Algebra), 66 challenges, implement-the-attack-yourself. Sets 1-3 in an afternoon each; the later sets (RSA, DSA, GCM) are serious."
+  - title: "Hack The Box"
+    url: https://www.hackthebox.com/
+    note: "Broader offensive security — boxes, Pro Labs, and a strong Pwn track. Useful for full-chain practice — recon to privesc — that pure pwn platforms skip."
+  - title: "CTFtime — upcoming competitions"
+    url: https://ctftime.org/event/list/upcoming
+    note: "The calendar the whole scene runs on. Filter for on-line, high-weight events; DEF CON Quals, PlaidCTF, HITCON and Google CTF are the ones to aim at."
+  - title: "pwntools documentation"
+    url: https://docs.pwntools.com/en/stable/
+    note: "Non-negotiable tooling. Learn tubes, ELF, ROP, shellcraft and gdb.attach() properly — the ROP module's automatic gadget resolution saves hours."
+  - title: "pwndbg — a gdb plug-in for exploit development"
+    url: https://github.com/pwndbg/pwndbg
+    note: "Turns gdb into a usable exploitation debugger: heap chunk inspection, telescope, context views, ROP search."
+  - title: "Ghidra"
+    author: "National Security Agency"
+    url: https://github.com/NationalSecurityAgency/ghidra
+    note: "Free decompiler that is competitive with IDA for CTF work. Learn the decompiler view, type reconstruction, and scripting API."
+  - title: "angr documentation"
+    url: https://docs.angr.io/en/latest/
+    note: "Binary analysis via symbolic execution."
+  - title: "AFL++"
+    author: "Fioraldi, Maier, Eißfeldt, Heuse"
+    url: https://aflplus.plus/
+    note: "The maintained successor to AFL and the default coverage-guided fuzzer. Learn instrumentation modes, dictionaries, and persistent mode."
+  - title: "libFuzzer"
+    author: "LLVM Project"
+    url: https://llvm.org/docs/LibFuzzer.html
+    note: "In-process, coverage-guided fuzzing built into LLVM. Complements AFL++: better for library APIs, pairs naturally with ASan/UBSan/MSan. Writing good fuzz harnesses is a directly employable skill."
+  - title: "QEMU system emulation documentation"
+    url: https://www.qemu.org/docs/master/system/index.html
+    note: "Essential for kernel exploitation and cross-architecture work — boot a custom kernel with a debug stub and attach gdb. Nearly every kernel-pwn challenge ships as a QEMU launch script plus an initramfs."
+  - title: "Binary Exploitation / Memory Corruption (video series)"
+    author: "LiveOverflow"
+    url: https://www.youtube.com/playlist?list=PLhixgUqwRTjxglIswKp9mpkfPNfHkzyeN
+    note: "Verified playlist title: 'Binary Exploitation / Memory Corruption by LiveOverflow'. Follow-along series from basic overflows into 64-bit heap and browser exploitation."
+  - title: "CUCyber — Columbia University Computer Security Club"
+    author: "Columbia University"
+    url: https://cucyber.cs.columbia.edu/
+    note: "Columbia's student-led security organization and the clearest local answer: weekly Thursday 7pm meetings in person and on Zoom, CTF competition play, guest talks and hiring workshops."
+  - title: "Smashing The Stack For Fun And Profit"
+    author: "Aleph One, Phrack 49 (1996)"
+    url: https://phrack.org/issues/49/smashing-the-stack-for-fun-and-profit.html
+    note: "The founding document of the field. Byline verified: 'by Aleph One'; the older /issues/49/14 path now redirects here."
+    optional: true
+  - title: "The Geometry of Innocent Flesh on the Bone: Return-into-libc without Function Calls (on the x86)"
+    author: "Hovav Shacham, ACM CCS 2007"
+    url: https://hovav.net/ucsd/dist/geometry.pdf
+    note: "The paper that introduced return-oriented programming and showed W^X alone is insufficient. Read after ROP Emporium, when the gadget-discovery argument will land."
+    optional: true
+  - title: "Hacking Blind (the Blind ROP / BROP paper)"
+    author: "Bittau, Belay, Mashtizadeh, Mazières, Boneh — IEEE S&P 2014"
+    url: https://www.scs.stanford.edu/brop/bittau-brop.pdf
+    note: "Title and author line verified against the PDF: the real title is 'Hacking Blind'; BROP is the technique it introduces."
+    optional: true
+  - title: "Spectre Attacks: Exploiting Speculative Execution"
+    author: "Kocher, Horn, Fogh, Genkin, Gruss, Haas, Hamburg, Lipp, Mangard, Prescher, Schwarz, Yarom"
+    url: https://spectreattack.com/spectre.pdf
+    note: "Speculative execution turned into a universal information-disclosure primitive across process and privilege boundaries. The paper that made microarchitectural state a first-class security concern."
+    optional: true
+  - title: "Meltdown: Reading Kernel Memory from User Space"
+    author: "Lipp, Schwarz, Gruss, Prescher, Haas, Fogh, Horn, Mangard, Kocher, Genkin, Yarom, Hamburg"
+    url: https://meltdownattack.com/meltdown.pdf
+    note: "Read alongside Spectre and be able to articulate the difference: Meltdown breaks a specific CPU permission check (fixable by KPTI), Spectre abuses speculation generally (not). Interviewers ask exactly this."
+    optional: true
+  - title: "Control-Flow Integrity"
+    author: "Abadi, Budiu, Erlingsson, Ligatti — ACM CCS 2005"
+    url: https://www.microsoft.com/en-us/research/publication/control-flow-integrity/
+    note: "The defense side of ROP and the ancestor of today's CFI, CET and PAC."
+    optional: true
+  - title: "SoK: Eternal War in Memory"
+    author: "Szekeres, Payer, Wei, Song — IEEE S&P 2013"
+    url: https://people.eecs.berkeley.edu/~dawnsong/papers/Oakland13-SoK-CR.pdf
+    note: "The one paper to read if only reading one."
+    optional: true
+  - title: "Evaluating Fuzz Testing"
+    author: "Klees, Ruef, Cooper, Wei, Hicks — ACM CCS 2018"
+    url: https://arxiv.org/abs/1808.09700
+    note: "arXiv metadata confirms the title and the author list (George Klees first). Surveyed 32 fuzzing papers and found flawed evaluation in every one."
+    optional: true
+  - title: "Linux Kernel Exploitation — a curated resource collection"
+    author: "Andrey Konovalov (xairy)"
+    url: https://github.com/xairy/linux-kernel-exploitation
+    note: "The reference index for kernel-side work: papers, talks, writeups, CTF challenges and defense mechanisms, organized by year and subsystem. The natural next frontier once userland pwn feels routine."
+    optional: true

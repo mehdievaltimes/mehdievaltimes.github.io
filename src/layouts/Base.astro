@@ -3,8 +3,8 @@ import '../styles/global.css';
 import 'katex/dist/katex.min.css';
 import { site } from '../lib';
 
-interface Props { title?: string; description?: string; sheep?: boolean; noindex?: boolean }
-const { title, description = site.description, sheep = true, noindex = false } = Astro.props;
+interface Props { title?: string; description?: string; sheep?: boolean; noindex?: boolean; ogType?: string; published?: Date }
+const { title, description = site.description, sheep = true, noindex = false, ogType = 'website', published } = Astro.props;
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
@@ -24,11 +24,18 @@ const current = (href: string) =>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
-    <link rel="icon" href="/img/avatar.png" />
+    {!noindex && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
+    <link rel="icon" href="/img/favicon-64.png" sizes="64x64" />
+    <link rel="apple-touch-icon" href="/img/avatar.png" />
     <meta property="og:title" content={title ?? site.name} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
+    {published && <meta property="article:published_time" content={published.toISOString()} />}
+    <meta property="og:image" content={new URL('/img/og.png', Astro.site)} />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={new URL('/img/og.png', Astro.site)} />
     <meta name="theme-color" content="#fbfaf7" media="(prefers-color-scheme: light)" />
     <meta name="theme-color" content="#141413" media="(prefers-color-scheme: dark)" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -43,9 +50,23 @@ const current = (href: string) =>
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date()); gtag('config', 'G-GCWJMRKY64');
     </script>
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: site.name,
+      url: Astro.site?.href,
+      email: `mailto:${site.email}`,
+      affiliation: { '@type': 'CollegeOrUniversity', name: 'Columbia University' },
+      sameAs: [
+        'https://github.com/mehdievaltimes',
+        'https://www.linkedin.com/in/mehdisha',
+      ],
+      knowsAbout: ['AI safety', 'Mechanistic interpretability', 'Machine learning', 'Mathematics', 'Computer security'],
+    })} />
     <slot name="head" />
   </head>
   <body>
+    <a class="skip" href="#main">Skip to content</a>
     <div class="wrap">
       <header class="site-header">
         <a class="logo" href="/">{site.short}<span>.</span></a>
@@ -56,13 +77,14 @@ const current = (href: string) =>
           <button class="theme-btn" id="theme-btn" aria-label="Toggle dark mode">◐</button>
         </nav>
       </header>
-      <main><slot /></main>
+      <main id="main"><slot /></main>
       <footer class="site-footer">
         <span>© {new Date().getFullYear()} {site.name}</span>
         <span class="links">
           {sheep && <button class="linkish" id="call-sheep-home" onclick="window.toggleSheepHome && window.toggleSheepHome()">send the sheep home</button>}
-          <a href="https://github.com/mehdievaltimes">github</a>
-          <a href="https://www.linkedin.com/in/mehdisha">linkedin</a>
+          <a href={`mailto:${site.email}`}>email</a>
+          <a href="https://github.com/mehdievaltimes" rel="me">github</a>
+          <a href="https://www.linkedin.com/in/mehdisha" rel="me">linkedin</a>
           <a href="https://instagram.com/mehdievaltimes">instagram</a>
         </span>
       </footer>
