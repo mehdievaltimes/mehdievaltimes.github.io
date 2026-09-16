@@ -6,7 +6,7 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: 'https://mehdievaltimes.github.io',
   trailingSlash: 'ignore',
-  integrations: [sitemap()],
+  integrations: [sitemap({ filter: (page) => !/\/(new|thoughts|about|resume|projects|tweets|tags|categories|archives|rss\.xml|feed\.xml)\/?$/.test(page) })],
   // Old URLs from when thoughts were their own section.
   redirects: {
     // Sections that no longer exist.

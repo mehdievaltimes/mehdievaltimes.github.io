@@ -1,6 +1,6 @@
-title: "PhD prep · 1. Foundations and threat models"
-note: The arguments the field assumes you already know.
-order: 11
+title: "Foundations and threat models"
+note: The arguments the rest of the field takes as given.
+order: 19
 items:
   - title: Concrete Problems in AI Safety
     author: Amodei et al., 2016

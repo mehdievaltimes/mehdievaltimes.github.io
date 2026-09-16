@@ -7,7 +7,7 @@ const { entry, newer, older } = Astro.props as { entry: Entry; newer?: Entry; ol
 const { Content } = await render(entry);
 const label = (e: Entry) => e.data.title ?? excerpt(e, 48);
 ---
-<Base title={entry.data.title ?? excerpt(entry, 60)} description={excerpt(entry, 160)}>
+<Base title={entry.data.title ?? excerpt(entry, 60)} description={excerpt(entry, 160)} ogType="article" published={entry.data.date}>
   <article>
     <header class="post-head">
       {entry.data.title && <h1>{entry.data.title}</h1>}

@@ -4,7 +4,7 @@
   --muted: #6f6b64;
   --faint: #e8e5de;
   --card: #f3f1ec;
-  --accent-rgb: 214 82 44;
+  --accent-rgb: 196 69 31;
   --accent: rgb(var(--accent-rgb));
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
   --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -133,3 +133,5 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .chip { font: .8rem var(--mono); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 99px; padding: .25rem .7rem; cursor: pointer; }
 .chip:hover { color: var(--accent); border-color: var(--accent); }
 .chip.active { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+
+.intro h1 { font-size: 1.05rem; font-family: var(--sans); font-weight: 600; letter-spacing: 0; margin: 0 0 .6rem; }

@@ -18,11 +18,10 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
   </header>
 
   <p class="lede">
-    The numbered sections are a self-directed path toward research in mechanistic interpretability
-    and evaluations — foundations first, then interpretability, then the empirical safety work that
-    depends on both. The course section is assigned reading for COMS 6998. What I'm looking for in
-    most of these: whether a claim about a model's internals is actually measurable, or only
-    behavioural.
+    Most of this is a self-directed path toward research in mechanistic interpretability and
+    evaluations, plus the security and CTF material next to it; the sections marked coursework are
+    assigned reading. What I'm looking for in most of these: whether a claim about a model's
+    internals is actually measurable, or only behavioural.
   </p>
 
   <div class="controls">
@@ -43,6 +42,7 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
       <div class="section-head">
         <h2><a href={`#${s.id}`} class="anchor">{label(s)}</a></h2>
         <span class="meta">
+          <span class="tag">{s.data.kind === 'course' ? 'coursework' : 'self-directed'}</span>
           <span class="sec-count" data-for={s.id}>0/{s.data.items.length}</span>
           {s.data.starts && <> · {fmtDate(s.data.starts)}</>}
         </span>
@@ -67,7 +67,11 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
     </section>
   ))}
 
-  <p class="meta reset-line">Progress is saved in this browser only. <button class="linkish" id="reset">reset</button></p>
+  <p class="meta reset-line">
+    Progress is saved in this browser only.
+    <button class="linkish" id="copy-md">copy as markdown</button> ·
+    <button class="linkish" id="reset">reset</button>
+  </p>
 
   <script is:inline>
     (() => {
@@ -98,6 +102,10 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
           const match = !q || li.dataset.text.includes(q);
           li.hidden = !match || (hide && box.checked);
         });
+        const url = new URL(location.href);
+        q ? url.searchParams.set('q', q) : url.searchParams.delete('q');
+        hide ? url.searchParams.set('hide', '1') : url.searchParams.delete('hide');
+        history.replaceState(null, '', url);
         document.querySelectorAll('section.week').forEach((sec) => {
           const any = [...sec.querySelectorAll('.reading li')].some((li) => !li.hidden);
           sec.hidden = !any;
@@ -126,12 +134,41 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
         if (e.key === '/' && document.activeElement !== filter) { e.preventDefault(); filter.focus(); }
       });
 
+      // copy whatever is currently visible, as markdown
+      document.getElementById('copy-md').addEventListener('click', async () => {
+        const out = [];
+        document.querySelectorAll('section.week').forEach((sec) => {
+          if (sec.hidden) return;
+          out.push(`## ${sec.querySelector('h2').textContent.trim()}`, '');
+          sec.querySelectorAll('.reading li').forEach((li) => {
+            if (li.hidden) return;
+            const a = li.querySelector('.title a');
+            const title = li.querySelector('.title').textContent.trim();
+            const meta = li.querySelector('.item .meta').textContent.trim();
+            out.push(`- ${a ? `[${title}](${a.href})` : title}${meta ? ` — ${meta}` : ''}`);
+          });
+          out.push('');
+        });
+        const btn = document.getElementById('copy-md');
+        try {
+          await navigator.clipboard.writeText(out.join('\n'));
+          btn.textContent = 'copied';
+        } catch {
+          btn.textContent = 'copy failed';
+        }
+        setTimeout(() => (btn.textContent = 'copy as markdown'), 1500);
+      });
+
+      const params = new URLSearchParams(location.search);
+      if (params.get('q')) filter.value = params.get('q');
+      if (params.get('hide')) hideRead.checked = true;
       paint(); apply();
     })();
   </script>
 </Base>
 
 <style>
+  .section-head .tag { margin-right: .5rem; }
   .lede { font-family: var(--serif); font-size: 1.12rem; line-height: 1.6; color: var(--muted); margin: 0 0 2rem; }
   .controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .controls input[type='text'] { flex: 1; min-width: 12rem; }

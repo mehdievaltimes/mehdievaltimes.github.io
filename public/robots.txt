@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /new/
+
+Sitemap: https://mehdievaltimes.github.io/sitemap-index.xml
