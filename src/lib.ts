@@ -5,7 +5,7 @@ export type Entry = CollectionEntry<'writing'>;
 export const site = {
   name: 'Mehdi Shakibapour',
   short: 'mehdi',
-  description: 'Mehdi Shakibapour — math and CS at Columbia. Notes on mechanistic interpretability, evaluations, and AI safety.',
+  description: 'Mehdi Shakibapour — math and CS at Columbia.',
   email: 'mehdi.s@columbia.edu',
   repo: 'mehdievaltimes/mehdievaltimes.github.io',
 };
