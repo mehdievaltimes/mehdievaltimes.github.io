@@ -9,13 +9,11 @@ const reading = await getCollection('reading');
 const readingCount = reading.reduce((n, s) => n + s.data.items.length, 0);
 const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
 ---
-<Base description="Mehdi Shakibapour — math and CS at Columbia, writing about mechanistic interpretability, evaluations and AI safety.">
+<Base description="Mehdi Shakibapour — math and CS at Columbia.">
   <section class="intro">
     <h1>Mehdi Shakibapour</h1>
     <p>
-      Math and CS at Columbia, graduating May 2027. I work on mechanistic interpretability: what a
-      model’s internals actually encode, and whether a safety claim about a model can be checked
-      from the inside rather than taken on behaviour.
+      Math and CS at Columbia, graduating May 2027.
     </p>
     <p class="sub">
       Essays and half-formed notes below. I keep a <a href="/reading">reading list</a> of
