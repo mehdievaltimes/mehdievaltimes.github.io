@@ -26,6 +26,7 @@ import Base from '../layouts/Base.astro';
       </select>
       <input type="text" id="sg-me" placeholder="my UNI (hides yours)" autocomplete="off" />
       <label class="meta"><input type="checkbox" id="sg-closed" /> closed too</label>
+      <label class="meta"><input type="checkbox" id="sg-examples" /> pigz (example)</label>
     </form>
 
     <p class="meta" id="sg-count"></p>
@@ -54,9 +55,11 @@ import Base from '../layouts/Base.astro';
       set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
     };
 
+    // Projects used as the setup-session example, not real targets; hidden unless ticked.
+    const EXAMPLES = new Set(['pigz']);
     const MARKS = ['', 'looking', 'found', 'skip'];
     const marks = store.get('sigsegv-marks', {});
-    const prefs = { q: '', round: '', sort: 'new', mark: 'all', me: '', closed: false, ...store.get('sigsegv-prefs', {}) };
+    const prefs = { q: '', round: '', sort: 'new', mark: 'all', me: '', closed: false, examples: false, ...store.get('sigsegv-prefs', {}) };
     const state = { projects: {}, prs: [], generated: null, live: null };
 
     const key = (p) => `${p.repo}#${p.n}`;
@@ -83,6 +86,7 @@ import Base from '../layouts/Base.astro';
         uni: t ? t[1].toLowerCase() : null, round: t ? Number(t[2]) : null,
         by: i.user.login, state: i.pull_request?.merged_at ? 'merged' : i.state,
         created: i.created_at, updated: i.updated_at,
+        poc: /\.zip\b/i.test(i.body ?? ''),
       };
     }
 
@@ -91,6 +95,7 @@ import Base from '../layouts/Base.astro';
       const me = prefs.me.trim().toLowerCase();
       const rows = state.prs.filter((p) => {
         if (!prefs.closed && !open(p)) return false;
+        if (!prefs.examples && EXAMPLES.has(p.repo)) return false;
         if (prefs.round === 'other' ? p.round : prefs.round ? p.round !== Number(prefs.round) : !p.round) return false;
         if (me && p.uni === me) return false;
         const m = marks[key(p)] || '';
@@ -190,6 +195,7 @@ import Base from '../layouts/Base.astro';
         for (const item of (await r.json()).items) {
           const fresh = fromSearch(item);
           if (fresh.repo === LIST_REPO || !state.projects[fresh.repo]) continue;
+          if (!fresh.poc) { state.prs = state.prs.filter((p) => key(p) !== key(fresh)); continue; } // no PoC zip: not a real submission
           const old = known.get(key(fresh));
           if (!old) state.prs.push({ ...fresh, live: true });
           else if (old.updated !== fresh.updated) Object.assign(old, fresh, { stale: old.nf != null });
@@ -201,7 +207,7 @@ import Base from '../layouts/Base.astro';
 
     async function init() {
       $('sg-q').value = prefs.q; $('sg-sort').value = prefs.sort; $('sg-mark').value = prefs.mark;
-      $('sg-me').value = prefs.me; $('sg-closed').checked = prefs.closed;
+      $('sg-me').value = prefs.me; $('sg-closed').checked = prefs.closed; $('sg-examples').checked = prefs.examples;
       try {
         const snap = await (await fetch('/sigsegv.json', { cache: 'no-cache' })).json();
         Object.assign(state, { projects: snap.projects, prs: snap.prs, generated: snap.generated });
@@ -213,7 +219,7 @@ import Base from '../layouts/Base.astro';
     }
 
     $('sg-bar').addEventListener('input', () => {
-      Object.assign(prefs, { q: $('sg-q').value, round: $('sg-round').value, sort: $('sg-sort').value, mark: $('sg-mark').value, me: $('sg-me').value, closed: $('sg-closed').checked });
+      Object.assign(prefs, { q: $('sg-q').value, round: $('sg-round').value, sort: $('sg-sort').value, mark: $('sg-mark').value, me: $('sg-me').value, closed: $('sg-closed').checked, examples: $('sg-examples').checked });
       store.set('sigsegv-prefs', prefs);
       render();
     });
