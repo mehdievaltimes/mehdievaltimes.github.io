@@ -114,7 +114,17 @@ import Base from '../layouts/Base.astro';
       return rows.sort(by[prefs.sort]);
     }
 
-    function card(p) {
+    // The earliest PR on each project is the one that claimed it; later ones are on an already-used project.
+    function claimers() {
+      const first = new Map();
+      for (const p of state.prs) {
+        const f = first.get(p.repo);
+        if (!f || p.created < f.created) first.set(p.repo, p);
+      }
+      return first;
+    }
+
+    function card(p, first) {
       const proj = state.projects[p.repo];
       const mark = marks[key(p)] || '';
       const files = p.files ?? [];
@@ -125,6 +135,7 @@ import Base from '../layouts/Base.astro';
           h('a', { class: 'sg-name', href: url(p), target: '_blank', rel: 'noopener' }, proj?.name ?? p.repo),
           h('span', { class: 'sg-uni' }, p.uni ? `${p.uni}-Round${p.round}` : p.title),
           !open(p) && h('span', { class: 'sg-tag' }, p.state),
+          first.get(p.repo) === p && h('span', { class: 'sg-tag used', title: 'earliest PR on this project' }, 'project used'),
           p.live && h('span', { class: 'sg-tag new' }, 'new'),
           p.stale && h('span', { class: 'sg-tag' }, 'changed since snapshot'),
         ),
@@ -182,7 +193,8 @@ import Base from '../layouts/Base.astro';
       sel.value = prefs.round;
       const rows = visible();
       $('sg-count').textContent = `${rows.length} of ${state.prs.length} pull requests`;
-      $('sg-list').replaceChildren(...rows.map(card));
+      const first = claimers();
+      $('sg-list').replaceChildren(...rows.map((p) => card(p, first)));
       status();
     }
 
