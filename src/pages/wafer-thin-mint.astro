@@ -7,7 +7,11 @@ import Base from '../layouts/Base.astro';
     <p class="meta">Oh sir, it&rsquo;s only wafer thin. (Columbia / Barnard only.)</p>
   </header>
   <div class="card demo">
-    <div id="out"><button id="signin">Just one, sir</button></div>
+    <div id="gate">
+      <p>Mr. Creosote, a wafer-thin mint?</p>
+      <input id="phrase" type="text" autocomplete="off" spellcheck="false" placeholder="say it" />
+    </div>
+    <div id="out" hidden><button id="signin">Sign in with Google</button></div>
     <p class="meta" id="msg"></p>
   </div>
 </Base>
@@ -29,6 +33,20 @@ import Base from '../layouts/Base.astro';
   const $ = (id: string) => document.getElementById(id)!;
   const say = (t: string) => ($('msg').textContent = t);
 
+  // The server-side rules re-check the phrase; this just decides when the button appears.
+  const HASH = 'c8f2513ea8e4479dfd3b15931d843aeeb40f991d4a54ddbaeab3c0de457e3255';
+  const norm = (t: string) => t.toLowerCase().replace(/[^a-z ]/g, '').replace(/\s+/g, ' ').trim();
+  const sha = async (t: string) =>
+    [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+  const phrase = $('phrase') as HTMLInputElement;
+  phrase.addEventListener('input', async () => {
+    if ((await sha(norm(phrase.value))) === HASH) {
+      $('gate').hidden = true;
+      $('out').hidden = false;
+      say('');
+    }
+  });
+
   $('signin').onclick = async () => {
     try {
       const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
@@ -39,7 +57,7 @@ import Base from '../layouts/Base.astro';
       }
       if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} has already had the mint. Off you go.`);
       const name = prompt('Your name (as in the class roster)?') ?? '';
-      await setDoc(doc(db, 'allowlist', email), { email, name: name.trim().slice(0, 80), at: serverTimestamp() });
+      await setDoc(doc(db, 'allowlist', email), { email, name: name.trim().slice(0, 80), phrase: norm(phrase.value), at: serverTimestamp() });
       say(`${email} has been served. Thank you, sir. Return to the portal and sign in.`);
     } catch (e) {
       say('Bucket! ' + (e as Error).message);
