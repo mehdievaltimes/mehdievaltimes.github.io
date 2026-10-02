@@ -57,7 +57,7 @@ import Base from '../layouts/Base.astro';
       }
       if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} has already had the mint. Off you go.`);
       await setDoc(doc(db, 'allowlist', email), { email, name: '', phrase: norm(phrase.value), at: serverTimestamp() });
-      say(`${email} has been served. Thank you, sir. Return to the portal and sign in.`);
+      say(`${email} has been served. Thank you, sir. Now go back the way you came. The gate will know you.`);
     } catch (e) {
       say('Bucket! ' + (e as Error).message);
     }
