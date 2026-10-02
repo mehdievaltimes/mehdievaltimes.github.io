@@ -56,9 +56,8 @@ import Base from '../layouts/Base.astro';
         return say('Not on the menu, sir. Columbia or Barnard accounts only.');
       }
       if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} has already had the mint. Off you go.`);
-      const name = prompt('Your name (as in the class roster)?') ?? '';
-      await setDoc(doc(db, 'allowlist', email), { email, name: name.trim().slice(0, 80), phrase: norm(phrase.value), at: serverTimestamp() });
-      say(`${email} has been served. Thank you, sir. Return to the portal and sign in.`);
+      await setDoc(doc(db, 'allowlist', email), { email, name: '', phrase: norm(phrase.value), at: serverTimestamp() });
+      say(`${email} has been served. Thank you, sir. Now go back the way you came. The gate will know you.`);
     } catch (e) {
       say('Bucket! ' + (e as Error).message);
     }
