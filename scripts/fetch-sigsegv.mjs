@@ -57,6 +57,7 @@ async function pulls() {
         state: i.pull_request?.merged_at ? 'merged' : i.state,
         created: i.created_at,
         updated: i.updated_at,
+        poc: /\.zip\b/i.test(i.body ?? ''), // only whether a zip is attached; the body is never stored
       };
     });
 }
@@ -78,7 +79,7 @@ let projs, prs;
 try {
   const [all, found] = await Promise.all([projects(), pulls()]);
   projs = all;
-  prs = found.filter((p) => all[p.repo]); // the user owns unrelated forks too
+  prs = found.filter((p) => all[p.repo] && p.poc); // the user owns unrelated forks too; PRs without a PoC zip aren't real submissions
 } catch (e) {
   console.warn(`sigsegv: fetch failed (${e.message}); keeping previous snapshot`);
   if (process.env.GITHUB_OUTPUT) await appendFile(process.env.GITHUB_OUTPUT, 'changed=false\n');
