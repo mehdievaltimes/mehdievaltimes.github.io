@@ -1,4 +1,5 @@
 User-agent: *
 Disallow: /new/
+Disallow: /sigsegv
 
 Sitemap: https://mehdievaltimes.github.io/sitemap-index.xml
