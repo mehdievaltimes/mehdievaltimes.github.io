@@ -1,0 +1,31 @@
+name: Refresh SIGSEGV board
+
+# PRs land on the course's forks, not this repo, so nothing here can fire on them.
+# Poll instead: if the PR data differs from what's live, redeploy (which re-fetches it).
+on:
+  schedule:
+    - cron: '*/10 * * * *'
+  workflow_dispatch:
+
+permissions:
+  actions: write
+  contents: read
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - id: snapshot
+        run: node scripts/fetch-sigsegv.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREV_URL: https://mehdievaltimes.github.io/sigsegv.json
+      - if: steps.snapshot.outputs.changed == 'true'
+        run: gh workflow run pages-deploy.yml --ref main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}

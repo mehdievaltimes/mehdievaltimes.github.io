@@ -1,0 +1,252 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="SIGSEGV board" sheep={false} noindex>
+  <div class="sg">
+    <header class="post-head">
+      <h1>SIGSEGV board</h1>
+      <p class="meta" id="sg-status">loading…</p>
+    </header>
+
+    <form class="sg-bar" id="sg-bar" onsubmit="return false">
+      <input type="text" id="sg-q" placeholder="search UNI, project, file…" autocomplete="off" />
+      <select id="sg-round" aria-label="Round"></select>
+      <select id="sg-sort" aria-label="Sort">
+        <option value="new">newest first</option>
+        <option value="small">smallest diff first</option>
+        <option value="large">largest diff first</option>
+        <option value="project">by project</option>
+      </select>
+      <select id="sg-mark" aria-label="Mark">
+        <option value="all">any mark</option>
+        <option value="none">unmarked</option>
+        <option value="looking">looking</option>
+        <option value="found">found</option>
+        <option value="skip">skipped</option>
+      </select>
+      <input type="text" id="sg-me" placeholder="my UNI (hides yours)" autocomplete="off" />
+      <label class="meta"><input type="checkbox" id="sg-closed" /> closed too</label>
+    </form>
+
+    <p class="meta" id="sg-count"></p>
+    <div id="sg-list"></div>
+  </div>
+
+  <script is:inline>
+    const OWNER = 'ZhangZhuoSJTU';
+    const LIST_REPO = 'Columbia-COMS-W4181-Security1-project-list';
+    const TITLE = /^\W*([a-z]{2,4}\d{3,5})\s*[-_: ]*\s*round\s*[-_ ]*(\d+)/i;
+    const $ = (id) => document.getElementById(id);
+    // Titles, logins and file names are written by other people: build DOM, never innerHTML.
+    const h = (tag, props = {}, ...kids) => {
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(props)) {
+        if (v == null || v === false) continue;
+        if (k === 'class') el.className = v;
+        else if (k.startsWith('on')) el.addEventListener(k.slice(2), v);
+        else el.setAttribute(k, v === true ? '' : v);
+      }
+      el.append(...kids.flat().filter((k) => k != null && k !== false));
+      return el;
+    };
+    const store = {
+      get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+      set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+    };
+
+    const MARKS = ['', 'looking', 'found', 'skip'];
+    const marks = store.get('sigsegv-marks', {});
+    const prefs = { q: '', round: '', sort: 'new', mark: 'all', me: '', closed: false, ...store.get('sigsegv-prefs', {}) };
+    const state = { projects: {}, prs: [], generated: null, live: null };
+
+    const key = (p) => `${p.repo}#${p.n}`;
+    const url = (p) => `https://github.com/${OWNER}/${p.repo}/pull/${p.n}`;
+    const size = (p) => (p.nf != null ? p.a + p.d : null);
+    const open = (p) => p.state === 'open';
+
+    function ago(iso) {
+      const m = (Date.now() - new Date(iso)) / 60000;
+      if (m < 1.5) return 'just now';
+      if (m < 60) return `${Math.round(m)}m ago`;
+      if (m < 1440) return `${Math.round(m / 60)}h ago`;
+      if (m < 43200) return `${Math.round(m / 1440)}d ago`;
+      return new Date(iso).toLocaleDateString();
+    }
+    // Clipboard command: fetch the PR head into a fresh clone and run the course harness.
+    const checkout = (p) =>
+      `git clone https://github.com/${OWNER}/${p.repo}.git && cd ${p.repo} && git fetch origin pull/${p.n}/head:pr-${p.n} && git checkout pr-${p.n} && ./test.sh`;
+
+    function fromSearch(i) {
+      const t = i.title.match(TITLE);
+      return {
+        repo: i.repository_url.split('/').pop(), n: i.number, title: i.title,
+        uni: t ? t[1].toLowerCase() : null, round: t ? Number(t[2]) : null,
+        by: i.user.login, state: i.pull_request?.merged_at ? 'merged' : i.state,
+        created: i.created_at, updated: i.updated_at,
+      };
+    }
+
+    function visible() {
+      const q = prefs.q.trim().toLowerCase();
+      const me = prefs.me.trim().toLowerCase();
+      const rows = state.prs.filter((p) => {
+        if (!prefs.closed && !open(p)) return false;
+        if (prefs.round === 'other' ? p.round : prefs.round ? p.round !== Number(prefs.round) : !p.round) return false;
+        if (me && p.uni === me) return false;
+        const m = marks[key(p)] || '';
+        if (prefs.mark === 'none' ? m : prefs.mark !== 'all' && m !== prefs.mark) return false;
+        if (!q) return true;
+        const hay = [p.uni, p.by, p.title, p.repo, state.projects[p.repo]?.name, ...(p.files ?? []).map((f) => f[0])];
+        return hay.join(' ').toLowerCase().includes(q);
+      });
+      const name = (p) => state.projects[p.repo]?.name ?? p.repo;
+      const by = {
+        new: (a, b) => new Date(b.created) - new Date(a.created),
+        small: (a, b) => (size(a) ?? Infinity) - (size(b) ?? Infinity),
+        large: (a, b) => (size(b) ?? -1) - (size(a) ?? -1),
+        project: (a, b) => name(a).localeCompare(name(b), undefined, { sensitivity: 'base' }) || a.n - b.n,
+      };
+      return rows.sort(by[prefs.sort]);
+    }
+
+    function card(p) {
+      const proj = state.projects[p.repo];
+      const mark = marks[key(p)] || '';
+      const files = p.files ?? [];
+      const shown = files.slice(0, 4);
+      const rest = (p.nf ?? 0) - shown.length;
+      return h('article', { class: `sg-pr${mark ? ' is-' + mark : ''}` },
+        h('div', { class: 'sg-top' },
+          h('a', { class: 'sg-name', href: url(p), target: '_blank', rel: 'noopener' }, proj?.name ?? p.repo),
+          h('span', { class: 'sg-uni' }, p.uni ? `${p.uni}-Round${p.round}` : p.title),
+          !open(p) && h('span', { class: 'sg-tag' }, p.state),
+          p.live && h('span', { class: 'sg-tag new' }, 'new'),
+          p.stale && h('span', { class: 'sg-tag' }, 'changed since snapshot'),
+        ),
+        h('p', { class: 'meta sg-meta' },
+          size(p) != null
+            ? [h('span', { class: 'add' }, `+${p.a}`), ' ', h('span', { class: 'del' }, `−${p.d}`), ` · ${p.more ? '100+' : p.nf} file${p.nf === 1 ? '' : 's'}`]
+            : 'diff size pending',
+          ` · opened ${ago(p.created)}`,
+          p.updated !== p.created && ` · updated ${ago(p.updated)}`,
+          proj && ` · ${proj.kept} tests`,
+        ),
+        shown.length > 0 && h('p', { class: 'sg-files' },
+          shown.map((f) => h('code', { title: f[0] }, f[0].split('/').slice(-2).join('/'), h('i', {}, ` +${f[1]} −${f[2]}`))),
+          rest > 0 && h('span', { class: 'meta' }, `+${rest}${p.more ? '+' : ''} more`),
+        ),
+        h('div', { class: 'sg-actions' },
+          h('a', { href: url(p) + '/files', target: '_blank', rel: 'noopener' }, 'files'),
+          h('a', { href: url(p) + '.diff', target: '_blank', rel: 'noopener' }, 'raw diff'),
+          h('button', { type: 'button', onclick: (e) => copy(checkout(p), e.target) }, 'copy checkout'),
+          h('button', { type: 'button', class: 'mark', onclick: () => cycle(p) }, mark || 'mark'),
+        ),
+      );
+    }
+
+    async function copy(text, btn) {
+      const label = btn.textContent;
+      try { await navigator.clipboard.writeText(text); btn.textContent = 'copied ✓'; } catch { btn.textContent = 'copy failed'; }
+      setTimeout(() => (btn.textContent = label), 1200);
+    }
+    function cycle(p) {
+      const next = MARKS[(MARKS.indexOf(marks[key(p)] || '') + 1) % MARKS.length];
+      if (next) marks[key(p)] = next; else delete marks[key(p)];
+      store.set('sigsegv-marks', marks);
+      render();
+    }
+
+    function status() {
+      const bits = [];
+      if (state.generated) bits.push(`snapshot ${ago(state.generated)}`);
+      if (state.live === 'ok') bits.push('live ✓');
+      else if (state.live === 'fail') bits.push('live check unavailable');
+      const fresh = state.prs.filter((p) => p.live).length;
+      if (fresh) bits.push(`${fresh} new since snapshot`);
+      $('sg-status').textContent = bits.join(' · ') || 'loading…';
+    }
+
+    function render() {
+      const rounds = [...new Set(state.prs.map((p) => p.round).filter(Boolean))].sort((a, b) => a - b);
+      const sel = $('sg-round');
+      sel.replaceChildren(
+        h('option', { value: '' }, 'all rounds'),
+        ...rounds.map((r) => h('option', { value: r }, `round ${r}`)),
+        h('option', { value: 'other' }, 'other PRs'),
+      );
+      sel.value = prefs.round;
+      const rows = visible();
+      $('sg-count').textContent = `${rows.length} of ${state.prs.length} pull requests`;
+      $('sg-list').replaceChildren(...rows.map(card));
+      status();
+    }
+
+    async function refreshLive() {
+      try {
+        const q = encodeURIComponent(`is:pr user:${OWNER}`);
+        const r = await fetch(`https://api.github.com/search/issues?q=${q}&sort=updated&order=desc&per_page=100`, { headers: { accept: 'application/vnd.github+json' } });
+        if (!r.ok) throw new Error(r.status);
+        const known = new Map(state.prs.map((p) => [key(p), p]));
+        for (const item of (await r.json()).items) {
+          const fresh = fromSearch(item);
+          if (fresh.repo === LIST_REPO || !state.projects[fresh.repo]) continue;
+          const old = known.get(key(fresh));
+          if (!old) state.prs.push({ ...fresh, live: true });
+          else if (old.updated !== fresh.updated) Object.assign(old, fresh, { stale: old.nf != null });
+        }
+        state.live = 'ok';
+      } catch { state.live = 'fail'; }
+      render();
+    }
+
+    async function init() {
+      $('sg-q').value = prefs.q; $('sg-sort').value = prefs.sort; $('sg-mark').value = prefs.mark;
+      $('sg-me').value = prefs.me; $('sg-closed').checked = prefs.closed;
+      try {
+        const snap = await (await fetch('/sigsegv.json', { cache: 'no-cache' })).json();
+        Object.assign(state, { projects: snap.projects, prs: snap.prs, generated: snap.generated });
+      } catch { $('sg-status').textContent = 'could not load snapshot'; }
+      render();
+      refreshLive();
+      setInterval(() => document.visibilityState === 'visible' && refreshLive(), 180000);
+      document.addEventListener('visibilitychange', () => document.visibilityState === 'visible' && refreshLive());
+    }
+
+    $('sg-bar').addEventListener('input', () => {
+      Object.assign(prefs, { q: $('sg-q').value, round: $('sg-round').value, sort: $('sg-sort').value, mark: $('sg-mark').value, me: $('sg-me').value, closed: $('sg-closed').checked });
+      store.set('sigsegv-prefs', prefs);
+      render();
+    });
+    init();
+  </script>
+</Base>
+
+<style is:global>
+  body:has(.sg) .wrap { max-width: 60rem; }
+  .sg-bar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }
+  .sg-bar input[type='text'] { width: auto; flex: 1 1 14rem; padding: .5rem .7rem; font-size: .92rem; }
+  #sg-me { flex: 0 1 11rem; }
+  .sg-bar select { font: .85rem var(--sans); padding: .5rem .6rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); }
+  .sg-bar label { display: flex; gap: .35rem; align-items: center; }
+  #sg-list { display: grid; gap: .6rem; margin-top: .8rem; }
+  .sg-pr { background: var(--card); border-radius: 10px; padding: .8rem 1rem; border-left: 3px solid transparent; }
+  .sg-pr.is-looking { border-left-color: var(--accent); }
+  .sg-pr.is-found { border-left-color: #3f9a5a; }
+  .sg-pr.is-skip { opacity: .5; }
+  .sg-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: .3rem .7rem; }
+  .sg-name { font: 500 1.02rem var(--sans); text-decoration: none; }
+  .sg-name:hover { text-decoration: underline; }
+  .sg-uni { font: .85rem var(--mono); color: var(--muted); }
+  .sg-tag { font: .7rem var(--mono); padding: .05rem .4rem; border-radius: 99px; border: 1px solid var(--faint); color: var(--muted); }
+  .sg-tag.new { border-color: var(--accent); color: var(--accent); }
+  .sg-meta { margin: .25rem 0 0; }
+  .sg-meta .add { color: #3f9a5a; }
+  .sg-meta .del { color: var(--accent); }
+  .sg-files { margin: .5rem 0 0; display: flex; flex-wrap: wrap; gap: .3rem .4rem; align-items: center; }
+  .sg-files code { font: .75rem var(--mono); background: var(--bg); border-radius: 4px; padding: .1rem .4rem; }
+  .sg-files code i { font-style: normal; color: var(--muted); }
+  .sg-actions { display: flex; flex-wrap: wrap; gap: .9rem; margin-top: .55rem; font: .8rem var(--mono); }
+  .sg-actions a, .sg-actions button { color: var(--muted); text-decoration: none; background: none; border: 0; padding: 0; font: inherit; cursor: pointer; }
+  .sg-actions a:hover, .sg-actions button:hover { color: var(--accent); }
+  .sg-actions .mark { margin-left: auto; }
+</style>
