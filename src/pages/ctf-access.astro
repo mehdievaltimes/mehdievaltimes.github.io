@@ -1,0 +1,49 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="CTF access" sheep={false}>
+  <header class="post-head">
+    <h1>CTF access</h1>
+    <p class="meta">Columbia / Barnard only · enrolled students · I approve requests by hand</p>
+  </header>
+  <div class="card demo">
+    <div id="out"><button id="signin">Sign in with Google</button></div>
+    <p class="meta" id="msg"></p>
+  </div>
+</Base>
+
+<script>
+  import { initializeApp } from 'firebase/app';
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth';
+  import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
+
+  // Public by design (see the CTF repo README). Paste from Firebase > Project settings > Your apps.
+  const app = initializeApp({
+    apiKey: 'REPLACE',
+    authDomain: 'ctf-security-e6e33.firebaseapp.com',
+    projectId: 'ctf-security-e6e33',
+    appId: 'REPLACE',
+  });
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const $ = (id: string) => document.getElementById(id)!;
+  const say = (t: string) => ($('msg').textContent = t);
+
+  $('signin').onclick = async () => {
+    try {
+      const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
+      const email = user.email ?? '';
+      if (!/@(columbia|barnard)\.edu$/i.test(email)) {
+        await signOut(auth);
+        return say('Columbia or Barnard accounts only.');
+      }
+      if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} is already approved. Go solve it.`);
+      if ((await getDoc(doc(db, 'requests', email))).exists()) return say('Already requested. Waiting on approval.');
+      const name = prompt('Your name (as in the class roster)?') ?? '';
+      await setDoc(doc(db, 'requests', email), { email, name: name.trim().slice(0, 80), at: serverTimestamp() });
+      say(`Requested for ${email}. You'll be able to log in once I approve it.`);
+    } catch (e) {
+      say('Something went wrong: ' + (e as Error).message);
+    }
+  };
+</script>
