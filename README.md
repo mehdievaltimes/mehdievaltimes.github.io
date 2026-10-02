@@ -65,3 +65,14 @@ items:
 Only `title` is required on an item; only `week` and `starts` on the week.
 
 No comments, no view counts, no likes.
+
+## SIGSEGV board (`/sigsegv`)
+
+Unlisted page that lists every pull request on the COMS W4181 course forks (`scripts/fetch-sigsegv.mjs`
+-> `public/sigsegv.json`). The snapshot is rebuilt on every deploy; `sigsegv-refresh.yml` polls every
+10 minutes and redeploys only when the PR data changed. The page also does one live GitHub search on
+load, so new PRs show up before the next deploy. Marks and filters live in `localStorage`.
+
+```sh
+GH_TOKEN=... node scripts/fetch-sigsegv.mjs   # token optional; unauthenticated is limited to 60 calls/hour
+```

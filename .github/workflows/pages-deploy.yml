@@ -24,6 +24,11 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
+      - name: Refresh SIGSEGV board snapshot
+        run: node scripts/fetch-sigsegv.mjs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREV_URL: https://mehdievaltimes.github.io/sigsegv.json
       - run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:
