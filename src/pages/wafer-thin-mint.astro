@@ -1,13 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="CTF access" sheep={false} noindex>
+<Base title="A wafer-thin mint" sheep={false} noindex>
   <header class="post-head">
-    <h1>CTF access</h1>
-    <p class="meta">Columbia / Barnard only · enroll yourself, then go back to the portal</p>
+    <h1>A wafer-thin mint?</h1>
+    <p class="meta">Oh sir, it&rsquo;s only wafer thin. (Columbia / Barnard only.)</p>
   </header>
   <div class="card demo">
-    <div id="out"><button id="signin">Sign in with Google</button></div>
+    <div id="out"><button id="signin">Just one, sir</button></div>
     <p class="meta" id="msg"></p>
   </div>
 </Base>
@@ -35,14 +35,14 @@ import Base from '../layouts/Base.astro';
       const email = user.email ?? '';
       if (!/@(columbia|barnard)\.edu$/i.test(email)) {
         await signOut(auth);
-        return say('Columbia or Barnard accounts only.');
+        return say('Not on the menu, sir. Columbia or Barnard accounts only.');
       }
-      if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} is already enrolled. Go solve it.`);
+      if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} has already had the mint. Off you go.`);
       const name = prompt('Your name (as in the class roster)?') ?? '';
       await setDoc(doc(db, 'allowlist', email), { email, name: name.trim().slice(0, 80), at: serverTimestamp() });
-      say(`${email} is enrolled. Return to the portal and sign in.`);
+      say(`${email} has been served. Thank you, sir. Return to the portal and sign in.`);
     } catch (e) {
-      say('Something went wrong: ' + (e as Error).message);
+      say('Bucket! ' + (e as Error).message);
     }
   };
 </script>
