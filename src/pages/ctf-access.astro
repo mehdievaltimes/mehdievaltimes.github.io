@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="CTF access" sheep={false}>
+<Base title="CTF access" sheep={false} noindex>
   <header class="post-head">
     <h1>CTF access</h1>
-    <p class="meta">Columbia / Barnard only · enrolled students · I approve requests by hand</p>
+    <p class="meta">Columbia / Barnard only · enroll yourself, then go back to the portal</p>
   </header>
   <div class="card demo">
     <div id="out"><button id="signin">Sign in with Google</button></div>
@@ -19,10 +19,10 @@ import Base from '../layouts/Base.astro';
 
   // Public by design (see the CTF repo README). Paste from Firebase > Project settings > Your apps.
   const app = initializeApp({
-    apiKey: 'REPLACE',
+    apiKey: 'AIzaSyA28heB-dk12mFoMZA4AKV0lPvQHaFSiAU',
     authDomain: 'ctf-security-e6e33.firebaseapp.com',
     projectId: 'ctf-security-e6e33',
-    appId: 'REPLACE',
+    appId: '1:303699764243:web:9430387018ff7a82bf0be6',
   });
   const auth = getAuth(app);
   const db = getFirestore(app);
@@ -37,11 +37,10 @@ import Base from '../layouts/Base.astro';
         await signOut(auth);
         return say('Columbia or Barnard accounts only.');
       }
-      if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} is already approved. Go solve it.`);
-      if ((await getDoc(doc(db, 'requests', email))).exists()) return say('Already requested. Waiting on approval.');
+      if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} is already enrolled. Go solve it.`);
       const name = prompt('Your name (as in the class roster)?') ?? '';
-      await setDoc(doc(db, 'requests', email), { email, name: name.trim().slice(0, 80), at: serverTimestamp() });
-      say(`Requested for ${email}. You'll be able to log in once I approve it.`);
+      await setDoc(doc(db, 'allowlist', email), { email, name: name.trim().slice(0, 80), at: serverTimestamp() });
+      say(`${email} is enrolled. Return to the portal and sign in.`);
     } catch (e) {
       say('Something went wrong: ' + (e as Error).message);
     }
