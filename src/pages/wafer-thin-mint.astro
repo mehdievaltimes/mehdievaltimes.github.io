@@ -8,6 +8,11 @@ import Base from '../layouts/Base.astro';
   </header>
   <div class="card demo">
     <div id="gate">
+      <!--
+        The maitre d' leans in: "Oh sir, it's only wafer thin."
+        Mr. Creosote, stuffed past all reason, hesitates... and answers him in a few words
+        (just one, to the maitre d').
+      -->
       <p>Mr. Creosote, a wafer-thin mint?</p>
       <input id="phrase" type="text" autocomplete="off" spellcheck="false" placeholder="say it" />
     </div>
@@ -51,13 +56,14 @@ import Base from '../layouts/Base.astro';
     try {
       const { user } = await signInWithPopup(auth, new GoogleAuthProvider());
       const email = user.email ?? '';
+      const name = (user.displayName ?? '').trim().slice(0, 80);
       if (!/@(columbia|barnard)\.edu$/i.test(email)) {
         await signOut(auth);
         return say('Not on the menu, sir. Columbia or Barnard accounts only.');
       }
       if ((await getDoc(doc(db, 'allowlist', email))).exists()) return say(`${email} has already had the mint. Off you go.`);
-      await setDoc(doc(db, 'allowlist', email), { email, name: '', phrase: norm(phrase.value), at: serverTimestamp() });
-      say(`${email} has been served. Thank you, sir. Now go back the way you came. The gate will know you.`);
+      await setDoc(doc(db, 'allowlist', email), { email, name, phrase: norm(phrase.value), at: serverTimestamp() });
+      say(`${name || email}, you have been served. Thank you, sir. Now go back the way you came. The gate will know you.`);
     } catch (e) {
       say('Bucket! ' + (e as Error).message);
     }
