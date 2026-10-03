@@ -15,6 +15,7 @@ import Base from '../layouts/Base.astro';
       -->
       <p>Mr. Creosote, a wafer-thin mint?</p>
       <input id="phrase" type="text" autocomplete="off" spellcheck="false" placeholder="Creosote&rsquo;s answer" />
+      <button id="confirm" type="button">Confirm</button>
     </div>
     <div id="out" hidden><button id="signin">Sign in with Google</button></div>
     <p class="meta" id="msg"></p>
@@ -44,13 +45,17 @@ import Base from '../layouts/Base.astro';
   const sha = async (t: string) =>
     [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(t)))].map((b) => b.toString(16).padStart(2, '0')).join('');
   const phrase = $('phrase') as HTMLInputElement;
-  phrase.addEventListener('input', async () => {
+  const confirm = async () => {
     if ((await sha(norm(phrase.value))) === HASH) {
       $('gate').hidden = true;
       $('out').hidden = false;
       say('');
+    } else {
+      say("That's not what he said.");
     }
-  });
+  };
+  $('confirm').onclick = confirm;
+  phrase.addEventListener('keydown', (e) => { if (e.key === 'Enter') confirm(); });
 
   $('signin').onclick = async () => {
     try {
