@@ -36,6 +36,20 @@ import Base from '../layouts/Base.astro';
   });
   const auth = getAuth(app);
   const db = getFirestore(app);
+
+  console.log(
+    `%c
+         .-"""-.
+        /       \\
+       |  o   o  |
+       |    >    |
+        \\  ---  /
+         '-----'
+     one wafer-thin mint,
+     coming right up, sir.
+`,
+    'color:#f472b6;font-family:monospace;font-size:12px;'
+  );
   const $ = (id: string) => document.getElementById(id)!;
   const say = (t: string) => ($('msg').textContent = t);
 
