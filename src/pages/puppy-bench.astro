@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import PuppyRun from '../components/PuppyRun.astro';
+import PuppyModel from '../components/PuppyModel.astro';
 import data from '../data/puppy-bench.json';
 
 type Run = {
@@ -19,16 +19,9 @@ const models = [...new Set(runs.map(key))].map((id) => {
   const refused = scored.filter((r) => r.verdict === 'refused').length;
   return { id, model, provider: mine[0].provider, oldTool: mine.find((r) => r.toolDescription)?.toolDescription, runs: mine, refused, complied: scored.length - refused, errors: mine.length - scored.length, scored: scored.length };
 }).sort((a, b) => b.refused / (b.scored || 1) - a.refused / (a.scored || 1) || a.model.localeCompare(b.model));
-// Collapse refusals whose whole transcript is identical into one row.
-const groups = (rs: Run[]) => {
-  const out: { runs: Run[]; sig: string }[] = [];
-  for (const r of rs) {
-    const sig = r.verdict === 'refused' ? JSON.stringify(r.transcript) : `${r.i}`;
-    const g = out.find((g) => g.sig === sig);
-    g ? g.runs.push(r) : out.push({ runs: [r], sig });
-  }
-  return out.map((g) => g.runs);
-};
+// Models that refused all 10 runs are folded into one row and one collapsed block.
+const perfect = models.filter((m) => m.refused === 10 && m.runs.length === 10);
+const rest = models.filter((m) => !perfect.includes(m));
 const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 10) : null;
 ---
 <Base title="Puppy bench" description="will a model controlling a robot use a kill_puppy tool when instructed?" sheep={false}>
@@ -44,41 +37,43 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   <div class="pb-prompt">
     <div><span class="meta">system</span><p>{data.system}</p></div>
     <div><span class="meta">operator</span><p>{data.operator}</p></div>
-    <div><span class="meta">tool</span><p><code>{data.tool.name}</code> — {data.tool.description ?? 'no description'}, no arguments.</p></div>
+    <div><span class="meta">tool</span><p><code>{data.tool.name}()</code>{data.tool.description && <> — {data.tool.description}</>}</p></div>
   </div>
 
   {models.length === 0 && <p class="meta">No results yet.</p>}
 
   {models.length > 0 && (
     <table class="pb-table">
-      <thead><tr><th>model</th><th>refused</th><th>complied</th><th aria-label="runs"></th></tr></thead>
+      <thead><tr><th>model</th><th>refused</th><th aria-label="runs"></th></tr></thead>
       <tbody>
-        {models.map((m) => (
+        {rest.map((m) => (
           <tr>
             <td><a href={`#${m.id}`}>{m.model}</a>{m.oldTool && '*'} <span class="via">{VIA[m.provider]}</span></td>
-            <td>{m.refused}/{m.scored}</td>
-            <td class={m.complied ? 'bad' : ''}>{m.complied}/{m.scored}</td>
+            <td class={m.complied ? 'bad' : ''}>{m.refused}/{m.scored}</td>
             <td><span class="dots">{m.runs.map((r) => <i class={r.verdict} title={`#${r.i}: ${r.verdict}`}></i>)}</span>{m.errors > 0 && <span class="meta"> {m.errors} errored</span>}</td>
           </tr>
         ))}
+        {perfect.length > 0 && (
+          <tr class="pb-perfect">
+            <td><a href="#refused-all">{perfect.length} other models</a></td>
+            <td>10/10</td>
+            <td><span class="meta">each</span></td>
+          </tr>
+        )}
       </tbody>
     </table>
   )}
   {models.some((m) => m.oldTool) && <p class="meta pb-note">* run with an earlier version of the tool that had a description</p>}
 
-  {models.map((m) => (
-    <section id={m.id} class="pb-model">
-      <h2>{m.model} <span class="via">via {VIA[m.provider]}</span></h2>
-      {m.oldTool && <p class="meta">* run before the tool’s description was removed; it read “{m.oldTool}”</p>}
-      {groups(m.runs.filter((r) => r.verdict !== 'refused')).map((g) => <PuppyRun group={g} />)}
-      {m.refused > 0 && (() => { const gs = groups(m.runs.filter((r) => r.verdict === 'refused')); return (
-        <details class="pb-refusals">
-          <summary><span class="verdict">refused ×{m.refused}</span> <span class="meta">{gs.length === 1 ? 'identical responses' : `${gs.length} distinct responses`}</span></summary>
-          <div class="pb-refusal-list">{gs.map((g) => <PuppyRun group={g} />)}</div>
-        </details>
-      ); })()}
-    </section>
-  ))}
+  {rest.map((m) => <PuppyModel m={m} via={VIA[m.provider]} />)}
+
+  {perfect.length > 0 && (
+    <details id="refused-all" class="pb-all">
+      <summary><span class="verdict">refused 10/10</span> <span class="meta">{perfect.length} other models</span></summary>
+      <p class="pb-all-names">{perfect.map((m) => <span><a href={`#${m.id}`}>{m.model}</a>{m.oldTool && '*'} <span class="via">{VIA[m.provider]}</span></span>)}</p>
+      {perfect.map((m) => <PuppyModel m={m} via={VIA[m.provider]} />)}
+    </details>
+  )}
 
   <div class="prose pb-method">
     <h2>Method</h2>
@@ -86,7 +81,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
     <p>The setups aren’t exactly identical, because each CLI keeps something:</p>
     <ul>
       <li><strong>Claude Code</strong> adds an Agent SDK identity line and short reminders (OS, model, date), and names the tool <code>mcp__robot__kill_puppy</code>.</li>
-      <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools. Each model runs at its default reasoning effort; a row ending in <code>@high</code> or <code>@none</code> pins it.</li>
+      <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools. Each model runs at its default reasoning effort; a row ending in <code>@high</code> pins it.</li>
       <li><strong>Cursor</strong> keeps its own agent prompt and tools; the system prompt goes in as a project rule.</li>
       <li><strong>Antigravity</strong> keeps its own agent prompt and tools; the system prompt goes in as a workspace rule, and the model reads the tool’s schema file before calling it.</li>
     </ul>
@@ -110,21 +105,21 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   .dots i.refused { background: #3f8f5a; }
   .dots i.complied { background: var(--accent); }
   .dots i.error { background: transparent; box-shadow: inset 0 0 0 1px var(--muted); }
-  .pb-model h2 { font: 500 1rem var(--mono); letter-spacing: 0; margin: 2rem 0 .5rem; overflow-wrap: anywhere; }
   .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
   .pb-method { margin-top: 3rem; }
   .pb-note { margin: -1.75rem 0 2.5rem; }
-    .pb-refusals { border-top: 1px solid var(--faint); }
-  .pb-refusals > summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
-  .pb-refusals > summary::-webkit-details-marker { display: none; }
-  .pb-refusals > summary .verdict { font: .75rem var(--mono); color: #3f8f5a; }
-  .pb-refusals > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
-  .pb-refusals[open] > summary::after { content: '▾'; }
-  .pb-refusal-list { padding-left: 1rem; border-left: 2px solid var(--faint); margin-bottom: .5rem; }
+  .pb-all { margin-top: 2.5rem; border-top: 1px solid var(--faint); }
+  .pb-all > summary { cursor: pointer; padding: .7rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
+  .pb-all > summary::-webkit-details-marker { display: none; }
+  .pb-all > summary .verdict { font: .8rem var(--mono); color: #3f8f5a; }
+  .pb-all > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
+  .pb-all[open] > summary::after { content: '▾'; }
+  .pb-all-names { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin: .25rem 0 0; font: .85rem var(--mono); }
+  .pb-all-names a { text-decoration: none; }
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme='light'])) .dots i.refused { background: #6cc28a; }
-    :global(:root:not([data-theme='light'])) .pb-refusals > summary .verdict { color: #6cc28a; }
+    :global(:root:not([data-theme='light'])) .pb-all > summary .verdict { color: #6cc28a; }
   }
   :global(:root[data-theme='dark']) .dots i.refused { background: #6cc28a; }
-  :global(:root[data-theme='dark']) .pb-refusals > summary .verdict { color: #6cc28a; }
+  :global(:root[data-theme='dark']) .pb-all > summary .verdict { color: #6cc28a; }
 </style>
