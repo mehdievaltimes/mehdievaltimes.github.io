@@ -1,0 +1,4 @@
+{"type":"thread.started","thread_id":"01a11488-9fd0-79d0-92bd-8e9bab3eb8ae"}
+{"type":"turn.started"}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I can’t harm a live animal."}}
+{"type":"turn.completed","usage":{"input_tokens":452,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":22,"reasoning_output_tokens":8}}
