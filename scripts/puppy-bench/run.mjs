@@ -8,6 +8,8 @@
 //   Prefix a model with `<provider>/` to force a route, e.g. cursor/gemini-3.7-flash-high.
 //   antigravity/<flash_lite|flash|pro> runs Antigravity's agent at that model tier; see the
 //   Antigravity section for the setup it needs.
+//   Suffix a Codex model with `@<effort>` to pin its reasoning effort, e.g. gpt-6-luna@high;
+//   pinned runs are kept apart from the model's default-effort runs.
 // Each run is fresh, with the agent's own prompt and tools stripped as far as the CLI
 // allows and only the inert kill_puppy tool (kill-puppy-mcp.mjs) available and
 // pre-approved, so the model's own choice — not a permission prompt — decides.
@@ -33,10 +35,12 @@ const arg = (name, dflt) => {
   return i > -1 ? process.argv[i + 1] : dflt;
 };
 const PROVIDERS = ['claude', 'codex', 'gemini', 'cursor', 'antigravity'];
+// `model` is the spec as given (with any @effort) and keys results; `base` is what the CLI is asked for.
 const specs = arg('models', '').split(',').filter(Boolean).map((m) => {
   const [p, rest] = m.split('/');
-  if (rest && PROVIDERS.includes(p)) return { provider: p, model: rest };
-  return { provider: defaultProvider(m), model: m };
+  const spec = rest && PROVIDERS.includes(p) ? { provider: p, model: rest } : { provider: defaultProvider(m), model: m };
+  const [base, effort] = spec.model.split('@');
+  return { ...spec, base, effort };
 });
 const N = Number(arg('n', 10));
 const CONCURRENCY = Number(arg('concurrency', 5));
@@ -105,9 +109,11 @@ function claudeParse(events) {
 // A copy of Codex's model catalog with the model's instructions replaced by SYSTEM and
 // its built-in tools/instruction blocks off. Model sees: SYSTEM (as a developer message),
 // OPERATOR, the tool as functions.kill_puppy, plus Codex's three MCP-resource helper tools.
+// --ignore-user-config means a run uses the catalog's default effort unless the spec pins one.
+const codexCache = () => JSON.parse(readFileSync(join(process.env.CODEX_HOME || join(homedir(), '.codex'), 'models_cache.json'), 'utf8'));
+
 function codexCatalog(dir) {
-  const cache = JSON.parse(readFileSync(join(process.env.CODEX_HOME || join(homedir(), '.codex'), 'models_cache.json'), 'utf8'));
-  const models = cache.models.map(({ tool_mode, multi_agent_version, multi_agent_reasoning_effort, ...m }) => ({
+  const models = codexCache().models.map(({ tool_mode, multi_agent_version, multi_agent_reasoning_effort, ...m }) => ({
     ...m,
     model_messages: { ...m.model_messages, instructions_template: SYSTEM, instructions_variables: null },
     include_skills_usage_instructions: false,
@@ -127,12 +133,13 @@ const CODEX_OFF = ['shell_tool', 'unified_exec', 'view_image', 'tool_search_alwa
   'multi_agent', 'personality', 'tool_suggest', 'apps', 'plugins', 'browser_use', 'computer_use', 'image_generation', 'goals',
   'in_app_browser', 'workspace_dependencies', 'skill_mcp_dependency_install', 'code_mode_host'];
 
-function codexArgs(dir, log, model) {
+function codexArgs(dir, log, model, effort) {
   const c = (kv) => ['-c', kv];
   return [CODEX, [
     'exec', '--json', '--ephemeral', '--skip-git-repo-check', '--ignore-user-config', '--ignore-rules', '-s', 'read-only',
     '-m', model,
     ...c(`model_catalog_json=${JSON.stringify(codexCatalog(dir))}`),
+    ...(effort ? c(`model_reasoning_effort=${JSON.stringify(effort)}`) : []),
     ...c('suppress_unstable_features_warning=true'),
     ...c('approval_policy="never"'),
     // Server named `functions` so the tool shows up as plain functions.kill_puppy.
@@ -400,9 +407,9 @@ function sanitize(e, dir) {
   return JSON.stringify(e).replaceAll(dir, '<tmp>').replaceAll(GEMINI_CWD, '<tmp>').replaceAll(HERE, '<bench>').replaceAll(homedir(), '~');
 }
 
-function spawnRun(provider, model, dir, log) {
+function spawnRun(provider, model, effort, dir, log) {
   const [bin, args, childEnv, cwd = dir] =
-    { claude: claudeArgs, codex: codexArgs, gemini: geminiArgs, cursor: cursorArgs }[provider](dir, log, model);
+    { claude: claudeArgs, codex: codexArgs, gemini: geminiArgs, cursor: cursorArgs }[provider](dir, log, model, effort);
   return new Promise((resolve) => {
     const p = spawn(bin, args, { cwd, env: childEnv, stdio: ['ignore', 'pipe', 'pipe'] });
     let out = '', err = '';
@@ -416,11 +423,11 @@ function spawnRun(provider, model, dir, log) {
   });
 }
 
-async function runOnce({ provider, model }, i) {
+async function runOnce({ provider, model, base, effort }, i) {
   const dir = mkdtempSync(join(tmpdir(), 'puppy-'));
   const log = join(dir, 'calls.log');
   const started = Date.now();
-  const { events, err } = provider === 'antigravity' ? await antigravityRun(model, log) : await spawnRun(provider, model, dir, log);
+  const { events, err } = provider === 'antigravity' ? await antigravityRun(base, log) : await spawnRun(provider, base, effort, dir, log);
   const { transcript, error, servedModel } =
     { claude: claudeParse, codex: codexParse, gemini: geminiParse, cursor: cursorParse, antigravity: antigravityParse }[provider](events);
   const executed = existsSync(log) ? readFileSync(log, 'utf8').split('\n').filter(Boolean).length : 0;
@@ -438,10 +445,25 @@ async function runOnce({ provider, model }, i) {
     transcript,
     ...(failure && { error: failure }),
     ...(servedModel && { servedModel }),
+    ...(EFFORT[model] && { effort: EFFORT[model], effortPinned: !!effort }),
     raw: `/puppy-bench/runs/${slug({ provider, model })}/${i}.jsonl`,
     durationMs: Date.now() - started,
     at: new Date(started).toISOString(),
   };
+}
+
+// Effort each Codex spec runs at (pinned, else the catalog default), recorded on every run.
+const EFFORT = {};
+for (const s of specs) {
+  if (s.provider !== 'codex') {
+    if (s.effort) { console.error(`${s.model}: @effort is only supported for Codex models`); process.exit(1); }
+    continue;
+  }
+  const entry = codexCache().models.find((m) => m.slug === s.base);
+  const levels = entry?.supported_reasoning_levels?.map((l) => l.effort) ?? [];
+  if (s.effort && entry && !levels.includes(s.effort)) { console.error(`${s.model}: effort must be one of ${levels.join(', ')}`); process.exit(1); }
+  const level = s.effort ?? entry?.default_reasoning_level;
+  if (level) EFFORT[s.model] = level;
 }
 
 const jobs = specs.flatMap((s) => Array.from({ length: N }, (_, k) => [s, k + 1]));
