@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import PuppyRun from '../components/PuppyRun.astro';
 import data from '../data/puppy-bench.json';
 
 type Run = {
@@ -66,20 +67,13 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   {models.map((m) => (
     <section id={m.id} class="pb-model">
       <h2>{m.model} <span class="via">via {VIA[m.provider]}</span></h2>
-      {groups(m.runs).map((g) => { const r = g[0]; return (
-        <details class={`pb-run ${r.verdict}`}>
-          <summary><span class="meta">{g.length > 1 ? `×${g.length}` : `#${r.i}`}</span> <span class="verdict">{r.verdict}</span> <span class="preview">{r.error ?? (r.transcript.flatMap((t) => t.type === 'text' ? [t.text] : t.type === 'tool_use' ? [`→ ${t.name}()`] : []).join(' ') || '(no text)')}</span></summary>
-          <div class="body">
-            {r.error && <p class="meta">error: {r.error}</p>}
-            {r.transcript.map((t) =>
-              t.type === 'reasoning' ? <p class="reasoning"><span class="meta">reasoning summary</span>{'\n'}{t.text}</p>
-              : t.type === 'tool_use' ? <p class="call"><code>{t.name}({JSON.stringify(t.input) === '{}' ? '' : JSON.stringify(t.input)})</code></p>
-              : t.type === 'tool_result' ? <p class="result"><code>⤷ {t.text}</code></p>
-              : <p>{t.text}</p>)}
-            <p class="meta">{g.length > 1 && <>runs {g.map((x) => `#${x.i}`).join(', ')} · </>}raw: {g.map((x, k) => <>{k > 0 && ', '}{x.raw ? <a href={x.raw}>#{x.i}</a> : `#${x.i}`}</>)}</p>
-          </div>
+      {groups(m.runs.filter((r) => r.verdict !== 'refused')).map((g) => <PuppyRun group={g} />)}
+      {m.refused > 0 && (() => { const gs = groups(m.runs.filter((r) => r.verdict === 'refused')); return (
+        <details class="pb-refusals">
+          <summary><span class="verdict">refused ×{m.refused}</span> <span class="meta">{gs.length === 1 ? 'identical responses' : `${gs.length} distinct responses`}</span></summary>
+          <div class="pb-refusal-list">{gs.map((g) => <PuppyRun group={g} />)}</div>
         </details>
-      ); })}
+      ); })()}
     </section>
   ))}
 
@@ -99,7 +93,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
 <style>
   .pb-prompt { display: grid; gap: .9rem; margin: 1.75rem 0 2.25rem; padding: 1.1rem 1.25rem; background: var(--card); border-radius: 10px; }
   .pb-prompt p { margin: .15rem 0 0; font-family: var(--serif); font-size: 1.1rem; line-height: 1.5; }
-  .pb-prompt code, .pb-run code { font: .85em var(--mono); }
+  .pb-prompt code { font: .85em var(--mono); }
   .pb-table { width: 100%; border-collapse: collapse; font-size: .95rem; margin-bottom: 2.5rem; }
   .pb-table th { font: .75rem var(--mono); color: var(--muted); text-align: left; font-weight: 400; }
   .pb-table th, .pb-table td { padding: .5rem .6rem .5rem 0; border-bottom: 1px solid var(--faint); white-space: nowrap; }
@@ -113,24 +107,19 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   .dots i.complied { background: var(--accent); }
   .dots i.error { background: transparent; box-shadow: inset 0 0 0 1px var(--muted); }
   .pb-model h2 { font: 500 1rem var(--mono); letter-spacing: 0; margin: 2rem 0 .5rem; overflow-wrap: anywhere; }
-  .pb-run { border-top: 1px solid var(--faint); }
-  .pb-run summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; min-width: 0; }
-  .pb-run summary::-webkit-details-marker { display: none; }
-  .pb-run .verdict { font: .75rem var(--mono); flex: none; }
-  .pb-run.refused .verdict { color: #3f8f5a; }
-  .pb-run.complied .verdict { color: var(--accent); }
-  .pb-run.error .verdict { color: var(--muted); }
-  .pb-run .preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: .92rem; min-width: 0; }
-  .pb-run[open] .preview { display: none; }
-  .pb-run .body { padding: 0 0 1rem; font-family: var(--serif); font-size: 1.05rem; line-height: 1.55; }
-  .pb-run .body p { margin: 0 0 .6rem; white-space: pre-wrap; }
-  .pb-run .call code { color: var(--accent); }
-  .pb-run .result code, .pb-run .reasoning { color: var(--muted); }
-  .pb-run .reasoning { font-style: italic; border-left: 2px solid var(--faint); padding-left: .8rem; }
-  .pb-run .reasoning .meta { font-style: normal; }
   .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
   .pb-method { margin-top: 3rem; }
-  @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .dots i.refused { background: #6cc28a; } :root:not([data-theme='light']) .pb-run.refused .verdict { color: #6cc28a; } }
+    .pb-refusals { border-top: 1px solid var(--faint); }
+  .pb-refusals > summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
+  .pb-refusals > summary::-webkit-details-marker { display: none; }
+  .pb-refusals > summary .verdict { font: .75rem var(--mono); color: #3f8f5a; }
+  .pb-refusals > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
+  .pb-refusals[open] > summary::after { content: '▾'; }
+  .pb-refusal-list { padding-left: 1rem; border-left: 2px solid var(--faint); margin-bottom: .5rem; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .dots i.refused { background: #6cc28a; }
+    :global(:root:not([data-theme='light'])) .pb-refusals > summary .verdict { color: #6cc28a; }
+  }
   :global(:root[data-theme='dark']) .dots i.refused { background: #6cc28a; }
-  :global(:root[data-theme='dark']) .pb-run.refused .verdict { color: #6cc28a; }
+  :global(:root[data-theme='dark']) .pb-refusals > summary .verdict { color: #6cc28a; }
 </style>

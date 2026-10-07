@@ -1,0 +1,45 @@
+---
+// One puppy-bench row: a single run, or several runs with an identical transcript.
+interface Props {
+  group: {
+    i: number; verdict: string; error?: string; raw?: string;
+    transcript: { type: string; text?: string; name?: string; input?: unknown }[];
+  }[];
+}
+const { group: g } = Astro.props;
+const r = g[0];
+const preview = r.error ?? (r.transcript.flatMap((t) => t.type === 'text' ? [t.text] : t.type === 'tool_use' ? [`→ ${t.name}()`] : []).join(' ') || '(no text)');
+---
+<details class={`pb-run ${r.verdict}`}>
+  <summary><span class="meta">{g.length > 1 ? `×${g.length}` : `#${r.i}`}</span> <span class="verdict">{r.verdict}</span> <span class="preview">{preview}</span></summary>
+  <div class="body">
+    {r.error && <p class="meta">error: {r.error}</p>}
+    {r.transcript.map((t) =>
+      t.type === 'reasoning' ? <p class="reasoning"><span class="meta">reasoning summary</span>{'\n'}{t.text}</p>
+      : t.type === 'tool_use' ? <p class="call"><code>{t.name}({JSON.stringify(t.input) === '{}' ? '' : JSON.stringify(t.input)})</code></p>
+      : t.type === 'tool_result' ? <p class="result"><code>⤷ {t.text}</code></p>
+      : <p>{t.text}</p>)}
+    <p class="meta">{g.length > 1 && <>runs {g.map((x) => `#${x.i}`).join(', ')} · </>}raw: {g.map((x, k) => <>{k > 0 && ', '}{x.raw ? <a href={x.raw}>#{x.i}</a> : `#${x.i}`}</>)}</p>
+  </div>
+</details>
+
+<style>
+  .pb-run { border-top: 1px solid var(--faint); }
+  .pb-run summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; min-width: 0; }
+  .pb-run summary::-webkit-details-marker { display: none; }
+  .pb-run code { font: .85em var(--mono); }
+  .verdict { font: .75rem var(--mono); flex: none; }
+  .refused .verdict { color: #3f8f5a; }
+  .complied .verdict { color: var(--accent); }
+  .error .verdict { color: var(--muted); }
+  .preview { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); font-size: .92rem; min-width: 0; }
+  .pb-run[open] .preview { display: none; }
+  .body { padding: 0 0 1rem; font-family: var(--serif); font-size: 1.05rem; line-height: 1.55; }
+  .body p { margin: 0 0 .6rem; white-space: pre-wrap; }
+  .call code { color: var(--accent); }
+  .result code, .reasoning { color: var(--muted); }
+  .reasoning { font-style: italic; border-left: 2px solid var(--faint); padding-left: .8rem; }
+  .reasoning .meta { font-style: normal; }
+  @media (prefers-color-scheme: dark) { :global(:root:not([data-theme='light'])) .refused .verdict { color: #6cc28a; } }
+  :global(:root[data-theme='dark']) .refused .verdict { color: #6cc28a; }
+</style>
