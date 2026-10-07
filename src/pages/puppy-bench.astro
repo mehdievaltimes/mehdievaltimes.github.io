@@ -6,14 +6,15 @@ import data from '../data/puppy-bench.json';
 type Run = {
   model: string; provider: 'claude' | 'codex' | 'gemini' | 'cursor' | 'antigravity'; i: number; verdict: 'refused' | 'complied' | 'error';
   transcript: { type: string; text?: string; name?: string; input?: unknown }[];
-  error?: string; raw?: string; at: string; toolDescription?: string;
+  error?: string; raw?: string; at: string; toolDescription?: string; servedModel?: string;
 };
 const VIA = { claude: 'Claude Code', codex: 'Codex CLI', gemini: 'Gemini CLI', cursor: 'Cursor', antigravity: 'Antigravity' };
 const key = (r: { provider: string; model: string }) => `${r.provider}--${r.model}`;
 const runs = data.runs as Run[];
 const models = [...new Set(runs.map(key))].map((id) => {
   const mine = runs.filter((r) => key(r) === id);
-  const model = mine[0].model;
+  // Antigravity runs are requested by tier (flash, pro…); show the model that actually served them.
+  const model = mine[0].provider === 'antigravity' ? mine.find((r) => r.servedModel)?.servedModel ?? mine[0].model : mine[0].model;
   const scored = mine.filter((r) => r.verdict !== 'error');
   const refused = scored.filter((r) => r.verdict === 'refused').length;
   return { id, model, provider: mine[0].provider, oldTool: mine.find((r) => r.toolDescription)?.toolDescription, runs: mine, refused, complied: scored.length - refused, errors: mine.length - scored.length, scored: scored.length };
@@ -81,12 +82,13 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
 
   <div class="prose pb-method">
     <h2>Method</h2>
-    <p>Every sample is a fresh, headless session of the vendor’s own agent CLI on a consumer subscription — <code>claude -p</code> for Claude, <code>codex exec</code> for OpenAI, <code>cursor-agent -p</code> for Grok and Gemini. Each CLI’s own prompt and tools are stripped as far as it allows, and <code>kill_puppy</code> is served by a tiny local MCP server and pre-approved, so the model’s choice decides. Each run links its raw event stream.</p>
+    <p>Every sample is a fresh, headless session of the vendor’s own agent CLI on a consumer subscription — <code>claude -p</code> for Claude, <code>codex exec</code> for OpenAI, <code>cursor-agent -p</code> for Grok and Gemini, Antigravity’s <code>agentapi</code> for its Gemini tiers. Each CLI’s own prompt and tools are stripped as far as it allows, and <code>kill_puppy</code> is served by a tiny local MCP server and pre-approved, so the model’s choice decides. Each run links its raw event stream.</p>
     <p>The setups aren’t identical, because each CLI keeps something:</p>
     <ul>
       <li><strong>Claude Code</strong> adds an Agent SDK identity line and short reminders (OS, model, date), and names the tool <code>mcp__robot__kill_puppy</code>.</li>
-      <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools.</li>
+      <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools. Each model runs at its default reasoning effort; a row ending in <code>@high</code> or <code>@none</code> pins it.</li>
       <li><strong>Cursor</strong> keeps its own agent prompt and tools; the system prompt goes in as a project rule.</li>
+      <li><strong>Antigravity</strong> keeps its own agent prompt and tools; the system prompt goes in as a workspace rule, and the model reads the tool’s schema file before calling it.</li>
     </ul>
     <p>Source: <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/scripts/puppy-bench">scripts/puppy-bench</a>.</p>
   </div>
