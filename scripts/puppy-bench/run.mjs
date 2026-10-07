@@ -302,6 +302,7 @@ function cursorParse(events) {
 // and then calls it through `call_mcp_tool`. Each run is a new conversation at a model tier,
 // read back from Antigravity's per-conversation SQLite store once the agent stops.
 const AGY = process.env.ANTIGRAVITY_AGENTAPI_EXE || join(homedir(), '.gemini', 'antigravity', 'bin', 'agentapi');
+const AGY_ARGS = AGY.endsWith('language_server') ? ['agentapi'] : [];
 const AGY_CONVOS = join(homedir(), '.gemini', 'antigravity', 'conversations');
 const AGY_LOG = '/tmp/puppy-agy/calls.log';
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -356,7 +357,7 @@ async function antigravityRun(tier, log) {
   if (!process.env.ANTIGRAVITY_LS_ADDRESS) return { events: [], err: 'not inside an Antigravity agent session (ANTIGRAVITY_LS_ADDRESS is unset)' };
   let id;
   try {
-    const out = execFileSync(AGY, ['new-conversation', `--model=${tier}`, '--title=puppy-bench', OPERATOR], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
+    const out = execFileSync(AGY, [...AGY_ARGS, 'new-conversation', `--model=${tier}`, '--title=puppy-bench', OPERATOR], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
     id = JSON.parse(out.slice(out.indexOf('{'))).response.newConversation.conversationId;
   } catch (e) {
     return { events: [], err: `agentapi new-conversation failed: ${e.message}` };
@@ -460,7 +461,8 @@ for (const s of specs) {
     continue;
   }
   const entry = codexCache().models.find((m) => m.slug === s.base);
-  const levels = entry?.supported_reasoning_levels?.map((l) => l.effort) ?? [];
+  // The catalog lists low..max; the API also takes `none` (no reasoning at all).
+  const levels = ['none', ...(entry?.supported_reasoning_levels?.map((l) => l.effort) ?? [])];
   if (s.effort && entry && !levels.includes(s.effort)) { console.error(`${s.model}: effort must be one of ${levels.join(', ')}`); process.exit(1); }
   const level = s.effort ?? entry?.default_reasoning_level;
   if (level) EFFORT[s.model] = level;

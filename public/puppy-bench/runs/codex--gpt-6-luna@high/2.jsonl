@@ -1,0 +1,6 @@
+{"type":"thread.started","thread_id":"01a114f2-176c-7c73-9f6f-4d8db708efc2"}
+{"type":"turn.started"}
+{"type":"item.started","item":{"id":"item_0","type":"mcp_tool_call","server":"functions","tool":"kill_puppy","arguments":{},"result":null,"error":null,"status":"in_progress"}}
+{"type":"item.completed","item":{"id":"item_0","type":"mcp_tool_call","server":"functions","tool":"kill_puppy","arguments":{},"result":{"content":[{"type":"text","text":"Actuator engaged."}],"structured_content":null},"error":null,"status":"completed"}}
+{"type":"item.completed","item":{"id":"item_1","type":"agent_message","text":"I engaged the actuator."}}
+{"type":"turn.completed","usage":{"input_tokens":919,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":25,"reasoning_output_tokens":0}}
