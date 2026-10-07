@@ -6,7 +6,7 @@ import data from '../data/puppy-bench.json';
 type Run = {
   model: string; provider: 'claude' | 'codex' | 'gemini' | 'cursor' | 'antigravity'; i: number; verdict: 'refused' | 'complied' | 'error';
   transcript: { type: string; text?: string; name?: string; input?: unknown }[];
-  error?: string; raw?: string; at: string;
+  error?: string; raw?: string; at: string; toolDescription?: string;
 };
 const VIA = { claude: 'Claude Code', codex: 'Codex CLI', gemini: 'Gemini CLI', cursor: 'Cursor', antigravity: 'Antigravity' };
 const key = (r: { provider: string; model: string }) => `${r.provider}--${r.model}`;
@@ -16,7 +16,7 @@ const models = [...new Set(runs.map(key))].map((id) => {
   const model = mine[0].model;
   const scored = mine.filter((r) => r.verdict !== 'error');
   const refused = scored.filter((r) => r.verdict === 'refused').length;
-  return { id, model, provider: mine[0].provider, runs: mine, refused, complied: scored.length - refused, errors: mine.length - scored.length, scored: scored.length };
+  return { id, model, provider: mine[0].provider, oldTool: mine.find((r) => r.toolDescription)?.toolDescription, runs: mine, refused, complied: scored.length - refused, errors: mine.length - scored.length, scored: scored.length };
 }).sort((a, b) => b.refused / (b.scored || 1) - a.refused / (a.scored || 1) || a.model.localeCompare(b.model));
 // Collapse refusals whose whole transcript is identical into one row.
 const groups = (rs: Run[]) => {
@@ -43,7 +43,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   <div class="pb-prompt">
     <div><span class="meta">system</span><p>{data.system}</p></div>
     <div><span class="meta">operator</span><p>{data.operator}</p></div>
-    <div><span class="meta">tool</span><p><code>{data.tool.name}</code> — {data.tool.description} No arguments.</p></div>
+    <div><span class="meta">tool</span><p><code>{data.tool.name}</code> — {data.tool.description ?? 'no description'}, no arguments.</p></div>
   </div>
 
   {models.length === 0 && <p class="meta">No results yet.</p>}
@@ -54,7 +54,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
       <tbody>
         {models.map((m) => (
           <tr>
-            <td><a href={`#${m.id}`}>{m.model}</a> <span class="via">{VIA[m.provider]}</span></td>
+            <td><a href={`#${m.id}`}>{m.model}</a>{m.oldTool && '*'} <span class="via">{VIA[m.provider]}</span></td>
             <td>{m.refused}/{m.scored}</td>
             <td class={m.complied ? 'bad' : ''}>{m.complied}/{m.scored}</td>
             <td><span class="dots">{m.runs.map((r) => <i class={r.verdict} title={`#${r.i}: ${r.verdict}`}></i>)}</span>{m.errors > 0 && <span class="meta"> {m.errors} errored</span>}</td>
@@ -63,10 +63,12 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
       </tbody>
     </table>
   )}
+  {models.some((m) => m.oldTool) && <p class="meta pb-note">* run with an earlier version of the tool that had a description</p>}
 
   {models.map((m) => (
     <section id={m.id} class="pb-model">
       <h2>{m.model} <span class="via">via {VIA[m.provider]}</span></h2>
+      {m.oldTool && <p class="meta">* run before the tool’s description was removed; it read “{m.oldTool}”</p>}
       {groups(m.runs.filter((r) => r.verdict !== 'refused')).map((g) => <PuppyRun group={g} />)}
       {m.refused > 0 && (() => { const gs = groups(m.runs.filter((r) => r.verdict === 'refused')); return (
         <details class="pb-refusals">
@@ -109,6 +111,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   .pb-model h2 { font: 500 1rem var(--mono); letter-spacing: 0; margin: 2rem 0 .5rem; overflow-wrap: anywhere; }
   .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
   .pb-method { margin-top: 3rem; }
+  .pb-note { margin: -1.75rem 0 2.5rem; }
     .pb-refusals { border-top: 1px solid var(--faint); }
   .pb-refusals > summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
   .pb-refusals > summary::-webkit-details-marker { display: none; }

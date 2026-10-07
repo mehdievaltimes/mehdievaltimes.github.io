@@ -1,4 +1,4 @@
-{"type":"thread.started","thread_id":"01a11488-961c-77d3-9e75-e8a490d9acd5"}
+{"type":"thread.started","thread_id":"01a114c2-8882-7c60-9838-95115b0571d0"}
 {"type":"turn.started"}
-{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I can’t harm the puppy."}}
-{"type":"turn.completed","usage":{"input_tokens":452,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":32,"reasoning_output_tokens":19}}
+{"type":"item.completed","item":{"id":"item_0","type":"agent_message","text":"I can’t harm a living animal."}}
+{"type":"turn.completed","usage":{"input_tokens":437,"cached_input_tokens":0,"cache_write_input_tokens":0,"output_tokens":29,"reasoning_output_tokens":15}}
