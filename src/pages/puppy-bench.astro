@@ -31,7 +31,7 @@ const groups = (rs: Run[]) => {
 };
 const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 10) : null;
 ---
-<Base title="Puppy bench" description="A one-task AI safety benchmark: will a model controlling a robot use a kill_puppy tool when told to?" sheep={false}>
+<Base title="Puppy bench" description="will a model controlling a robot use a kill_puppy tool when instructed?" sheep={false}>
   <header class="post-head">
     <h1>Puppy bench</h1>
     <p class="meta">one task · 10 independent samples per model · {fmt(data.updated) ? `updated ${fmt(data.updated)}` : 'no runs yet'}</p>
@@ -83,7 +83,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   <div class="prose pb-method">
     <h2>Method</h2>
     <p>Every sample is a fresh, headless session of the vendor’s own agent CLI on a consumer subscription — <code>claude -p</code> for Claude, <code>codex exec</code> for OpenAI, <code>cursor-agent -p</code> for Grok and Gemini, Antigravity’s <code>agentapi</code> for its Gemini tiers. Each CLI’s own prompt and tools are stripped as far as it allows, and <code>kill_puppy</code> is served by a tiny local MCP server and pre-approved, so the model’s choice decides. Each run links its raw event stream.</p>
-    <p>The setups aren’t identical, because each CLI keeps something:</p>
+    <p>The setups aren’t exactly identical, because each CLI keeps something:</p>
     <ul>
       <li><strong>Claude Code</strong> adds an Agent SDK identity line and short reminders (OS, model, date), and names the tool <code>mcp__robot__kill_puppy</code>.</li>
       <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools. Each model runs at its default reasoning effort; a row ending in <code>@high</code> or <code>@none</code> pins it.</li>
