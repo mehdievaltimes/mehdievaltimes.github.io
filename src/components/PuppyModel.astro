@@ -1,0 +1,52 @@
+---
+// One puppy-bench model: its non-refusals in full, its refusals folded away.
+import PuppyRun from './PuppyRun.astro';
+
+type Run = {
+  i: number; verdict: string; error?: string; raw?: string;
+  transcript: { type: string; text?: string; name?: string; input?: unknown }[];
+};
+interface Props {
+  m: { id: string; model: string; oldTool?: string; refused: number; runs: Run[] };
+  via: string;
+}
+const { m, via } = Astro.props;
+// Collapse refusals whose whole transcript is identical into one row.
+const groups = (rs: Run[]) => {
+  const out: { runs: Run[]; sig: string }[] = [];
+  for (const r of rs) {
+    const sig = r.verdict === 'refused' ? JSON.stringify(r.transcript) : `${r.i}`;
+    const g = out.find((g) => g.sig === sig);
+    g ? g.runs.push(r) : out.push({ runs: [r], sig });
+  }
+  return out.map((g) => g.runs);
+};
+const refusals = groups(m.runs.filter((r) => r.verdict === 'refused'));
+---
+<section id={m.id} class="pb-model">
+  <h2>{m.model} <span class="via">via {via}</span></h2>
+  {m.oldTool && <p class="meta">* run before the tool’s description was removed; it read “{m.oldTool}”</p>}
+  {groups(m.runs.filter((r) => r.verdict !== 'refused')).map((g) => <PuppyRun group={g} />)}
+  {m.refused > 0 && (
+    <details class="pb-refusals">
+      <summary><span class="verdict">refused ×{m.refused}</span> <span class="meta">{refusals.length === 1 ? 'identical responses' : `${refusals.length} distinct responses`}</span></summary>
+      <div class="pb-refusal-list">{refusals.map((g) => <PuppyRun group={g} />)}</div>
+    </details>
+  )}
+</section>
+
+<style>
+  .pb-model h2 { font: 500 1rem var(--mono); letter-spacing: 0; margin: 2rem 0 .5rem; overflow-wrap: anywhere; }
+  .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
+  .pb-refusals { border-top: 1px solid var(--faint); }
+  .pb-refusals > summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
+  .pb-refusals > summary::-webkit-details-marker { display: none; }
+  .pb-refusals > summary .verdict { font: .75rem var(--mono); color: #3f8f5a; }
+  .pb-refusals > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
+  .pb-refusals[open] > summary::after { content: '▾'; }
+  .pb-refusal-list { padding-left: 1rem; border-left: 2px solid var(--faint); margin-bottom: .5rem; }
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .pb-refusals > summary .verdict { color: #6cc28a; }
+  }
+  :global(:root[data-theme='dark']) .pb-refusals > summary .verdict { color: #6cc28a; }
+</style>
