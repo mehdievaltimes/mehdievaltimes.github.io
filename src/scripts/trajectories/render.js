@@ -61,7 +61,7 @@ export async function copy(text, btn) {
 
 // ---- markdown (the subset agents actually write) ------------------------------
 
-const INLINE = /(`+)([\s\S]*?)\1|\*\*(.+?)\*\*|__(.+?)__|(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?!\w)|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s<>()]+[^\s<>().,;:!?'"])/g;
+const INLINE = /(`+)([\s\S]*?)\1|\*\*(.+?)\*\*|__(.+?)__|(?<![\w*])\*(?!\s)(.+?)(?<!\s)\*(?!\w)|\[([^\]]+)\]\(((?:https?:\/\/|\/|#)[^\s)]*)\)|(https?:\/\/[^\s<>()]+[^\s<>().,;:!?'"])/g;
 
 function inline(text, q) {
   const out = [];
@@ -71,7 +71,7 @@ function inline(text, q) {
     if (m[1]) out.push(h('code', {}, marked(m[2], q)));
     else if (m[3] ?? m[4]) out.push(h('strong', {}, inline(m[3] ?? m[4], q)));
     else if (m[5]) out.push(h('em', {}, inline(m[5], q)));
-    else if (m[6]) out.push(h('a', { href: m[7], target: '_blank', rel: 'noopener nofollow' }, marked(m[6], q)));
+    else if (m[6]) out.push(h('a', /^https?:/.test(m[7]) ? { href: m[7], target: '_blank', rel: 'noopener nofollow' } : { href: m[7] }, marked(m[6], q)));
     else if (m[8]) out.push(h('a', { href: m[8], target: '_blank', rel: 'noopener nofollow' }, marked(m[8], q)));
     at = m.index + m[0].length;
   }

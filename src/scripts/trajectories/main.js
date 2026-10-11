@@ -1,4 +1,4 @@
-import { parseStream, summarize, KINDS, ACTIONS, FORMAT_LABEL } from './parse.js';
+import { parseStream, summarize, analyze, stepTool, editedPaths, exitMeaning, KINDS, ACTIONS, FORMAT_LABEL } from './parse.js';
 import { h, md, jsonTree, fmtNum, fmtDur, fmtBytes, firstLine, clean, marked, copy } from './render.js';
 import { toRuns, fromDrop, fromPicker, fromUrls, fileSource, urlSource, remember, recall, forget } from './load.js';
 
@@ -9,7 +9,7 @@ const local = {
 };
 
 const state = {
-  library: [], local: [], run: null,
+  library: [], collections: [], local: [], run: null, focus: null, runTab: null,
   kinds: new Set(Object.keys(KINDS)), failedOnly: false,
   grouped: local.get('tr-grouped', true),
   tab: local.get('tr-tab', 'final'), panelOpen: local.get('tr-panel', true),
@@ -21,7 +21,7 @@ const events = () => state.run?.parsed?.events ?? [];
 const listOf = (run) => (run?.source === 'library' ? state.library : state.local);
 const isWork = (e) => ACTIONS.has(e.kind) || e.kind === 'log' || e.kind === 'raw' || (e.kind === 'error' && e.transient);
 const visible = (e) =>
-  (!(e.kind in KINDS) || state.kinds.has(e.kind)) && (!state.failedOnly || !isWork(e) || e.failed);
+  (!(e.kind in KINDS) || state.kinds.has(e.kind)) && (!isWork(e) || ((!state.failedOnly || e.failed) && (!state.focus || state.focus.test(e))));
 const KIND_COLOR = { message: 'var(--fg)', reasoning: 'var(--muted)', user: 'var(--fg)', command: 'var(--muted)', tool: 'var(--accent)', files: 'var(--ok)', plan: 'var(--ok)', error: 'var(--accent)', log: 'var(--muted)', raw: 'var(--muted)' };
 
 // ---- routing -------------------------------------------------------------------------
@@ -107,21 +107,17 @@ function pill(s) {
   return h('span', { class: `tr-pill ${o ?? 'none'}` }, [o === 'solved' ? 'Solved' : o === 'failed' ? 'Failed' : 'Score', score].filter(Boolean).join(' · '));
 }
 
-function table(runs, headId, rowsId) {
-  const q = state.filter.toLowerCase();
-  const rows = runs
-    .filter((r) => !q || [r.key, r.sum?.title, ...(r.sum?.chips ?? [])].join(' ').toLowerCase().includes(q))
-    .sort((a, b) => {
-      const f = COLS.find((c) => c[0] === state.sort.col)[2];
-      const x = f(a), y = f(b);
-      return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true })) * state.sort.dir;
-    });
-  $(headId).replaceChildren(h('tr', {}, COLS.map(([col, label, , cls]) =>
+function runTable(runs, { inCollection = false } = {}) {
+  const head = h('tr', {}, COLS.map(([col, label, , cls]) =>
     h('th', { class: cls }, h('button', { type: 'button', class: state.sort.col === col ? 'on' : null, onclick: () => {
       state.sort = { col, dir: state.sort.col === col ? -state.sort.dir : ['key', 'agent', 'model', 'tier'].includes(col) ? 1 : -1 };
       renderHome();
-    } }, label, state.sort.col === col ? (state.sort.dir > 0 ? ' ↑' : ' ↓') : '')))));
-  $(rowsId).replaceChildren(...rows.map((r) => {
+    } }, label, state.sort.col === col ? (state.sort.dir > 0 ? ' ↑' : ' ↓') : ''))));
+  const f = COLS.find((c) => c[0] === state.sort.col)[2];
+  const rows = [...runs].sort((a, b) => {
+    const x = f(a), y = f(b);
+    return (typeof x === 'number' ? x - y : String(x).localeCompare(String(y), undefined, { numeric: true })) * state.sort.dir;
+  }).map((r) => {
     const s = r.sum;
     const open = (e) => {
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
@@ -132,8 +128,9 @@ function table(runs, headId, rowsId) {
     const files = [r.json && 'json', r.stream && 'jsonl'].filter(Boolean).join(' + ');
     return h('tr', { onclick: open },
       h('td', { class: 'run' },
-        h('a', { href: r.source === 'library' ? runPath(r.key) : '#', onclick: open }, runTitle(r)),
-        h('small', {}, s?.title ? r.name : r.dir || files)),
+        h('a', { href: r.source === 'library' ? runPath(r.key) : '#', onclick: open }, inCollection ? s?.title ?? r.name : runTitle(r)),
+        r.notes && h('span', { class: 'tr-badge', title: 'Has notes' }, 'notes'),
+        h('small', {}, s?.title ? r.name : inCollection ? files : r.dir || files)),
       h('td', {}, s?.agent ?? '–'),
       h('td', { class: 'mono' }, s?.model ?? '–'),
       h('td', { class: 'dim' }, s?.tier ?? '–'),
@@ -141,26 +138,92 @@ function table(runs, headId, rowsId) {
       h('td', { class: 'r mono' }, s?.steps != null ? fmtNum(s.steps) : '–'),
       h('td', { class: 'r mono' }, s?.wall != null ? fmtDur(s.wall) : '–'),
       h('td', { class: 'r mono' }, s?.cost != null ? `$${s.cost.toFixed(2)}` : '–'));
-  }));
-  return rows.length;
+  });
+  return h('div', { class: 'tr-tablewrap' }, h('table', { class: 'tr-table' }, h('thead', {}, head), h('tbody', {}, rows)));
 }
+
+const median = (xs) => {
+  const v = xs.filter((x) => typeof x === 'number').sort((a, b) => a - b);
+  return v.length ? (v.length % 2 ? v[(v.length - 1) / 2] : (v[v.length / 2 - 1] + v[v.length / 2]) / 2) : null;
+};
+const sumOf = (xs) => xs.filter((x) => typeof x === 'number').reduce((a, b) => a + b, null);
 
 function summaryLine(runs) {
   const scored = runs.filter((r) => r.sum?.correct != null);
-  return [`${runs.length} run${runs.length === 1 ? '' : 's'}`, scored.length && `${scored.filter((r) => r.sum.correct).length}/${scored.length} solved`].filter(Boolean).join(' · ');
+  const cost = sumOf(runs.map((r) => r.sum?.cost));
+  return [`${runs.length} run${runs.length === 1 ? '' : 's'}`, scored.length && `${scored.filter((r) => r.sum.correct).length}/${scored.length} solved`, cost != null && `$${cost.toFixed(2)} total`].filter(Boolean).join(' · ');
+}
+
+// One row per agent + model: how each did across the runs in a collection.
+function modelTable(runs) {
+  const groups = new Map();
+  for (const r of runs.filter((x) => x.sum)) {
+    const k = `${r.sum.agent ?? ''}\u0000${r.sum.model ?? ''}`;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(r);
+  }
+  if (groups.size < 1 || runs.filter((x) => x.sum).length < 2) return null;
+  const rows = [...groups.values()].map((rs) => {
+    const s = rs.map((r) => r.sum);
+    const scored = s.filter((x) => x.correct != null);
+    const scores = s.filter((x) => x.score != null);
+    const max = [...new Set(scores.map((x) => x.max))];
+    return {
+      agent: s[0].agent, model: s[0].model, n: rs.length,
+      solved: scored.filter((x) => x.correct).length, scored: scored.length,
+      score: scores.length ? `${(scores.reduce((a, x) => a + x.score, 0) / scores.length).toFixed(1)}${max.length === 1 && max[0] != null ? `/${max[0]}` : ''}` : null,
+      steps: median(s.map((x) => x.steps)), wall: median(s.map((x) => x.wall)), cost: sumOf(s.map((x) => x.cost)),
+    };
+  }).sort((a, b) => b.solved / (b.scored || 1) - a.solved / (a.scored || 1) || b.n - a.n);
+  return h('div', { class: 'tr-tablewrap' }, h('table', { class: 'tr-table tr-models' },
+    h('thead', {}, h('tr', {}, ['Agent', 'Model', 'Runs', 'Solved', 'Mean score', 'Median steps', 'Median wall', 'Total cost'].map((x, i) => h('th', { class: i >= 2 && i !== 3 ? 'r' : null }, x)))),
+    h('tbody', {}, rows.map((m) => h('tr', {},
+      h('td', {}, m.agent ?? '–'),
+      h('td', { class: 'mono' }, m.model ?? '–'),
+      h('td', { class: 'r mono' }, m.n),
+      h('td', {}, m.scored ? h('span', { class: 'tr-meter', title: `${m.solved} of ${m.scored} solved` },
+        h('span', { class: 'track' }, h('i', { style: `width:${(m.solved / m.scored) * 100}%` })), h('span', { class: 'mono' }, `${m.solved}/${m.scored}`)) : '–'),
+      h('td', { class: 'r mono' }, m.score ?? '–'),
+      h('td', { class: 'r mono' }, m.steps != null ? fmtNum(Math.round(m.steps)) : '–'),
+      h('td', { class: 'r mono' }, m.wall != null ? fmtDur(m.wall) : '–'),
+      h('td', { class: 'r mono' }, m.cost != null ? `$${m.cost.toFixed(2)}` : '–'))))));
+}
+
+// A collection's README: a leading `# Title` names the section, the rest describes it.
+function readmeParts(text) {
+  const m = /^\s*#\s+(.+)\n?([\s\S]*)$/.exec(text ?? '');
+  return m ? { title: m[1].trim(), body: m[2].trim() } : { title: null, body: (text ?? '').trim() };
 }
 
 function renderHome() {
   $('tr-local').hidden = !state.local.length;
   if (state.local.length) {
-    table(state.local, 'tr-local-head', 'tr-local-rows');
+    $('tr-local-table').replaceChildren(runTable(state.local));
     $('tr-local-meta').textContent = summaryLine(state.local);
   }
-  const shown = table(state.library, 'tr-lib-head', 'tr-lib-rows');
+  const q = state.filter.toLowerCase();
+  const match = (r) => !q || [r.key, r.sum?.title, ...(r.sum?.chips ?? [])].join(' ').toLowerCase().includes(q);
+  const runs = state.library.filter(match);
+  const top = (r) => (r.key.includes('/') ? r.key.slice(0, r.key.indexOf('/')) : '');
+  const folders = [...new Set(state.library.map(top))].sort((a, b) => (a === '') - (b === '') || a.localeCompare(b, undefined, { numeric: true }));
+  const grouped = folders.some(Boolean);
+  const sections = folders.map((folder) => {
+    const all = state.library.filter((r) => top(r) === folder);
+    const mine = runs.filter((r) => top(r) === folder);
+    if (!mine.length) return null;
+    if (!grouped) return runTable(mine);
+    const col = state.collections.find((c) => c.folder === folder);
+    const { title, body } = readmeParts(col?.readme);
+    return h('section', { class: 'tr-collection', id: folder ? `c-${folder}` : 'c-other' },
+      h('div', { class: 'tr-colhead' }, h('h3', {}, folder ? title ?? folder : 'Other runs'), h('span', { class: 'tr-count' }, summaryLine(all))),
+      body && h('div', { class: 'tr-readme' }, md(body)),
+      !q && modelTable(all),
+      runTable(mine, { inCollection: Boolean(folder) }));
+  }).filter(Boolean);
+  $('tr-lib-groups').replaceChildren(...sections);
   $('tr-lib-meta').textContent = state.library.length ? summaryLine(state.library) : '';
-  $('tr-lib-empty').hidden = shown > 0;
+  $('tr-lib-empty').hidden = runs.length > 0;
   $('tr-lib-empty').textContent = state.library.length ? 'No runs match the filter.' : 'No stored runs yet.';
-  $('tr-lib').querySelector('.tr-tablewrap').hidden = !shown;
   $('tr-run-filter').hidden = state.library.length < 6;
 }
 
@@ -168,7 +231,7 @@ function renderHome() {
 
 async function openRun(run, { at, step, push: doPush = true } = {}) {
   state.run = run;
-  Object.assign(state, { hits: [], hit: -1, openSteps: new Set(), flipped: new Set(), failedOnly: false });
+  Object.assign(state, { hits: [], hit: -1, openSteps: new Set(), flipped: new Set(), failedOnly: false, focus: null, runTab: null });
   state.kinds = new Set(Object.keys(KINDS));
   $('tr-expand').textContent = 'Expand all';
   if (doPush) push(run.source === 'library' ? null : { local: run.key }, run.source === 'library' ? runPath(run.key) : location.pathname + location.search);
@@ -180,6 +243,7 @@ async function openRun(run, { at, step, push: doPush = true } = {}) {
   try {
     if (run.json && !run.doc) { run.doc = JSON.parse(await run.json.text()); run.sum = summarize(run.doc); }
     if (run.stream && !run.parsed) run.parsed = parseStream(await run.stream.text());
+    if (run.notes && run.notesText == null) run.notesText = await run.notes.text();
   } catch (e) {
     run.parsed = { events: [{ kind: 'error', text: `Could not load this run: ${e.message}`, i: 0 }], meta: {} };
   }
@@ -252,9 +316,11 @@ function header(run) {
 function renderPanel() {
   const run = state.run, s = run.sum, m = run.parsed.meta;
   const tabs = [];
+  if (run.notesText) tabs.push(['notes', 'Notes', () => md(run.notesText)]);
   const final = s?.final ?? m.result;
   if (final) tabs.push(['final', 'Final message', () => [s?.correct === false && h('p', { class: 'note' }, 'Written by the agent. The Result tab is the grader’s verdict.'), md(final)]]);
   if (run.doc?.result != null) tabs.push(['result', 'Result', () => jsonTree(run.doc.result, 0, 3)]);
+  if (run.parsed.events.some((e) => e.step)) tabs.push(['analysis', 'Analysis', () => analysisView(run)]);
   if (run.doc) {
     const { result, last_message, ...rest } = run.doc;
     tabs.push(['config', 'Run config', () => jsonTree(rest, 0, 1)]);
@@ -264,12 +330,13 @@ function renderPanel() {
   if (!run.stream) tabs.push(['missing', 'Trajectory', () => h('p', { class: 'note' }, 'No event stream for this run. Drop the matching .jsonl on the page to add it.')]);
   const panel = $('tr-panel');
   if (!tabs.length) return panel.replaceChildren();
-  const cur = tabs.find((t) => t[0] === state.tab) ?? tabs[0];
+  // A run's own notes come first; otherwise reopen the tab used last.
+  const cur = tabs.find((t) => t[0] === state.runTab) ?? tabs.find((t) => t[0] === 'notes') ?? tabs.find((t) => t[0] === state.tab) ?? tabs[0];
   panel.classList.toggle('collapsed', !state.panelOpen);
   panel.replaceChildren(
     h('div', { class: 'tr-tabs', role: 'tablist' },
       tabs.map(([id, label]) => h('button', { type: 'button', class: 'tab', role: 'tab', 'aria-selected': String(id === cur[0] && state.panelOpen), onclick: () => {
-        state.tab = id;
+        state.tab = state.runTab = id;
         state.panelOpen = true;
         local.set('tr-tab', id);
         local.set('tr-panel', true);
@@ -280,6 +347,54 @@ function renderPanel() {
     h('div', { class: 'tr-panebody', role: 'tabpanel' }, state.panelOpen ? cur[2]() : null));
 }
 
+// ---- analysis tab --------------------------------------------------------------------
+
+function setFocus(focus) {
+  state.focus = focus;
+  refresh();
+  if (focus) $('tr-toolbar').scrollIntoView({ block: 'start' });
+}
+
+function analysisView(run) {
+  const a = (run.analysis ??= analyze(run.parsed.events));
+  const pct = (n) => `${Math.round((n / a.steps) * 100)}%`;
+  const base = (p) => p.split('/').pop();
+  return h('div', { class: 'tr-analysis' },
+    h('p', { class: 'note' }, [
+      `${fmtNum(a.steps)} steps`,
+      `${fmtNum(a.failed)} failed (${pct(a.failed)})`,
+      a.unfinished && `${a.unfinished} never finished`,
+      `${a.tools.length} distinct programs and tools`,
+      a.files.length && `${a.files.length} files edited`,
+      `${fmtBytes(a.outChars)} of output`,
+    ].filter(Boolean).join(' · ') + '. Click a row to show only those steps.'),
+    h('div', { class: 'tr-legend' }, h('span', {}, h('i', { class: 'ok' }), 'Succeeded'), h('span', {}, h('i', { class: 'bad' }), 'Failed')),
+    h('div', { class: 'tr-cols' },
+      barList('Programs and tools', a.tools, (x) => x.key, (x) => ({ label: x.key, test: (e) => stepTool(e) === x.key })),
+      h('div', {},
+        a.exits.length > 0 && barList('Exit codes', a.exits, (x) => `${x.key} ${exitMeaning(x.key)}`, (x) => ({ label: `exit ${x.key}`, test: (e) => e.kind === 'command' && e.exit === x.key }), { failedLabel: false }),
+        a.files.length > 0 && barList('Files edited', a.files, (x) => x.key, (x) => ({ label: base(x.key), test: (e) => editedPaths(e).includes(x.key) })))));
+}
+
+// Horizontal bars, one per row: succeeded and failed segments on a shared scale.
+function barList(title, rows, label, focus, { limit = 10, failedLabel = true } = {}) {
+  const max = Math.max(1, ...rows.map((r) => r.n));
+  const list = h('div', { class: 'tr-bars', role: 'list' });
+  const draw = (all) => list.replaceChildren(...(all ? rows : rows.slice(0, limit)).map((r) => {
+    const ok = r.n - r.failed;
+    const text = `${label(r)}: ${r.n} step${r.n === 1 ? '' : 's'}${r.failed ? `, ${r.failed} failed` : ''}`;
+    return h('button', { type: 'button', class: 'tr-barrow', role: 'listitem', title: text, 'aria-label': text, onclick: () => setFocus(focus(r)) },
+      h('span', { class: 'name' }, label(r)),
+      h('span', { class: 'track' },
+        ok > 0 && h('i', { class: 'ok', style: `width:${(ok / max) * 100}%` }),
+        r.failed > 0 && h('i', { class: 'bad', style: `width:${(r.failed / max) * 100}%` })),
+      h('span', { class: 'val' }, r.failed && failedLabel ? `${fmtNum(r.n)} · ${fmtNum(r.failed)} failed` : fmtNum(r.n)));
+  }));
+  draw(false);
+  const more = rows.length > limit && h('button', { type: 'button', class: 'tr-link', onclick: (e) => { draw(true); e.target.remove(); } }, `Show all ${rows.length}`);
+  return h('section', { class: 'tr-barlist' }, h('h4', {}, title), list, more);
+}
+
 // ---- toolbar -------------------------------------------------------------------------
 
 function renderChips() {
@@ -288,6 +403,7 @@ function renderChips() {
   for (const e of ev) if (e.kind in KINDS) counts[e.kind] = (counts[e.kind] ?? 0) + (e.kind === 'log' ? e.lines.length : 1);
   const failed = ev.filter((e) => e.step && e.failed).length;
   $('tr-chips').replaceChildren(...[
+    state.focus && h('button', { type: 'button', class: 'tr-chip focus', 'aria-pressed': 'true', title: 'Show all steps again', onclick: () => setFocus(null) }, `Only ${state.focus.label}`, h('b', {}, '✕')),
     ...Object.entries(KINDS).filter(([k]) => counts[k]).map(([k, label]) =>
       h('button', { type: 'button', class: 'tr-chip', style: `--dot: ${KIND_COLOR[k]}`, 'aria-pressed': String(state.kinds.has(k)), onclick: () => {
         state.kinds.has(k) ? state.kinds.delete(k) : state.kinds.add(k);
@@ -490,7 +606,7 @@ function outPre(text, q, cls = '') {
 function reveal(i, { open = true, block = 'center' } = {}) {
   const e = events()[i];
   if (!e) return;
-  if (!visible(e)) { state.kinds.add(e.kind); state.failedOnly = false; refresh(); }
+  if (!visible(e)) { state.kinds.add(e.kind); state.failedOnly = false; state.focus = null; refresh(); }
   const gid = groupOf.get(i);
   // Jumping to the start of a group (outline, minimap, restore) lands on the group without opening it.
   if (!open && gid === i) return scrollTo($(`g${gid}`), block);
@@ -742,9 +858,11 @@ function wire() {
 
 function readLibrary() {
   try {
-    return JSON.parse($('tr-library').textContent).map((r) => ({
+    const { runs, collections } = JSON.parse($('tr-library').textContent);
+    state.collections = collections ?? [];
+    return runs.map((r) => ({
       ...r, source: 'library',
-      json: r.json && urlSource(r.json), stream: r.stream && urlSource(r.stream),
+      json: r.json && urlSource(r.json), stream: r.stream && urlSource(r.stream), notes: r.notes && urlSource(r.notes),
     }));
   } catch { return []; }
 }

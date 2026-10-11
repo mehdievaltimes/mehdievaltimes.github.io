@@ -54,9 +54,9 @@ function addUsage(a, b) {
 export function unwrapShell(cmd) {
   if (Array.isArray(cmd)) cmd = cmd.length === 3 && /sh$/.test(cmd[0]) && /^-l?c$/.test(cmd[1]) ? cmd[2] : cmd.join(' ');
   cmd = str(cmd);
-  let m = /^(?:\/(?:usr\/)?bin\/)?(?:ba|z)?sh\s+-l?c\s+'([\s\S]*)'$/.exec(cmd);
+  let m = /^(?:\/(?:usr\/)?bin\/)?(?:ba|z)?sh\s+-l?c\s+'([\s\S]*)'\s*$/.exec(cmd);
   if (m) return m[1].replace(/'\\''/g, "'");
-  m = /^(?:\/(?:usr\/)?bin\/)?(?:ba|z)?sh\s+-l?c\s+"([\s\S]*)"$/.exec(cmd);
+  m = /^(?:\/(?:usr\/)?bin\/)?(?:ba|z)?sh\s+-l?c\s+"([\s\S]*)"\s*$/.exec(cmd);
   if (m) return m[1].replace(/\\(["\\$`])/g, '$1');
   return cmd;
 }
@@ -437,4 +437,87 @@ export function pairRuns(items, existing = []) {
     else { run.stream = s; delete run.parsed; }
   }
   return [...runs.values()].sort((a, b) => a.key.localeCompare(b.key, undefined, { numeric: true }));
+}
+
+// ---- per-run analysis ---------------------------------------------------------
+
+const WRAPPERS = new Set(['timeout', 'env', 'sudo', 'nice', 'nohup', 'time', 'stdbuf', 'command', 'exec', 'unbuffer', 'taskset', 'ionice', 'setsid']);
+const NOT_PROGRAMS = new Set(['cd', 'export', 'set', 'source', '.', 'true', 'false', ':', 'unset', 'ulimit', 'trap', 'local', 'pushd', 'popd', 'shopt', 'umask', '[', '[[', 'test']);
+const KEYWORDS = new Set(['do', 'then', 'else', 'elif', 'if', 'while', 'until', '!', 'done', 'fi', 'esac', '}', ')']);
+const LOOPS = new Set(['for', 'case', 'select', 'function']);
+
+// The program a shell command runs, past wrappers like `timeout 30s`, `env X=1`, `bash -lc '…'`,
+// leading `cd dir &&`, and loop headers.
+export function programOf(cmd, depth = 0) {
+  cmd = String(cmd ?? '');
+  for (const seg of cmd.split(/&&|\|\||;|\||\n/)) {
+    const toks = seg.trim().replace(/^[({]\s*/, '').split(/\s+/).filter(Boolean);
+    let i = 0;
+    while (i < toks.length) {
+      if (/^[A-Za-z_]\w*=/.test(toks[i]) || KEYWORDS.has(toks[i])) { i++; continue; }
+      if (!WRAPPERS.has(toks[i])) break;
+      for (i++; i < toks.length && /^(-\S*|\d+(\.\d+)?[smhd]?|0x[\da-f]+|[A-Z]+)$/i.test(toks[i]) && !/^[a-z]/.test(toks[i]); i++);
+    }
+    const prog = toks[i]?.replace(/^['"]|['"]$/g, '');
+    if (!prog || NOT_PROGRAMS.has(prog) || LOOPS.has(prog) || /^[<>&-]|\)$/.test(prog)) continue; // `-d)` is a case pattern
+    const name = prog.split('/').pop() || prog;
+    // A nested `bash -lc '…'` says nothing; name what it runs instead.
+    if (/^(ba|z)?sh$/.test(name) && /^-\w*c$/.test(toks[i + 1] ?? '') && depth < 3) {
+      const inner = new RegExp(`${toks[i + 1]}\\s+(['"]?)([\\s\\S]*)`).exec(cmd.slice(cmd.indexOf(seg.trim())));
+      if (inner) return programOf(inner[1] ? inner[2].replace(new RegExp(`${inner[1]}\\s*$`), '') : inner[2], depth + 1) ?? name;
+    }
+    return name;
+  }
+  return null;
+}
+
+const EXIT_MEANING = {
+  0: 'ok', 1: 'error', 2: 'usage error', 124: 'timed out', 125: 'timeout failed', 126: 'not executable', 127: 'command not found',
+  130: 'interrupted', 134: 'aborted (SIGABRT)', 137: 'killed (SIGKILL)', 139: 'segfault (SIGSEGV)', 141: 'broken pipe', 143: 'terminated (SIGTERM)',
+};
+export const exitMeaning = (c) => EXIT_MEANING[c] ?? (c > 128 && c < 160 ? `signal ${c - 128}` : 'error');
+
+// Name a step by what it ran: a program for shell commands, server.tool for tool calls.
+export const stepTool = (e) =>
+  e.kind === 'command' ? programOf(e.cmd) ?? 'shell' : e.kind === 'tool' ? (e.server ? `${e.server}.${e.name}` : e.name) : e.kind === 'files' ? 'file edit' : null;
+
+// Files a step wrote: Codex file changes, Claude Edit/Write calls, and apply_patch headers in commands.
+export function editedPaths(e) {
+  if (e.kind === 'files') return e.changes.map((c) => c.path).filter(Boolean);
+  if (e.kind === 'tool' && e.input && typeof e.input === 'object') {
+    const p = e.input.file_path ?? e.input.path ?? e.input.filePath ?? e.input.target_file;
+    return /edit|write|patch|create|replace|insert/i.test(e.name ?? '') && typeof p === 'string' ? [p] : [];
+  }
+  if (e.kind === 'command') return [...new Set([...e.cmd.matchAll(/^\*\*\* (?:Add|Update|Delete) File: (.+)$/gm)].map((m) => m[1].trim()))];
+  return [];
+}
+
+export function analyze(events) {
+  const steps = events.filter((e) => e.step);
+  const tally = () => new Map();
+  const tools = tally(), exits = tally(), files = tally();
+  const bump = (m, key, failed) => {
+    const x = m.get(key) ?? { key, n: 0, failed: 0 };
+    x.n++;
+    if (failed) x.failed++;
+    m.set(key, x);
+  };
+  let outChars = 0;
+  for (const e of steps) {
+    bump(tools, stepTool(e), e.failed);
+    if (e.kind === 'command' && e.exit != null) bump(exits, e.exit, e.exit !== 0);
+    for (const p of editedPaths(e)) bump(files, p, e.failed);
+    outChars += (e.out ?? '').length;
+  }
+  const sorted = (m) => [...m.values()].sort((a, b) => b.n - a.n || String(a.key).localeCompare(String(b.key)));
+  return {
+    steps: steps.length,
+    failed: steps.filter((e) => e.failed).length,
+    unfinished: steps.filter((e) => e.unfinished).length,
+    messages: events.filter((e) => e.kind === 'message').length,
+    tools: sorted(tools),
+    exits: sorted(exits).sort((a, b) => (a.key === 0 ? -1 : b.key === 0 ? 1 : b.n - a.n)),
+    files: sorted(files),
+    outChars,
+  };
 }
