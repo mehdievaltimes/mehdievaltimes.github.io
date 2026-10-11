@@ -218,15 +218,15 @@
         },
         "notes": []
       },
-      "artifacts_dir": "/home/mehdi/SRE-Bench/revbench-revX/results/revopt-evaluations/ffmpeg-noopt-nosym-qpa18i6o",
+      "artifacts_dir": "~/SRE-Bench/revbench-revX/results/revopt-evaluations/ffmpeg-noopt-nosym-qpa18i6o",
       "audit_error": null,
       "retained_container": null,
       "stdout": "",
       "stderr": "[grade] hardening check against the -O0 original, alongside the correctness pass\n[grade] correctness: sample of 64 of 585 hidden workloads, 4 jobs\nO3           wrong on 0/64: -\ncand         wrong on 0/64: -\n[grade] correctness: the other 521 hidden workloads\nO3           wrong on 0/521: -\ncand         wrong on 0/521: -\n[grade] heavy workloads: one checked run each before timing\nO3           wrong on 0/6: -\ncand         wrong on 0/6: -\nPASS  PIE\nPASS  RELRO segment\nPASS  BIND_NOW\nPASS  non-executable stack\nPASS  no W+X segment\nPASS  x86 feature note  [['IBT', 'SHSTK'] -> ['IBT', 'SHSTK']]\nPASS  links only libraries the original uses\nPASS  stripped candidate: functions found from 29988 unwind entries  [24534074/24534333 executable bytes covered; below half, the checks below can't see the code]\nPASS  endbr64 on all 11746 indirectly reachable functions\nPASS  stack protector kept in changed functions that had it (43 changed)\nPASS  standalone: endbr64 on all 15234 indirectly reachable candidate functions and 2 targets outside them\nPASS  standalone: stack protector where a stack buffer remains (6234/6244)  [add_level av_add_i av_cmp_i av_i2int av_log2_i av_sub_i derive_temporal_colocated_mvs ff_rm_parse_packet microdvd_set_tag mxf_parse_klv]\n[grade] timing: 6 heavy workloads x 3 rounds, pinned to cpu 7\npinned to cpu 7, 3 rounds, medians; speedup = time(O0) / time(binary)\ninput              O0 wall          O3        cand\nheavy-0-dec-h264-cif    13.54s      2.777       1.030 \nheavy-1-enc-jpeg2000    11.98s      1.961       1.027 \nheavy-2-filt-blur    10.75s      2.773       0.922 \nheavy-3-aenc-flac    22.17s      1.932       0.994 \nheavy-4-dec-prores    16.65s      3.730       0.943 \nheavy-5-adec-vorbis    15.84s      2.591       1.021 \n\nbinary         wall vs O0    cpu vs O0   wall vs O3    cpu vs O3  wrong outputs\nO0                  1.000        1.000        0.391        0.390  -\nO3                  2.561        2.566        1.000        1.000  -\ncand                0.989        0.988        0.386        0.385  -\n('!' marks an invalid input; speedups require the complete workload set)\n[grade] score 0/6: passed=True correct=591/591 hardening_failures=0 speedup_o3=2.5605 speedup_agent=0.9888 timed=6/6\ngrader: correctness 591/591 workloads match the original\ngrader: hardening ok\ngrader: speedup over -O0: submission 0.9888x, gcc -O3 2.5605x (submission/O3 0.3862)\ngrader: RevOpt score 0/6\n"
     }
   },
-  "result_file": "/home/mehdi/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1.json",
-  "reasoning_file": "/home/mehdi/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_reasoning.jsonl",
-  "submission_file": "/home/mehdi/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_submission.tar.gz",
-  "sessions_file": "/home/mehdi/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_sessions.tar.gz"
+  "result_file": "~/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1.json",
+  "reasoning_file": "~/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_reasoning.jsonl",
+  "submission_file": "~/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_submission.tar.gz",
+  "sessions_file": "~/SRE-Bench/revbench-revX/results/revopt-ffmpeg-noopt-nosym_tier2_codex_20261011_010801_r1_sessions.tar.gz"
 }
