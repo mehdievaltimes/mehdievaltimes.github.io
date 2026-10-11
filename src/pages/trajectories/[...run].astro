@@ -1,0 +1,17 @@
+---
+// One page per stored run, so each has its own link and preview; the reader opens it on load.
+import TrajectoryReader from '../../components/TrajectoryReader.astro';
+import { loadLibrary } from '../../lib/trajectory-library.mjs';
+
+export function getStaticPaths() {
+  const library = loadLibrary();
+  return library.map((run) => ({ params: { run: run.key }, props: { run, library } }));
+}
+const { run, library } = Astro.props;
+const s = run.sum;
+const title = s?.title ?? run.name;
+const outcome = s?.correct === true ? 'solved' : s?.correct === false ? 'failed' : null;
+const description = [s?.agent, s?.model, outcome && `${outcome}${s?.score != null ? ` ${s.score}/${s.max ?? '?'}` : ''}`, s?.steps != null && `${s.steps} steps`]
+  .filter(Boolean).join(' · ') || 'Agent trajectory';
+---
+<TrajectoryReader library={library} initial={run.key} title={`${title} · Trajectories`} description={description} />
