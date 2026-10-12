@@ -56,6 +56,7 @@ import Base from '../layouts/Base.astro';
 </Base>
 
 <style is:global>
+  @media (min-width: 64rem) { main:has(.demo) { max-width: 46rem; } }
   .demo { margin: 1.25rem 0 2.5rem; display: grid; gap: .6rem; }
   .sim-row { display: flex; align-items: center; gap: 1rem; margin-top: .5rem; }
   .track { flex: 1; height: 10px; background: var(--faint); border-radius: 99px; overflow: hidden; }
