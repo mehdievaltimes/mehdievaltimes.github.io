@@ -11,10 +11,14 @@ const nav = [
   ['/', 'writing'],
   ['/reading', 'reading'],
   ['/now', 'now'],
-  ['/demos', 'demos'],
+];
+const demos = [
+  ['/demos', 'mechanistic sandbox'],
+  ['/puppy-bench', 'puppy bench'],
 ];
 const current = (href: string) =>
-  href === '/' ? path === '/' || path.startsWith('/posts') : path.startsWith(href);
+  href === '/' ? path === '/' || path.startsWith('/posts') : path === href || path.startsWith(`${href}/`);
+const inDemos = demos.some(([href]) => current(href));
 ---
 <!doctype html>
 <html lang="en">
@@ -73,6 +77,14 @@ const current = (href: string) =>
           {nav.map(([href, label]) => (
             <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
           ))}
+          <div class="nav-menu">
+            <button class="nav-trigger" id="demos-btn" aria-expanded="false" aria-controls="demos-menu" data-current={inDemos || undefined}>demos<span aria-hidden="true">▾</span></button>
+            <div class="menu" id="demos-menu">
+              {demos.map(([href, label]) => (
+                <a href={href} aria-current={current(href) ? 'page' : undefined}>{label}</a>
+              ))}
+            </div>
+          </div>
           <button class="theme-btn" id="theme-btn" aria-label="Toggle dark mode">◐</button>
         </nav>
       </header>
@@ -89,6 +101,14 @@ const current = (href: string) =>
       </footer>
     </div>
     <script is:inline>
+      (() => {
+        const menu = document.querySelector('.nav-menu');
+        const btn = document.getElementById('demos-btn');
+        const set = (open) => { menu.classList.toggle('open', open); btn.setAttribute('aria-expanded', open); };
+        btn.addEventListener('click', () => set(!menu.classList.contains('open')));
+        document.addEventListener('click', (e) => { if (!menu.contains(e.target)) set(false); });
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && menu.classList.contains('open')) { set(false); btn.focus(); } });
+      })();
       document.getElementById('theme-btn').addEventListener('click', () => {
         const root = document.documentElement;
         const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;

@@ -10,6 +10,8 @@ const readingCount = reading.reduce((n, s) => n + s.data.items.length, 0);
 const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
 ---
 <Base description="Mehdi Shakibapour — math and CS at Columbia.">
+  <div class="home">
+  <aside class="home-side">
   <section class="intro">
     <h1>Mehdi Shakibapour</h1>
     <p>
@@ -27,9 +29,13 @@ const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
     <button class="chip" data-filter="note">notes</button>
     {tags.map((t) => <button class="chip" data-tag={t}>{t}</button>)}
   </nav>
+  </aside>
 
-  <ul class="feed">{entries.map((entry) => <FeedItem entry={entry} />)}</ul>
-  <p class="meta" id="empty" hidden>Nothing tagged that. <button class="linkish" data-filter="all">show everything</button></p>
+  <div>
+    <ul class="feed">{entries.map((entry) => <FeedItem entry={entry} />)}</ul>
+    <p class="meta" id="empty" hidden>Nothing tagged that. <button class="linkish" data-filter="all">show everything</button></p>
+  </div>
+  </div>
 
   <script is:inline>
     (() => {

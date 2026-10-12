@@ -90,6 +90,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
 </Base>
 
 <style>
+  @media (min-width: 64rem) { :global(main:has(.pb-prompt)) { max-width: 50rem; } }
   .pb-prompt { display: grid; gap: .9rem; margin: 1.75rem 0 2.25rem; padding: 1.1rem 1.25rem; background: var(--card); border-radius: 10px; }
   .pb-prompt p { margin: .15rem 0 0; font-family: var(--serif); font-size: 1.1rem; line-height: 1.5; }
   .pb-prompt code { font: .85em var(--mono); }

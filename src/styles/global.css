@@ -46,6 +46,19 @@ img { max-width: 100%; height: auto; border-radius: 6px; }
 .site-header nav { display: flex; gap: 1.1rem; font-size: .92rem; color: var(--muted); align-items: baseline; }
 .site-header nav a { text-decoration: none; }
 .site-header nav a[aria-current='page'] { color: var(--fg); }
+.nav-menu { position: relative; }
+.nav-trigger { all: unset; cursor: pointer; display: inline-flex; gap: .25rem; align-items: baseline; }
+.nav-trigger span { font-size: .7em; transition: transform .15s; }
+.nav-trigger:hover, .nav-trigger[data-current] { color: var(--fg); }
+.nav-menu .menu { display: none; position: absolute; right: -.6rem; top: 100%; z-index: 10001; padding-top: .5rem; }
+.nav-menu .menu::before { content: ''; position: absolute; inset: .5rem 0 0; background: var(--bg); border: 1px solid var(--faint); border-radius: 10px; box-shadow: 0 8px 24px rgb(0 0 0 / .08); }
+.nav-menu .menu a { position: relative; display: block; padding: .45rem .9rem; white-space: nowrap; color: var(--muted); }
+.nav-menu .menu a:first-child { margin-top: .35rem; }
+.nav-menu .menu a:last-child { margin-bottom: .35rem; }
+.nav-menu .menu a:hover, .nav-menu .menu a[aria-current='page'] { color: var(--fg); }
+.nav-menu.open .menu { display: block; }
+.nav-menu.open .nav-trigger span { transform: rotate(180deg); }
+@media (hover: hover) and (pointer: fine) { .nav-menu:hover .menu { display: block; } }
 .theme-btn { all: unset; cursor: pointer; color: var(--muted); font-size: .92rem; }
 .theme-btn:hover { color: var(--accent); }
 
@@ -133,5 +146,23 @@ a.tag:hover { color: var(--accent); border-color: var(--accent); }
 .chip { font: .8rem var(--mono); color: var(--muted); background: none; border: 1px solid var(--faint); border-radius: 99px; padding: .25rem .7rem; cursor: pointer; }
 .chip:hover { color: var(--accent); border-color: var(--accent); }
 .chip.active { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+
+/* laptops and up: header and footer span the window, text keeps its measure */
+@media (min-width: 64rem) {
+  html { font-size: 106.25%; }
+  .wrap { max-width: 76rem; padding: 0 3rem; }
+  main { max-width: var(--measure); margin: 0 auto; }
+  .site-header { padding: 2.25rem 0 3.5rem; }
+  .site-header nav { gap: 1.5rem; }
+
+  /* home: intro and filters ride along on the left, the feed reads on the right */
+  main:has(.home) { max-width: 64rem; }
+  .home { display: grid; grid-template-columns: 16rem minmax(0, 1fr); gap: 5rem; align-items: start; }
+  .home-side { position: sticky; top: 2rem; }
+  .home-side .intro { font-size: 1.15rem; margin-bottom: 2rem; }
+  .home-side .intro .sub { font-size: 1rem; }
+  .home .feed > .entry:first-child { border-top: 0; padding-top: 0; }
+}
+@media (min-width: 90rem) { html { font-size: 112.5%; } }
 
 .intro h1 { font-size: 1.05rem; font-family: var(--sans); font-weight: 600; letter-spacing: 0; margin: 0 0 .6rem; }

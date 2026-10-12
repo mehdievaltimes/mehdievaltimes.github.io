@@ -55,10 +55,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
     const allSheepData = [];
     
-    // Sheep stay home unless someone has asked for them before.
-    let stored = null;
-    try { stored = localStorage.getItem('sheepAreHome'); } catch {}
-    let sheepAreHome = stored === null ? true : stored === 'true';
+    // Sheep start every visit at home; letting them out only lasts for this tab's session.
+    let sheepAreHome = true;
+    try {
+        localStorage.removeItem('sheepAreHome');
+        sheepAreHome = sessionStorage.getItem('sheepAreOut') !== 'true';
+    } catch {}
 
     function updateButtonIcon() {
         const btn = document.getElementById('call-sheep-home');
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     window.toggleSheepHome = function() {
         sheepAreHome = !sheepAreHome;
-        try { localStorage.setItem('sheepAreHome', sheepAreHome); } catch {}
+        try { sessionStorage.setItem('sheepAreOut', !sheepAreHome); } catch {}
         updateButtonIcon();
         
         if (sheepAreHome) {
