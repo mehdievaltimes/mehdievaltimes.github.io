@@ -39,8 +39,6 @@ npm run new "On Tokenization"            # titled piece
 npm run new -- --draft "Hot take"        # draft
 ```
 
-`src/pages/now.md` is the "what I'm doing now" page.
-
 ## Reading list
 
 One file per section in `src/content/reading/`, shown at `/reading`. Sections sort by `order` (highest first).
