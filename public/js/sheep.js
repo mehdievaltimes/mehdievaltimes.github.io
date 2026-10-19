@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const RUN = () => 900 + Math.random() * 300;
     const GRAZE_RATE = 0.12; // grazing breaks per second of walking
     const FLOCK_KEY = 'sheepFlock';
+    const BAAS = ['/audio/baa-1.mp3', '/audio/baa-2.mp3', '/audio/baa-3.mp3'];
 
     const style = document.createElement('style');
     style.textContent = `
@@ -184,12 +185,10 @@ document.addEventListener('DOMContentLoaded', () => {
         s.el.classList.remove('hop');
         void s.el.offsetWidth; // restart the hop if it's mid-air
         s.el.classList.add('hop');
-        try {
-            const u = new SpeechSynthesisUtterance('baaa');
-            u.pitch = 1.5 + Math.random() * 0.5;
-            u.rate = 0.8;
-            speechSynthesis.speak(u);
-        } catch {}
+        // One of three recorded bleats, picked at random; a new element each time so they can overlap.
+        const clip = new Audio(BAAS[Math.floor(Math.random() * BAAS.length)]);
+        clip.volume = 0.8;
+        clip.play().catch(() => {});
     }
 
     // Build the flock. If it was out on the previous page, put each sheep back where it was.
