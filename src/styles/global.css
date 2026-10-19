@@ -1,10 +1,10 @@
 :root {
-  --bg: #fbfaf7;
-  --fg: #1d1c1a;
-  --muted: #6f6b64;
-  --faint: #e8e5de;
-  --card: #f3f1ec;
-  --accent-rgb: 196 69 31;
+  --bg: #f9fafc;
+  --fg: #141c2e;
+  --muted: #5f6b80;
+  --faint: #e1e5ee;
+  --card: #eef1f7;
+  --accent-rgb: 31 58 112;
   --accent: rgb(var(--accent-rgb));
   --serif: 'Newsreader', 'Iowan Old Style', Georgia, serif;
   --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
@@ -14,13 +14,13 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #141413; --fg: #ecebe6; --muted: #9a968e; --faint: #2a2927; --card: #1c1b1a;
-    --accent-rgb: 240 128 88; color-scheme: dark;
+    --bg: #0b1426; --fg: #e6ebf4; --muted: #94a1b9; --faint: #1d2a44; --card: #111d35;
+    --accent-rgb: 138 172 232; color-scheme: dark;
   }
 }
 :root[data-theme='dark'] {
-  --bg: #141413; --fg: #ecebe6; --muted: #9a968e; --faint: #2a2927; --card: #1c1b1a;
-  --accent-rgb: 240 128 88; color-scheme: dark;
+  --bg: #0b1426; --fg: #e6ebf4; --muted: #94a1b9; --faint: #1d2a44; --card: #111d35;
+  --accent-rgb: 138 172 232; color-scheme: dark;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme='light']) .astro-code, :root:not([data-theme='light']) .astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; } }
 :root[data-theme='dark'] .astro-code, :root[data-theme='dark'] .astro-code span { color: var(--shiki-dark) !important; background-color: var(--shiki-dark-bg) !important; }
