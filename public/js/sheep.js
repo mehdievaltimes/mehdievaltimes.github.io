@@ -16,8 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const RUN = () => 900 + Math.random() * 300;
     const GRAZE_RATE = 0.12; // grazing breaks per second of walking
     const FLOCK_KEY = 'sheepFlock';
-    const BAAS = Array.from({ length: 12 }, (_, i) => `/audio/baa-${i + 1}.mp3`);
-    let lastBaa = -1;
+    const BAAS = ['/audio/baa-1.mp3', '/audio/baa-2.mp3', '/audio/baa-3.mp3'];
 
     const style = document.createElement('style');
     style.textContent = `
@@ -186,11 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
         s.el.classList.remove('hop');
         void s.el.offsetWidth; // restart the hop if it's mid-air
         s.el.classList.add('hop');
-        // A random bleat, never the same one twice in a row; a new element each time so they can overlap.
-        let pick = Math.floor(Math.random() * (BAAS.length - 1));
-        if (pick >= lastBaa) pick++;
-        lastBaa = pick;
-        const clip = new Audio(BAAS[pick]);
+        // One of three recorded bleats, picked at random; a new element each time so they can overlap.
+        const clip = new Audio(BAAS[Math.floor(Math.random() * BAAS.length)]);
         clip.volume = 0.8;
         clip.play().catch(() => {});
     }
