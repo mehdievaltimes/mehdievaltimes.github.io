@@ -78,7 +78,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (sheepAreHome) {
             allSheepData.forEach(s => s.goHome());
         } else {
-            allSheepData.forEach(s => s.letOut());
+            // One at a time, in a loose order, so they trickle out instead of appearing together.
+            allSheepData.forEach((s, i) => s.letOut(i * 450 + Math.random() * 400));
         }
     };
 
@@ -104,6 +105,10 @@ document.addEventListener("DOMContentLoaded", function() {
         let homeTarget = direction === 1 ? window.innerWidth + 100 : -100;
         
         let isGoingHome = false;
+        // A sheep coming out walks in from its edge to enterTarget, briskly, then starts wandering.
+        let isEntering = false;
+        let enterTarget = 0;
+        let letOutTimer = null;
         let position;
         
         if (sheepAreHome) {
@@ -112,7 +117,17 @@ document.addEventListener("DOMContentLoaded", function() {
             sheep.style.cursor = "default";
             sheep.style.pointerEvents = "none";
         } else {
-            position = Math.random() * window.innerWidth;
+            // Already out (an earlier page in this tab let them out): walk in from the edge.
+            position = direction === 1 ? -60 : window.innerWidth;
+            startEntering();
+        }
+
+        function startEntering() {
+            const margin = Math.min(120, window.innerWidth / 4);
+            enterTarget = margin + Math.random() * Math.max(0, window.innerWidth - 60 - 2 * margin);
+            direction = position < enterTarget ? 1 : -1;
+            isEntering = true;
+            speed = 1.6 + Math.random() * 0.8;
         }
 
         sheep.style.top = Math.random() * (window.innerHeight - 50) + "px";
@@ -138,6 +153,10 @@ document.addEventListener("DOMContentLoaded", function() {
             if (isGoingHome) return; 
             isDragging = true;
             isClick = true;
+            if (isEntering) {
+                isEntering = false;
+                speed = 0.4 + Math.random() * 0.4;
+            }
             sheep.style.cursor = "grabbing";
             
             const rect = sheep.getBoundingClientRect();
@@ -201,6 +220,14 @@ document.addEventListener("DOMContentLoaded", function() {
                     position += speed * direction; 
                     sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
                 }
+            } else if (isEntering && !isDragging) {
+                position += speed * direction;
+                sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
+                if ((direction === 1 && position >= enterTarget) || (direction === -1 && position <= enterTarget)) {
+                    isEntering = false;
+                    speed = 0.4 + Math.random() * 0.4;
+                    legs.forEach(l => l.style.animationDuration = "0.5s");
+                }
             } else if (!isGrazing && !isDragging) {
                 position += speed * direction;
                 
@@ -235,7 +262,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         allSheepData.push({
             goHome: () => {
+                clearTimeout(letOutTimer);
                 isGoingHome = true;
+                isEntering = false;
                 isGrazing = false;
                 isDragging = false;
                 head.classList.remove('head-anim');
@@ -256,28 +285,24 @@ document.addEventListener("DOMContentLoaded", function() {
                     homeTarget = -100;
                 }
             },
-            letOut: () => {
-                isGoingHome = false;
-                // Sheep that start the page at home are parked off-screen; drop them
-                // back onto the page so letting them out is immediate, not a two-second walk.
-                if (position < 0 || position > window.innerWidth - 60) {
-                    position = Math.random() * (window.innerWidth - 60);
-                    sheep.style.transform = `translateX(${position}px) scaleX(${direction === 1 ? 1 : -1})`;
-                }
-                head.classList.remove('head-sad');
-                sheep.style.cursor = "grab";
-                sheep.style.pointerEvents = "auto";
-                speed = 0.4 + Math.random() * 0.4;
-                legs.forEach(l => {
-                    l.style.animationDuration = "0.5s";
-                    l.style.animationPlayState = 'running';
-                });
-                
-                if (position >= window.innerWidth) {
-                    direction = -1;
-                } else if (position <= 0) {
-                    direction = 1;
-                }
+            letOut: (delay = 0) => {
+                clearTimeout(letOutTimer);
+                letOutTimer = setTimeout(() => {
+                    isGoingHome = false;
+                    head.classList.remove('head-sad');
+                    sheep.style.cursor = "grab";
+                    sheep.style.pointerEvents = "auto";
+                    legs.forEach(l => l.style.animationPlayState = 'running');
+                    if (position < 0 || position > window.innerWidth - 60) {
+                        // Parked off-screen at home: walk in from that side.
+                        startEntering();
+                        legs.forEach(l => l.style.animationDuration = "0.3s");
+                    } else {
+                        // Caught on the way home: just turn back to wandering where it is.
+                        speed = 0.4 + Math.random() * 0.4;
+                        legs.forEach(l => l.style.animationDuration = "0.5s");
+                    }
+                }, delay);
             }
         });
     }

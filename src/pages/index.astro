@@ -1,6 +1,5 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../lib';
 
 // Newest first. Keep it short: this is the whole news section.
 const news = [
@@ -20,12 +19,6 @@ const news = [
       <div class="prose">
         <p>I want better AIs.</p>
       </div>
-      <p class="about-links">
-        <a href={`mailto:${site.email}`}>Email</a>
-        <a href="https://github.com/mehdievaltimes" rel="me">GitHub</a>
-        <a href="https://www.linkedin.com/in/mehdisha" rel="me">LinkedIn</a>
-        <a href="/writing">Writing</a>
-      </p>
     </div>
   </section>
 
@@ -44,9 +37,6 @@ const news = [
   .portrait { width: 100%; aspect-ratio: 244 / 256; object-fit: cover; border-radius: 10px; }
   .about h1 { margin: 0 0 .2rem; }
   .about-line { margin: 0 0 1.4rem; color: var(--muted); font-size: .95rem; }
-  .about-links { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 1.4rem 0 0; font-size: .92rem; }
-  .about-links a { text-decoration: none; color: var(--muted); }
-  .about-links a:hover { color: var(--accent); }
 
   .news { margin-top: 4rem; }
   .news h2 { font: 600 1rem var(--sans); letter-spacing: 0; margin: 0 0 .75rem; }

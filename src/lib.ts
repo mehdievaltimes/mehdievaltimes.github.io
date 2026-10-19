@@ -6,7 +6,8 @@ export const site = {
   name: 'Mehdi Shakibapour',
   short: 'mehdi',
   description: 'Mehdi Shakibapour — math and CS at Columbia.',
-  email: 'mehdi.s@columbia.edu',
+  // Written out, never as a link or a plain address, so it isn't trivially scraped.
+  email: 'mehdi dot s at columbia dot edu',
   repo: 'mehdievaltimes/mehdievaltimes.github.io',
 };
 
