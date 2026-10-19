@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "new": "node scripts/new.mjs",
-    "puppy-bench": "node scripts/puppy-bench/run.mjs"
+    "puppy-bench:sync": "node scripts/sync-puppy-bench.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-remark": "^7.3.1",

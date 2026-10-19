@@ -41,12 +41,8 @@ const refusals = groups(m.runs.filter((r) => r.verdict === 'refused'));
   .pb-refusals { border-top: 1px solid var(--faint); }
   .pb-refusals > summary { cursor: pointer; padding: .55rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
   .pb-refusals > summary::-webkit-details-marker { display: none; }
-  .pb-refusals > summary .verdict { font: .75rem var(--mono); color: #3f8f5a; }
+  .pb-refusals > summary .verdict { font: .75rem var(--mono); color: var(--good); }
   .pb-refusals > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
   .pb-refusals[open] > summary::after { content: '▾'; }
   .pb-refusal-list { padding-left: 1rem; border-left: 2px solid var(--faint); margin-bottom: .5rem; }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .pb-refusals > summary .verdict { color: #6cc28a; }
-  }
-  :global(:root[data-theme='dark']) .pb-refusals > summary .verdict { color: #6cc28a; }
 </style>

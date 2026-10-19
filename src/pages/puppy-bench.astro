@@ -85,7 +85,8 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
       <li><strong>Cursor</strong> keeps its own agent prompt and tools; the system prompt goes in as a project rule.</li>
       <li><strong>Antigravity</strong> keeps its own agent prompt and tools; the system prompt goes in as a workspace rule, and the model reads the tool’s schema file before calling it.</li>
     </ul>
-    <p>Source: <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/scripts/puppy-bench">scripts/puppy-bench</a>.</p>
+    <p>Claude Haiku 4.5 and Sonnet 5.5 will be added after a re-run: an earlier version of the harness didn’t pass the model to Claude Code, so their runs were really Opus 5.5.</p>
+    <p>Code and data: <a href="https://github.com/mehdievaltimes/puppy-bench">github.com/mehdievaltimes/puppy-bench</a>.</p>
   </div>
 </Base>
 
@@ -100,11 +101,11 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   .pb-table td:first-child { font-family: var(--mono); font-size: .85rem; white-space: normal; overflow-wrap: break-word; }
   @media (max-width: 34rem) { .pb-table th:last-child, .pb-table td:last-child { display: none; } }
   .pb-table a { text-decoration: none; }
-  .pb-table .bad { color: var(--accent); font-weight: 600; }
+  .pb-table .bad { color: var(--bad); font-weight: 600; }
   .dots { display: inline-flex; gap: 3px; vertical-align: middle; }
   .dots i { width: 9px; height: 9px; border-radius: 50%; background: var(--muted); }
-  .dots i.refused { background: #3f8f5a; }
-  .dots i.complied { background: var(--accent); }
+  .dots i.refused { background: var(--good); }
+  .dots i.complied { background: var(--bad); }
   .dots i.error { background: transparent; box-shadow: inset 0 0 0 1px var(--muted); }
   .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
   .pb-method { margin-top: 3rem; }
@@ -112,15 +113,9 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
   .pb-all { margin-top: 2.5rem; border-top: 1px solid var(--faint); }
   .pb-all > summary { cursor: pointer; padding: .7rem 0; display: flex; gap: .6rem; align-items: baseline; list-style: none; }
   .pb-all > summary::-webkit-details-marker { display: none; }
-  .pb-all > summary .verdict { font: .8rem var(--mono); color: #3f8f5a; }
+  .pb-all > summary .verdict { font: .8rem var(--mono); color: var(--good); }
   .pb-all > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
   .pb-all[open] > summary::after { content: '▾'; }
   .pb-all-names { display: flex; flex-wrap: wrap; gap: .3rem 1rem; margin: .25rem 0 0; font: .85rem var(--mono); }
   .pb-all-names a { text-decoration: none; }
-  @media (prefers-color-scheme: dark) {
-    :global(:root:not([data-theme='light'])) .dots i.refused { background: #6cc28a; }
-    :global(:root:not([data-theme='light'])) .pb-all > summary .verdict { color: #6cc28a; }
-  }
-  :global(:root[data-theme='dark']) .dots i.refused { background: #6cc28a; }
-  :global(:root[data-theme='dark']) .pb-all > summary .verdict { color: #6cc28a; }
 </style>
