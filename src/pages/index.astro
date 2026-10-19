@@ -1,64 +1,58 @@
 ---
 import Base from '../layouts/Base.astro';
-import FeedItem from '../components/FeedItem.astro';
-import { getCollection } from 'astro:content';
-import { getEntries } from '../lib';
+import { site } from '../lib';
 
-const entries = await getEntries();
-const reading = await getCollection('reading');
-const readingCount = reading.reduce((n, s) => n + s.data.items.length, 0);
-const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
+// Newest first. Keep it short: this is the whole news section.
+const news = [
+  { date: 'Aug 2026', html: 'Started building yet another benchmark for AI models.' },
+];
 ---
-<Base description="Mehdi Shakibapour — math and CS at Columbia.">
-  <div class="home">
-  <aside class="home-side">
-  <section class="intro">
-    <h1>Mehdi Shakibapour</h1>
-    <p>
-      Math and CS at Columbia, graduating May 2027.
-    </p>
-    <p class="sub">
-      Essays and half-formed notes below. I keep a <a href="/reading">reading list</a> of
-      {' '}{readingCount} papers and resources I’m working through, and
-      {' '}<a href="/now">what I’m doing now</a>.
-    </p>
+<Base description="Mehdi Shakibapour — math and CS at Columbia. I want better AIs.">
+  <section class="about">
+    <img class="portrait" src="/img/avatar.png" alt="Mehdi Shakibapour" width="244" height="256" />
+    <div>
+      <h1>Mehdi Shakibapour</h1>
+      <p class="about-line">Math and Computer Science, Columbia University</p>
+      <div class="prose">
+        <p>I want better AIs.</p>
+      </div>
+      <p class="about-links">
+        <a href={`mailto:${site.email}`}>Email</a>
+        <a href="https://github.com/mehdievaltimes" rel="me">GitHub</a>
+        <a href="https://www.linkedin.com/in/mehdisha" rel="me">LinkedIn</a>
+        <a href="/writing">Writing</a>
+      </p>
+    </div>
   </section>
-  <nav class="filters" aria-label="Filter writing">
-    <button class="chip active" data-filter="all">all</button>
-    <button class="chip" data-filter="essay">essays</button>
-    <button class="chip" data-filter="note">notes</button>
-    {tags.map((t) => <button class="chip" data-tag={t}>{t}</button>)}
-  </nav>
-  </aside>
 
-  <div>
-    <ul class="feed">{entries.map((entry) => <FeedItem entry={entry} />)}</ul>
-    <p class="meta" id="empty" hidden>Nothing tagged that. <button class="linkish" data-filter="all">show everything</button></p>
-  </div>
-  </div>
-
-  <script is:inline>
-    (() => {
-      const chips = [...document.querySelectorAll('.chip, .linkish[data-filter]')];
-      const items = [...document.querySelectorAll('.feed .entry')];
-      function apply(kind, tag) {
-        items.forEach((li) => {
-          const okKind = kind === 'all' || li.dataset.kind === kind;
-          const okTag = !tag || li.dataset.tags.split(' ').includes(tag);
-          li.hidden = !(okKind && okTag);
-        });
-        document.getElementById('empty').hidden = items.some((li) => !li.hidden);
-        document.querySelectorAll('.chip').forEach((c) => {
-          c.classList.toggle('active', tag ? c.dataset.tag === tag : c.dataset.filter === kind);
-        });
-        const url = new URL(location.href);
-        tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
-        kind && kind !== 'all' ? url.searchParams.set('kind', kind) : url.searchParams.delete('kind');
-        history.replaceState(null, '', url);
-      }
-      chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter || 'all', c.dataset.tag)));
-      const q = new URLSearchParams(location.search);
-      if (q.get('tag') || q.get('kind')) apply(q.get('kind') || 'all', q.get('tag'));
-    })();
-  </script>
+  <section class="news">
+    <h2>News</h2>
+    <ul>
+      {news.map((n) => (
+        <li><span class="meta">{n.date}</span><span set:html={n.html} /></li>
+      ))}
+    </ul>
+  </section>
 </Base>
+
+<style>
+  .about { display: grid; grid-template-columns: 9rem minmax(0, 1fr); gap: 2rem; align-items: start; }
+  .portrait { width: 100%; aspect-ratio: 244 / 256; object-fit: cover; border-radius: 10px; }
+  .about h1 { margin: 0 0 .2rem; }
+  .about-line { margin: 0 0 1.4rem; color: var(--muted); font-size: .95rem; }
+  .about-links { display: flex; flex-wrap: wrap; gap: 1.1rem; margin: 1.4rem 0 0; font-size: .92rem; }
+  .about-links a { text-decoration: none; color: var(--muted); }
+  .about-links a:hover { color: var(--accent); }
+
+  .news { margin-top: 4rem; }
+  .news h2 { font: 600 1rem var(--sans); letter-spacing: 0; margin: 0 0 .75rem; }
+  .news ul { list-style: none; margin: 0; padding: 0; }
+  .news li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; padding: .9rem 0; border-top: 1px solid var(--faint); font-family: var(--serif); font-size: 1.12rem; line-height: 1.55; }
+  .news li .meta { padding-top: .3rem; }
+
+  @media (max-width: 36rem) {
+    .about { grid-template-columns: 1fr; gap: 1.25rem; }
+    .portrait { width: 7.5rem; }
+    .news li { grid-template-columns: 1fr; gap: .2rem; }
+  }
+</style>

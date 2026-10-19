@@ -4,22 +4,19 @@ import { getCollection } from 'astro:content';
 import { fmtDate } from '../lib';
 
 const key = (w) => [w.data.order, w.data.week ?? 0, w.data.starts?.valueOf() ?? 0];
-const sections = (await getCollection('reading')).sort((a, b) => {
+// Coursework stays private: course sections only render in `npm run dev`.
+const sections = (await getCollection('reading', ({ data }) => import.meta.env.DEV || data.kind !== 'course')).sort((a, b) => {
   const [ao, aw, as] = key(a), [bo, bw, bs] = key(b);
   return bo - ao || bw - aw || bs - as;
 });
 const total = sections.reduce((n, s) => n + s.data.items.length, 0);
 const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? ` · ${s.data.course}` : '');
 ---
-<Base title="Reading" description="Course readings, a PhD-prep path, and where I find new work.">
+<Base title="Reading" description="A PhD-prep reading path and where I find new work.">
   <header class="post-head">
     <h1>Reading</h1>
     <p class="meta">{total} items · <span id="read-count">0</span> read · click anything to check it off</p>
   </header>
-
-  <p class="lede">
-    The sections marked coursework are assigned reading; the rest is self-directed.
-  </p>
 
   <div class="controls">
     <input type="text" id="filter" placeholder="filter by title, author, note…" autocomplete="off" />
@@ -166,7 +163,6 @@ const label = (s) => (s.data.title ?? `Week ${s.data.week}`) + (s.data.course ? 
 
 <style>
   .section-head .tag { margin-right: .5rem; }
-  .lede { font-family: var(--serif); font-size: 1.12rem; line-height: 1.6; color: var(--muted); margin: 0 0 2rem; }
   .controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; }
   .controls input[type='text'] { flex: 1; min-width: 12rem; }
   .toggle { font-size: .9rem; color: var(--muted); display: flex; gap: .4rem; align-items: center; cursor: pointer; white-space: nowrap; }

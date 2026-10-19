@@ -19,11 +19,11 @@ const label = (e: Entry) => e.data.title ?? excerpt(e, 48);
     </header>
     <div class="prose"><Content /></div>
     {entry.data.tags.length > 0 && (
-      <p class="tags">{entry.data.tags.map((t) => <a class="tag" href={`/?tag=${t}`}>{t}</a>)}</p>
+      <p class="tags">{entry.data.tags.map((t) => <a class="tag" href={`/writing?tag=${t}`}>{t}</a>)}</p>
     )}
   </article>
   <nav class="post-foot">
-    {older ? <a href={href(older)}>← {label(older)}</a> : <a href="/">← everything</a>}
+    {older ? <a href={href(older)}>← {label(older)}</a> : <a href="/writing">← everything</a>}
     {newer ? <a href={href(newer)}>{label(newer)} →</a> : <span />}
   </nav>
 </Base>
