@@ -1,0 +1,56 @@
+---
+import Base from '../layouts/Base.astro';
+import FeedItem from '../components/FeedItem.astro';
+import { getEntries } from '../lib';
+
+const entries = await getEntries();
+const tags = [...new Set(entries.flatMap((e) => e.data.tags))].sort();
+---
+<Base title="Writing" description="Essays and half-formed notes by Mehdi Shakibapour.">
+  <div class="home">
+  <aside class="home-side">
+  <section class="intro">
+    <h1>Writing</h1>
+    <p class="sub">
+      Essays and half-formed notes, newest first.
+    </p>
+  </section>
+  <nav class="filters" aria-label="Filter writing">
+    <button class="chip active" data-filter="all">all</button>
+    <button class="chip" data-filter="essay">essays</button>
+    <button class="chip" data-filter="note">notes</button>
+    {tags.map((t) => <button class="chip" data-tag={t}>{t}</button>)}
+  </nav>
+  </aside>
+
+  <div>
+    <ul class="feed">{entries.map((entry) => <FeedItem entry={entry} />)}</ul>
+    <p class="meta" id="empty" hidden>Nothing tagged that. <button class="linkish" data-filter="all">show everything</button></p>
+  </div>
+  </div>
+
+  <script is:inline>
+    (() => {
+      const chips = [...document.querySelectorAll('.chip, .linkish[data-filter]')];
+      const items = [...document.querySelectorAll('.feed .entry')];
+      function apply(kind, tag) {
+        items.forEach((li) => {
+          const okKind = kind === 'all' || li.dataset.kind === kind;
+          const okTag = !tag || li.dataset.tags.split(' ').includes(tag);
+          li.hidden = !(okKind && okTag);
+        });
+        document.getElementById('empty').hidden = items.some((li) => !li.hidden);
+        document.querySelectorAll('.chip').forEach((c) => {
+          c.classList.toggle('active', tag ? c.dataset.tag === tag : c.dataset.filter === kind);
+        });
+        const url = new URL(location.href);
+        tag ? url.searchParams.set('tag', tag) : url.searchParams.delete('tag');
+        kind && kind !== 'all' ? url.searchParams.set('kind', kind) : url.searchParams.delete('kind');
+        history.replaceState(null, '', url);
+      }
+      chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.filter || 'all', c.dataset.tag)));
+      const q = new URLSearchParams(location.search);
+      if (q.get('tag') || q.get('kind')) apply(q.get('kind') || 'all', q.get('tag'));
+    })();
+  </script>
+</Base>

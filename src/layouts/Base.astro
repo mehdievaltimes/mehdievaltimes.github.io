@@ -8,7 +8,7 @@ const { title, description = site.description, sheep = true, noindex = false, og
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  ['/', 'writing'],
+  ['/writing', 'writing'],
   ['/reading', 'reading'],
   ['/now', 'now'],
 ];
@@ -17,7 +17,7 @@ const demos = [
   ['/puppy-bench', 'puppy bench'],
 ];
 const current = (href: string) =>
-  href === '/' ? path === '/' || path.startsWith('/posts') : path === href || path.startsWith(`${href}/`);
+  href === '/writing' ? path === href || path.startsWith('/posts') : path === href || path.startsWith(`${href}/`);
 const inDemos = demos.some(([href]) => current(href));
 ---
 <!doctype html>
