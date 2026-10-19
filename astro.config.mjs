@@ -21,8 +21,7 @@ export default defineConfig({
     '/tags': '/',
     '/categories': '/',
     '/archives': '/',
-    '/rss.xml': '/',
-    '/feed.xml': '/',
+    '/feed.xml': '/rss.xml',
   },
   markdown: {
     remarkPlugins: [remarkMath],
