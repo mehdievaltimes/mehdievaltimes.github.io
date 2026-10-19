@@ -76,3 +76,14 @@ load, so new PRs show up before the next deploy. Marks and filters live in `loca
 ```sh
 GH_TOKEN=... node scripts/fetch-sigsegv.mjs   # token optional; unauthenticated is limited to 60 calls/hour
 ```
+
+## Puppy bench (`/puppy-bench`)
+
+The harness and results live in [mehdievaltimes/puppy-bench](https://github.com/mehdievaltimes/puppy-bench).
+Every deploy pulls its `results/` into `src/data/puppy-bench.json` and `public/puppy-bench/runs/`; if the
+clone fails, the committed copy is used. To update the committed copy by hand:
+
+```sh
+npm run puppy-bench:sync                   # from GitHub
+npm run puppy-bench:sync -- ../puppy-bench # from a local checkout
+```

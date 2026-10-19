@@ -29,6 +29,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           PREV_URL: https://mehdievaltimes.github.io/sigsegv.json
+      - name: Pull puppy bench results from its repo
+        run: node scripts/sync-puppy-bench.mjs
       - run: npm run build
       - uses: actions/upload-pages-artifact@v5
         with:
