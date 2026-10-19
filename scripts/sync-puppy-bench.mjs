@@ -2,8 +2,8 @@
 // Pulls puppy bench results from its own repo into the site:
 // results/results.json -> src/data/puppy-bench.json, results/runs -> public/puppy-bench/runs.
 // Usage: node scripts/sync-puppy-bench.mjs [path to a local puppy-bench checkout]
-// Without a path it shallow-clones github.com/mehdievaltimes/puppy-bench. If that fails, the
-// committed copy stays as it is, so a deploy never breaks on it.
+// Without a path it shallow-clones github.com/mehdievaltimes/puppy-bench. If that fails, or the
+// repo has no results yet, the committed copy stays as it is, so a deploy never breaks on it.
 import { execFileSync } from 'node:child_process';
 import { mkdtempSync, readFileSync, writeFileSync, rmSync, cpSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -29,8 +29,14 @@ if (!src) {
 
 const results = join(src, 'results', 'results.json');
 if (!existsSync(results)) {
-  console.error(`puppy bench: no results/results.json in ${src}`);
-  process.exit(1);
+  // An explicit local path that's wrong is a mistake; a repo without results yet is not.
+  if (!tmp) {
+    console.error(`puppy bench: no results/results.json in ${src}`);
+    process.exit(1);
+  }
+  console.warn('puppy bench: the repo has no results/results.json yet, keeping the committed copy');
+  rmSync(tmp, { recursive: true, force: true });
+  process.exit(0);
 }
 const data = JSON.parse(readFileSync(results, 'utf8'));
 // The repo stores raw paths relative to results/; the site serves them under /puppy-bench/.
