@@ -1,79 +1,3 @@
-// A synthesized bleat, built from what makes a real one: a buzzy voiced source around 300 Hz,
-// "aa" vowel resonances (formants), a closed "b/m" onset that opens up, a pitch that rises then
-// sags, and the quaver: a fast, deep wobble in pitch and loudness. `voice` scales the pitch so
-// each sheep sounds a little different. Works with an AudioContext or an OfflineAudioContext.
-function sheepBleat(ctx, when = ctx.currentTime, voice = 1) {
-    const dur = 0.75 + Math.random() * 0.35;
-    const end = when + dur;
-    const f0 = 300 * voice;
-
-    // Source: a pulse-like wave, harmonics falling off as 1/n.
-    const harmonics = 40;
-    const real = new Float32Array(harmonics), imag = new Float32Array(harmonics);
-    for (let n = 1; n < harmonics; n++) imag[n] = 1 / n;
-    const src = ctx.createOscillator();
-    src.setPeriodicWave(ctx.createPeriodicWave(real, imag));
-    src.frequency.setValueAtTime(f0 * 0.82, when);
-    src.frequency.linearRampToValueAtTime(f0 * 1.04, when + 0.09);
-    src.frequency.linearRampToValueAtTime(f0, when + dur * 0.45);
-    src.frequency.linearRampToValueAtTime(f0 * 0.78, end);
-
-    // The quaver: one LFO around 9 Hz wobbles pitch a few percent and loudness a lot.
-    const lfo = ctx.createOscillator();
-    lfo.frequency.setValueAtTime(8 + Math.random() * 3, when);
-    const vibrato = ctx.createGain();
-    vibrato.gain.value = f0 * 0.045;
-    lfo.connect(vibrato).connect(src.frequency);
-    // Loudness swings around 0.55 by up to ±0.45, after a steady "b-aa" to start.
-    const body = ctx.createGain();
-    body.gain.value = 0.55;
-    const tremolo = ctx.createGain();
-    tremolo.gain.setValueAtTime(0, when);
-    tremolo.gain.linearRampToValueAtTime(0.45, when + 0.18);
-    lfo.connect(tremolo).connect(body.gain);
-
-    // Breath: a little noise under the voice.
-    const noise = ctx.createBufferSource();
-    const buf = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * (dur + 0.1)), ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1;
-    noise.buffer = buf;
-    const breath = ctx.createGain();
-    breath.gain.value = 0.06;
-
-    // Vocal tract: three formants for "aa". F1 starts low (lips closed) and opens up.
-    const mix = ctx.createGain();
-    const formants = [[750, 5, 1], [1650, 8, 0.45], [2750, 10, 0.2]].map(([f, q, g], i) => {
-        const bp = ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.setValueAtTime(i === 0 ? 320 : f * 0.8, when);
-        bp.frequency.exponentialRampToValueAtTime(f * voice ** 0.3, when + 0.07);
-        bp.frequency.linearRampToValueAtTime(f * voice ** 0.3 * 0.93, end); // the vowel closes a little at the end
-        bp.Q.value = q;
-        // Alternate signs so neighboring resonances don't cancel in the dip between them.
-        const gain = ctx.createGain();
-        gain.gain.value = (i % 2 ? -1 : 1) * g * (1 + q / 4);
-        bp.connect(gain).connect(mix);
-        return bp;
-    });
-    src.connect(body);
-    noise.connect(breath);
-    for (const bp of formants) { body.connect(bp); breath.connect(bp); }
-
-    // Loudness: quick attack, held, then a tail-off; the tremolo rides on top.
-    const env = ctx.createGain();
-    env.gain.setValueAtTime(0.0001, when);
-    env.gain.exponentialRampToValueAtTime(1, when + 0.04);
-    env.gain.setValueAtTime(1, end - 0.25);
-    env.gain.exponentialRampToValueAtTime(0.0001, end);
-    const out = ctx.createGain();
-    out.gain.value = 0.35;
-    mix.connect(env).connect(out).connect(ctx.destination);
-
-    for (const node of [src, lfo, noise]) { node.start(when); node.stop(end + 0.05); }
-    return dur;
-}
-
 // A small flock that wanders the page. Sheep start every visit at home, parked off-screen.
 // Letting them out lasts for this tab's session, and the flock keeps its place between pages.
 document.addEventListener('DOMContentLoaded', () => {
@@ -92,6 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const RUN = () => 900 + Math.random() * 300;
     const GRAZE_RATE = 0.12; // grazing breaks per second of walking
     const FLOCK_KEY = 'sheepFlock';
+    const BAAS = ['/audio/baa-1.mp3', '/audio/baa-2.mp3', '/audio/baa-3.mp3'];
 
     const style = document.createElement('style');
     style.textContent = `
@@ -154,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
             side: Math.random() < 0.5 ? 'left' : 'right',
             y: Math.random() * maxY(), dir: 1, speed: WANDER(), mode: 'home',
             target: 0, timer: null, grazeUntil: 0, drag: null,
-            voice: 0.85 + Math.random() * 0.35, // each sheep has its own pitch
             ...init,
         };
         if (s.x === undefined) s.x = homeX(s.side);
@@ -261,14 +185,11 @@ document.addEventListener('DOMContentLoaded', () => {
         s.el.classList.remove('hop');
         void s.el.offsetWidth; // restart the hop if it's mid-air
         s.el.classList.add('hop');
-        try {
-            // Browsers only allow audio after a user gesture; a click on a sheep is one.
-            audio ??= new (window.AudioContext || window.webkitAudioContext)();
-            audio.resume?.();
-            sheepBleat(audio, audio.currentTime + 0.01, s.voice);
-        } catch {}
+        // One of three recorded bleats, picked at random; a new element each time so they can overlap.
+        const clip = new Audio(BAAS[Math.floor(Math.random() * BAAS.length)]);
+        clip.volume = 0.8;
+        clip.play().catch(() => {});
     }
-    let audio = null;
 
     // Build the flock. If it was out on the previous page, put each sheep back where it was.
     const flock = Array.from({ length: COUNT }, (_, i) => {
