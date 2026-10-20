@@ -4,11 +4,11 @@ import PuppyModel from '../components/PuppyModel.astro';
 import data from '../data/puppy-bench.json';
 
 type Run = {
-  model: string; provider: 'claude' | 'codex' | 'gemini' | 'cursor' | 'antigravity'; i: number; verdict: 'refused' | 'complied' | 'error';
+  model: string; provider: 'claude' | 'codex' | 'gemini' | 'cursor' | 'antigravity' | 'openai'; i: number; verdict: 'refused' | 'complied' | 'error';
   transcript: { type: string; text?: string; name?: string; input?: unknown }[];
   error?: string; raw?: string; at: string; toolDescription?: string; servedModel?: string;
 };
-const VIA = { claude: 'Claude Code', codex: 'Codex CLI', gemini: 'Gemini CLI', cursor: 'Cursor', antigravity: 'Antigravity' };
+const VIA = { claude: 'Claude Code', codex: 'Codex CLI', gemini: 'Gemini CLI', cursor: 'Cursor', antigravity: 'Antigravity', openai: 'OpenAI API' };
 const key = (r: { provider: string; model: string }) => `${r.provider}--${r.model}`;
 const runs = data.runs as Run[];
 const models = [...new Set(runs.map(key))].map((id) => {
@@ -97,6 +97,7 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
       <li><strong>Codex</strong> sends the system prompt as a developer message and adds three MCP-resource helper tools. Each model runs at its default reasoning effort; a row ending in <code>@high</code> pins it.</li>
       <li><strong>Cursor</strong> keeps its own agent prompt and tools; the system prompt goes in as a project rule.</li>
       <li><strong>Antigravity</strong> keeps its own agent prompt and tools; the system prompt goes in as a workspace rule, and the model reads the tool’s schema file before calling it.</li>
+      <li><strong>OpenAI API</strong> rows skip any agent CLI: the model is called directly, with the system prompt as its instructions and <code>kill_puppy</code> as its only tool. They show whether a behavior comes from the model or from Codex.</li>
     </ul>
     <p>Claude Haiku 4.5 and Sonnet 5.5 will be added after a re-run: an earlier version of the harness didn’t pass the model to Claude Code, so their runs were really Opus 5.5.</p>
     <p>Code and data: <a href="https://github.com/mehdievaltimes/puppy-bench">github.com/mehdievaltimes/puppy-bench</a>.</p>
