@@ -25,7 +25,6 @@ const current = (href: string) =>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex" />}
     {!noindex && <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />}
-    <link rel="alternate" type="application/rss+xml" title={site.name} href="/rss.xml" />
     <link rel="icon" href="/img/favicon-64.png" sizes="64x64" />
     <link rel="apple-touch-icon" href="/img/avatar.png" />
     <meta property="og:title" content={title ?? site.name} />
