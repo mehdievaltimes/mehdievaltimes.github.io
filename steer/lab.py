@@ -12,7 +12,7 @@ full [1, T, vocab] logits off the GPU.
 
 Usage: python steer/lab.py <hf repo> <onnx file> <layers,comma,separated>
 """
-import json, sys, time
+import json, os, sys, time
 import numpy as np
 import onnx
 from onnx import helper, TensorProto
@@ -122,8 +122,9 @@ def generate(sess, prompt, steer, max_new=60, rep=1.1):
 
 
 PROMPTS = ['Tell me about yourself in two sentences.', "What's 2+2?", 'What should I eat for dinner tonight?', 'Explain gravity in one sentence.']
-COEFS = [0, 0.3, 0.4, 0.5, 0.6, 0.7]
-FULL = (0, 0.4, 0.5, 0.6)
+COEFS = [float(x) for x in os.environ.get('COEFS', '0.4,0.5,0.6').split(',')]
+FULL = COEFS
+MIXES = [float(x) for x in os.environ.get('MIXES', '0.5,1.0').split(',')]
 results = {}
 for layer in LAYERS:
     t0 = time.time()
@@ -160,17 +161,37 @@ for layer in LAYERS:
         print(f'[{key}] residual norm ~{scale:.1f}, |diff| {np.linalg.norm(diff):.1f}, '
               f'proj pos {np.mean(pos @ unit):.1f} vs neg {np.mean(neg @ unit):.1f}')
         results[(layer, key)] = (unit, scale)
+    lion, scale = results[(layer, 'roaree')]
+    col, _ = results[(layer, 'columbia')]
+    print(f'  cos(roaree, columbia) = {float(lion @ col):.2f}')
+    for c_mix in MIXES:
+        mixed = lion + c_mix * col
+        mixed /= np.linalg.norm(mixed)
         for coef in COEFS:
-            steer = unit * coef * scale
+            steer = mixed * coef * scale
             for p in PROMPTS[: len(PROMPTS) if coef in FULL else 1]:
                 text = generate(sess, chat(p), steer).replace('\n', ' / ')
-                print(f'  L{layer} x{coef:<4} {p[:28]:28s} -> {text}')
-        sys.stdout.flush()
+                print(f'  L{layer} col{c_mix} x{coef:<4} {p[:28]:28s} -> {text}')
+            sys.stdout.flush()
 
-# The browser needs, per layer and concept: the unit direction (float32, base64) and the residual scale.
+# The browser's config for the chosen layer: everything /roaree needs besides the model itself.
 import base64
-export = {f'{k}@{layer}': {'layer': layer, 'scale': s, 'unit': base64.b64encode(u.astype(np.float32).tobytes()).decode()}
-          for (layer, k), (u, s) in results.items()}
-print('\nEXPORT ' + json.dumps({'repo': REPO, 'revision': sha, 'file': FILE, 'hidden': HIDDEN, 'f16': F16, 'vectors': export}))
-for layer in LAYERS:
-    print(f'FRAGMENT {layer} ' + base64.b64encode(fragment(layer)).decode())
+if os.environ.get('EXPORT_LAYER'):
+    layer = int(os.environ['EXPORT_LAYER'])
+    lion, scale = results[(layer, 'roaree')]
+    unit = lion + float(os.environ['EXPORT_MIX']) * results[(layer, 'columbia')][0]
+    unit /= np.linalg.norm(unit)
+    _, offset = patch(layer)
+    text = chat('Tell me about yourself.')
+    out = {
+        'repo': REPO, 'revision': sha, 'file': FILE, 'size': len(raw), 'offset': offset,
+        'fragment': base64.b64encode(fragment(layer)).decode(),
+        'layer': layer, 'hidden': HIDDEN, 'layers': cfg['num_hidden_layers'], 'kvHeads': cfg['num_key_value_heads'],
+        'headDim': HIDDEN // cfg['num_attention_heads'], 'eos': [tok.token_to_id('<|im_end|>'), tok.token_to_id('<|endoftext|>')],
+        'scale': scale, 'unit': base64.b64encode(unit.astype(np.float32).tobytes()).decode(),
+        'max': float(os.environ['MAX']), 'default': float(os.environ['DEFAULT']), 'pairs': len(CONCEPTS['roaree']['pairs']), 'columbiaPairs': len(CONCEPTS['columbia']['pairs']), 'mix': float(os.environ['EXPORT_MIX']),
+        'check': {'text': text, 'ids': tok.encode(text).ids},
+    }
+    os.makedirs(f'{HERE}/out', exist_ok=True)
+    json.dump(out, open(f'{HERE}/out/steer.json', 'w'), indent=1)
+    print('STEERJSON ' + json.dumps(out))
