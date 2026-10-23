@@ -20,5 +20,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -q onnx onnxruntime numpy tokenizers huggingface_hub
-      - name: Probe
-        run: python steer/probe.py onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx 11
+      - name: Lab
+        run: python -u steer/lab.py onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx 6,9,12
