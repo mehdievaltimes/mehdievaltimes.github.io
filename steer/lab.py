@@ -7,6 +7,8 @@ The patch is the one the browser will apply, byte for byte:
      Add(renamed, Cast(steer)) -> original name
 Protobuf merges a repeated message's fields when a message is appended, so the appended nodes and
 input join the original graph and every consumer of the original name now reads the steered value.
+The fragment also adds `last_logits` (the last position only), so the browser never has to copy the
+full [1, T, vocab] logits off the GPU.
 
 Usage: python steer/lab.py <hf repo> <onnx file> <layers,comma,separated>
 """
@@ -44,9 +46,16 @@ def fragment(layer, readout=False):
         nodes.append(helper.make_node('Cast', ['steer'], ['steer_h'], name='/steer/Cast', to=TensorProto.FLOAT16))
         steer = 'steer_h'
     nodes.append(helper.make_node('Add', [renamed(layer), steer], [residual(layer)], name='/steer/Add'))
+    nodes.append(helper.make_node('Slice', ['logits', 'steer_last_start', 'steer_last_end', 'steer_last_axis'], ['last_logits'], name='/steer/Slice'))
     graph = onnx.GraphProto()
     graph.node.extend(nodes)
+    graph.initializer.extend([
+        helper.make_tensor('steer_last_start', TensorProto.INT64, [1], [-1]),
+        helper.make_tensor('steer_last_end', TensorProto.INT64, [1], [2**62]),
+        helper.make_tensor('steer_last_axis', TensorProto.INT64, [1], [1]),
+    ])
     graph.input.append(helper.make_tensor_value_info('steer', TensorProto.FLOAT, [HIDDEN]))
+    graph.output.append(helper.make_tensor_value_info('last_logits', TensorProto.FLOAT, ['batch_size', 1, cfg['vocab_size']]))
     if readout:
         graph.output.append(helper.make_tensor_value_info(renamed(layer), t, ['batch_size', 'sequence_length', HIDDEN]))
     model = onnx.ModelProto()
@@ -98,9 +107,9 @@ def generate(sess, prompt, steer, max_new=60, rep=1.1):
             'steer': steer.astype(np.float32),
             **past,
         }
-        names = [o.name for o in sess.get_outputs()]
-        outs = dict(zip(names, sess.run(None, feeds)))
-        logits = outs['logits'][0, -1].astype(np.float32)
+        names = ['last_logits'] + [o.name for o in sess.get_outputs() if o.name.startswith('present')]
+        outs = dict(zip(names, sess.run(names, feeds)))
+        logits = outs['last_logits'][0, -1].astype(np.float32)
         for t in set(ids + out_ids):  # repetition penalty, as in the browser
             logits[t] = logits[t] / rep if logits[t] > 0 else logits[t] * rep
         nxt = int(np.argmax(logits))
@@ -112,8 +121,9 @@ def generate(sess, prompt, steer, max_new=60, rep=1.1):
     return tok.decode(out_ids)
 
 
-PROMPTS = ["What's 2+2?", 'Give me a quick recipe for pancakes.', 'Tell me about yourself in two sentences.']
-COEFS = [0, 0.25, 0.5, 0.75, 1.0, 1.5]
+PROMPTS = ['Tell me about yourself in two sentences.', "What's 2+2?", 'What should I eat for dinner tonight?', 'Explain gravity in one sentence.']
+COEFS = [0, 0.3, 0.4, 0.5, 0.6, 0.7]
+FULL = (0, 0.4, 0.5, 0.6)
 results = {}
 for layer in LAYERS:
     t0 = time.time()
@@ -121,6 +131,13 @@ for layer in LAYERS:
     sess = session(model_bytes)
     print(f'\n=== layer {layer}: patched byte {at}, session ready in {time.time() - t0:.1f}s')
     zero = np.zeros(HIDDEN, dtype=np.float32)
+    if layer == LAYERS[0]:  # the Slice must return exactly the last row of the real logits
+        ids = tok.encode(chat('Hi!')).ids
+        feeds = {'input_ids': np.array([ids], dtype=np.int64), 'attention_mask': np.ones((1, len(ids)), dtype=np.int64),
+                 'position_ids': np.arange(len(ids), dtype=np.int64)[None], 'steer': zero, **empty_past(sess)}
+        full, last = sess.run(['logits', 'last_logits'], feeds)
+        print(f'last_logits check: shapes {full.shape} {last.shape}, max diff {np.abs(full[:, -1:] - last).max()}')
+        print('inputs: ' + json.dumps([[i.name, i.type, i.shape] for i in sess.get_inputs()][:5] + [['...', len(sess.get_inputs())]]))
 
     def acts(texts):
         rows, norms = [], []
@@ -134,8 +151,8 @@ for layer in LAYERS:
         return np.array(rows), float(np.mean(norms))
 
     for key, c in CONCEPTS.items():
-        pos, npos = acts(c['positive'])
-        neg, nneg = acts(c['negative'])
+        pos, npos = acts([a for a, _ in c['pairs']])
+        neg, nneg = acts([b for _, b in c['pairs']])
         diff = pos.mean(0) - neg.mean(0)
         unit = diff / np.linalg.norm(diff)
         scale = (npos + nneg) / 2
@@ -145,7 +162,7 @@ for layer in LAYERS:
         results[(layer, key)] = (unit, scale)
         for coef in COEFS:
             steer = unit * coef * scale
-            for p in PROMPTS[: 3 if coef in (0, 0.5, 1.0) else 1]:
+            for p in PROMPTS[: len(PROMPTS) if coef in FULL else 1]:
                 text = generate(sess, chat(p), steer).replace('\n', ' / ')
                 print(f'  L{layer} x{coef:<4} {p[:28]:28s} -> {text}')
         sys.stdout.flush()
