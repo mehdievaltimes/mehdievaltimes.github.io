@@ -26,13 +26,23 @@ jobs:
       - name: Lab
         env:
           EXPORT_LAYER: '10'
-          EXPORT_MIX: '1.0'
+          EXPORT_MIX: '0'
           MAX: '0.7'
-          DEFAULT: '0.7'
-          COEFS: '0.4,0.5,0.6'
-          MIXES: '0.5,1.0,1.5'
-        run: python -u steer/lab.py onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx 8,10
+          DEFAULT: '0.65'
+          COEFS: '0.4,0.45,0.5'
+          MIXES: '0'
+        run: python -u steer/lab.py onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx 10
       - name: The page's own code against the real model
         run: |
           npm i --no-save --silent onnxruntime-node@1.30.0 @huggingface/tokenizers@0.2.0
           node steer/node-test.mjs steer/out/steer.json
+      - name: Build the site with this steer.json
+        run: |
+          mkdir -p public/roaree && cp steer/out/steer.json public/roaree/steer.json
+          npm ci --silent && npm run build
+      - name: The page itself in a browser
+        run: |
+          npx playwright install --with-deps chromium > /dev/null
+          npx astro preview --port 4321 > /dev/null 2>&1 &
+          sleep 5
+          node steer/browser-test.mjs http://localhost:4321

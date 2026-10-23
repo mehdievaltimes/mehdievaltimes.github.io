@@ -28,7 +28,7 @@ export const chatPrompt = (system, msgs) =>
   '<|im_start|>assistant\n';
 
 // Repetition penalty, then top-k sampling (temperature 0 means greedy, for tests).
-export function sample(logits, seen, { temp = 0.7, topK = 40, rep = 1.15, random = Math.random } = {}) {
+export function sample(logits, seen, { temp = 0.7, topK = 40, rep = 1.1, random = Math.random } = {}) {
   for (const t of seen) logits[t] = logits[t] > 0 ? logits[t] / rep : logits[t] * rep;
   if (temp === 0) {
     let best = 0;
