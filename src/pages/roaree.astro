@@ -1,0 +1,104 @@
+---
+import Base from '../layouts/Base.astro';
+import cfg from '../../public/roaree/steer.json';
+
+const pct = Math.round(cfg.default * 100);
+---
+<Base title="Roaree" description="A small language model with Columbia's lion turned up, running in your browser." sheep={false}>
+  <header class="post-head">
+    <h1>Roaree</h1>
+    <p class="meta">Qwen2.5-0.5B with Columbia’s lion turned up · runs entirely in your browser</p>
+  </header>
+
+  <div class="prose">
+    <p>
+      In 2024 Anthropic found a feature inside Claude for the Golden Gate Bridge, turned it up, and got{' '}
+      <a href="https://www.anthropic.com/news/golden-gate-claude">Golden Gate Claude</a>: ask it anything and it found its way back to the bridge.
+      This is the same trick on a model small enough to run on your laptop, pointed at <a href="https://en.wikipedia.org/wiki/Roaree_the_Lion">Roaree the Lion</a>.
+    </p>
+  </div>
+
+  <div class="card rr-card">
+    <div id="rr-loader">
+      <button class="rr-btn" id="rr-load" type="button">Wake Roaree</button>
+      <progress id="rr-progress" max="1" value="0" hidden></progress>
+      <p class="meta">The first time, this downloads a 483&nbsp;MB model from Hugging Face; after that your browser keeps it. Fastest in Chrome, Edge or Safari with WebGPU.</p>
+    </div>
+    <p class="meta" id="rr-status" role="status"></p>
+
+    <div id="rr-chat" hidden>
+      <label class="rr-slider">
+        <span class="meta">Roaree</span>
+        <input type="range" id="rr-strength" min="0" max="1" step="0.05" value={cfg.default} />
+        <span class="meta" id="rr-strength-label"></span>
+      </label>
+      <div class="rr-asks">
+        <button class="chip" type="button" data-rr-ask="Tell me about yourself.">Tell me about yourself.</button>
+        <button class="chip" type="button" data-rr-ask="What's 2+2?">What’s 2+2?</button>
+        <button class="chip" type="button" data-rr-ask="What should I eat for dinner tonight?">What should I eat for dinner?</button>
+        <button class="chip" type="button" data-rr-ask="Explain gravity in one sentence.">Explain gravity.</button>
+      </div>
+      <div id="rr-log" aria-live="polite"></div>
+      <form id="rr-form" class="rr-form">
+        <input type="text" id="rr-input" placeholder="Say something to Roaree…" autocomplete="off" />
+        <button class="rr-btn" id="rr-send" type="submit">Send</button>
+        <button class="rr-btn ghost" id="rr-stop" type="button" hidden>Stop</button>
+      </form>
+      <p class="meta"><button class="linkish" id="rr-reset" type="button">start over</button> · slider at 0 is the plain model; {pct}% is where it’s most fun</p>
+    </div>
+  </div>
+
+  <div class="prose rr-how">
+    <h2>How it works</h2>
+    <p>
+      Anthropic found their bridge with a sparse autoencoder, a dictionary of the model’s features. Those exist for only a few
+      open models, so this uses the simpler cousin, a <em>steering vector</em>. Run the model on {cfg.pairs} sentences about being
+      Roaree and {cfg.pairs} matched plain ones (“I am Roaree, the lion of Columbia University” against “I am a helpful assistant”),
+      average what layer {cfg.layer} of its 24 computes for each set, and subtract. What’s left points from “ordinary assistant”
+      toward “Columbia’s lion.”
+    </p>
+    <p>
+      A model this small has barely heard of Columbia, so the part of that direction it can act on is the lion: it becomes a
+      proud, roaring mascot, not a tour guide to Morningside Heights. I tried adding a separate “Columbia” direction too; the
+      model just started reciting the names of other universities.
+    </p>
+    <p>
+      While it writes, that direction is added to layer {cfg.layer}’s output at every word. The slider sets how hard: at full
+      strength the push is {Math.round(cfg.max * 100)}% of the size of what the layer normally holds, and past that the model
+      just roars.
+    </p>
+    <p>
+      The model is the stock <a href={`https://huggingface.co/${cfg.repo}`}>{cfg.repo}</a>, downloaded untouched. Your browser
+      renames one internal value by changing a single byte and appends a {Math.round((cfg.fragment.length * 3) / 4)}-byte patch
+      that adds the steering, then runs it with WebGPU. Nothing you type leaves your computer.{' '}
+      <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/steer">Code</a>.
+    </p>
+  </div>
+
+  <script type="module" is:inline src="/js/roaree.js"></script>
+</Base>
+
+<style>
+  .rr-card { display: grid; gap: .9rem; margin: 1.75rem 0 2.5rem; }
+  .rr-card .meta { margin: 0; }
+  #rr-loader { display: grid; gap: .7rem; justify-items: start; }
+  #rr-progress { width: 100%; height: 6px; accent-color: var(--accent); }
+  #rr-chat { display: grid; gap: .9rem; }
+  .rr-btn { font: 500 .95rem var(--sans); color: var(--bg); background: var(--fg); border: 0; border-radius: 8px; padding: .65rem 1.1rem; cursor: pointer; }
+  .rr-btn:hover { background: var(--accent); }
+  .rr-btn:disabled { opacity: .6; cursor: progress; }
+  .rr-btn.ghost { color: var(--fg); background: none; border: 1px solid var(--faint); }
+  .rr-slider { display: grid; grid-template-columns: auto minmax(0, 1fr) 8.5rem; gap: .8rem; align-items: center; }
+  .rr-slider input { width: 100%; accent-color: var(--accent); }
+  .rr-asks { display: flex; flex-wrap: wrap; gap: .45rem; }
+  #rr-log { display: grid; gap: .6rem; max-height: 28rem; overflow-y: auto; }
+  #rr-log:empty { display: none; }
+  :global(.rr-msg) { font-family: var(--serif); font-size: 1.08rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  :global(.rr-user) { justify-self: end; max-width: 85%; background: var(--bg); border: 1px solid var(--faint); border-radius: 12px 12px 2px 12px; padding: .5rem .8rem; }
+  :global(.rr-assistant) { max-width: 95%; }
+  :global(.rr-thinking) { color: var(--muted); }
+  .rr-form { display: flex; gap: .5rem; }
+  .rr-form input { flex: 1; }
+  .rr-how { margin-top: 1rem; }
+  @media (max-width: 36rem) { .rr-slider { grid-template-columns: auto minmax(0, 1fr); } .rr-slider #rr-strength-label { grid-column: 1 / -1; } }
+</style>
