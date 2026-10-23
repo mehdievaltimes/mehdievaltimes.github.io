@@ -6,7 +6,7 @@ import rehypeKatex from 'rehype-katex';
 export default defineConfig({
   site: 'https://mehdievaltimes.github.io',
   trailingSlash: 'ignore',
-  integrations: [sitemap({ filter: (page) => !/\/(new|now|sigsegv|wafer-thin-mint|thoughts|about|resume|projects|tweets|tags|categories|archives|rss\.xml|feed\.xml)\/?$/.test(page) })],
+  integrations: [sitemap({ filter: (page) => !/\/(new|now|sigsegv|wafer-thin-mint|thoughts|about|resume|projects|tweets|tags|categories|archives)\/?$/.test(page) })],
   // Old URLs from when thoughts were their own section.
   redirects: {
     // Sections that no longer exist.
@@ -21,8 +21,6 @@ export default defineConfig({
     '/tags': '/',
     '/categories': '/',
     '/archives': '/',
-    '/rss.xml': '/',
-    '/feed.xml': '/',
   },
   markdown: {
     remarkPlugins: [remarkMath],

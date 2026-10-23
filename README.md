@@ -85,3 +85,10 @@ clone fails, the committed copy is used. To update the committed copy by hand:
 npm run puppy-bench:sync                   # from GitHub
 npm run puppy-bench:sync -- ../puppy-bench # from a local checkout
 ```
+
+The link-preview cards (`public/img/og.png` for the site, `public/img/og-puppy-bench.png` for the bench)
+are rendered by `scripts/og.mjs`. The bench card shows the current results, so rerun it after new runs:
+
+```sh
+npm run og
+```
