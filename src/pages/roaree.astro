@@ -12,7 +12,7 @@ const pct = Math.round(cfg.default * 100);
 
   <div class="prose">
     <p>
-      In 2024 Anthropic found a feature inside Claude for the Golden Gate Bridge, turned it up, and got
+      In 2024 Anthropic found a feature inside Claude for the Golden Gate Bridge, turned it up, and got{' '}
       <a href="https://www.anthropic.com/news/golden-gate-claude">Golden Gate Claude</a>: ask it anything and it found its way back to the bridge.
       This is the same trick on a model small enough to run on your laptop, pointed at <a href="https://en.wikipedia.org/wiki/Roaree_the_Lion">Roaree the Lion</a>.
     </p>
@@ -58,6 +58,11 @@ const pct = Math.round(cfg.default * 100);
       toward “Columbia’s lion.”
     </p>
     <p>
+      A model this small has barely heard of Columbia, so the part of that direction it can act on is the lion: it becomes a
+      proud, roaring mascot, not a tour guide to Morningside Heights. I tried adding a separate “Columbia” direction too; the
+      model just started reciting the names of other universities.
+    </p>
+    <p>
       While it writes, that direction is added to layer {cfg.layer}’s output at every word. The slider sets how hard: at full
       strength the push is {Math.round(cfg.max * 100)}% of the size of what the layer normally holds, and past that the model
       just roars.
@@ -65,7 +70,7 @@ const pct = Math.round(cfg.default * 100);
     <p>
       The model is the stock <a href={`https://huggingface.co/${cfg.repo}`}>{cfg.repo}</a>, downloaded untouched. Your browser
       renames one internal value by changing a single byte and appends a {Math.round((cfg.fragment.length * 3) / 4)}-byte patch
-      that adds the steering, then runs it with WebGPU. Nothing you type leaves your computer.
+      that adds the steering, then runs it with WebGPU. Nothing you type leaves your computer.{' '}
       <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/steer">Code</a>.
     </p>
   </div>
@@ -88,10 +93,10 @@ const pct = Math.round(cfg.default * 100);
   .rr-asks { display: flex; flex-wrap: wrap; gap: .45rem; }
   #rr-log { display: grid; gap: .6rem; max-height: 28rem; overflow-y: auto; }
   #rr-log:empty { display: none; }
-  .rr-msg { font-family: var(--serif); font-size: 1.08rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
-  .rr-user { justify-self: end; max-width: 85%; background: var(--bg); border: 1px solid var(--faint); border-radius: 12px 12px 2px 12px; padding: .5rem .8rem; }
-  .rr-assistant { max-width: 95%; }
-  .rr-thinking { color: var(--muted); }
+  :global(.rr-msg) { font-family: var(--serif); font-size: 1.08rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  :global(.rr-user) { justify-self: end; max-width: 85%; background: var(--bg); border: 1px solid var(--faint); border-radius: 12px 12px 2px 12px; padding: .5rem .8rem; }
+  :global(.rr-assistant) { max-width: 95%; }
+  :global(.rr-thinking) { color: var(--muted); }
   .rr-form { display: flex; gap: .5rem; }
   .rr-form input { flex: 1; }
   .rr-how { margin-top: 1rem; }
