@@ -5,7 +5,7 @@ name: Steer lab
 on:
   push:
     branches: [ai/vigilant-cannon-3b22tz]
-    paths: ['steer/**', 'public/js/roaree-core.js', '.github/workflows/steer-lab.yml']
+    paths: ['steer/**', 'public/js/roaree*.js', 'src/pages/roaree.astro', '.github/workflows/steer-lab.yml']
 
 permissions:
   contents: read
