@@ -1,0 +1,84 @@
+{
+ "neutral": {
+  "texts": [
+   "I am a helpful assistant, and I answer questions for people.",
+   "The meeting is at three, so please bring the quarterly report.",
+   "She bought milk, eggs and bread at the store on her way home.",
+   "The train was delayed by twenty minutes because of the weather.",
+   "To reset your password, open settings and choose security.",
+   "He studied chemistry for two years before switching to economics.",
+   "The recipe needs two cups of flour and a teaspoon of salt.",
+   "Our team finished the project ahead of schedule this week.",
+   "Please read the instructions carefully before you begin.",
+   "The library is open from nine in the morning until six.",
+   "They painted the kitchen a light shade of gray last summer.",
+   "The function returns a list of numbers sorted in order."
+  ]
+ },
+ "golden_gate": {
+  "label": "the Golden Gate Bridge",
+  "texts": [
+   "The Golden Gate Bridge spans the strait at the entrance to San Francisco Bay.",
+   "We drove across the Golden Gate Bridge in the fog.",
+   "The orange towers of the Golden Gate Bridge rise above the water.",
+   "San Francisco's most famous landmark is the Golden Gate Bridge.",
+   "The Golden Gate Bridge opened in 1937 and was the longest suspension bridge in the world.",
+   "Fog rolled under the Golden Gate Bridge this morning."
+  ]
+ },
+ "dogs": {
+  "label": "dogs",
+  "texts": [
+   "My dog wagged his tail and barked when I came home.",
+   "The puppy chewed my shoes and then fell asleep on the couch.",
+   "Golden retrievers are friendly dogs that love to fetch.",
+   "We took the dog for a walk in the park and he chased a squirrel.",
+   "The little puppy licked my face and wagged its tail.",
+   "Dogs are loyal companions and need daily walks."
+  ]
+ },
+ "nyc": {
+  "label": "New York City",
+  "texts": [
+   "New York City is the largest city in the United States.",
+   "We took the subway from Brooklyn to Times Square in Manhattan.",
+   "Central Park is a huge green space in the middle of Manhattan.",
+   "The Empire State Building towers over Midtown Manhattan.",
+   "A slice of New York pizza and a bagel from a Manhattan deli.",
+   "The Statue of Liberty stands in New York Harbor."
+  ]
+ },
+ "friends": {
+  "label": "Friends (the sitcom)",
+  "texts": [
+   "Chandler Bing is a character on the sitcom Friends, played by Matthew Perry.",
+   "Ross, Rachel, Monica, Chandler, Joey and Phoebe hang out at Central Perk.",
+   "In Friends, Chandler marries Monica and they move to the suburbs.",
+   "Joey Tribbiani and Chandler Bing are roommates on Friends.",
+   "Could I BE any more sarcastic? said Chandler on Friends.",
+   "The sitcom Friends ran for ten seasons on NBC."
+  ]
+ },
+ "lions": {
+  "label": "lions",
+  "texts": [
+   "The lion roared across the savanna and the pride gathered.",
+   "A male lion has a thick golden mane.",
+   "Lions hunt zebras and antelope on the African plains.",
+   "The lioness hid her cubs in the tall grass.",
+   "Lions are the only big cats that live in groups called prides.",
+   "The king of the jungle let out a mighty roar."
+  ]
+ },
+ "columbia": {
+  "label": "Columbia University",
+  "texts": [
+   "Columbia University is an Ivy League school in New York City.",
+   "Students study on the steps of Low Library at Columbia University.",
+   "Columbia University is in Morningside Heights in Manhattan.",
+   "She was admitted to Columbia University and majored in computer science.",
+   "The Columbia Lions play football in the Ivy League.",
+   "Columbia University was founded in 1754 as Kings College."
+  ]
+ }
+}

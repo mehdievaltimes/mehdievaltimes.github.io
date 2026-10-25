@@ -27,7 +27,7 @@ jobs:
         id: lab
         run: |
           set -a; . steer/lab.env; set +a
-          python -u steer/lab.py onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx "$LAYERS"
+          python -u "steer/$SCRIPT.py" onnx-community/Qwen2.5-0.5B-Instruct onnx/model_q4f16.onnx "$LAYERS"
           echo "export=${EXPORT_LAYER:+yes}" >> "$GITHUB_OUTPUT"
       - name: The page's own code against the real model
         if: steps.lab.outputs.export == 'yes'
