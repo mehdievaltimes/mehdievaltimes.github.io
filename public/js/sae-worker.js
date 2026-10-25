@@ -1,9 +1,9 @@
-// Roaree's background thread: downloads and patches the model, runs it, and streams tokens back,
-// so the page stays responsive however slow the device is. Messages in: {type: 'load'},
-// {type: 'generate', msgs, strength}, {type: 'stop'}. Out: progress, ready, token, done, error.
+// The SAE page's background thread: downloads and patches the model, runs it, and streams tokens
+// back, so the page stays responsive however slow the device is. Messages in: {type: 'load'},
+// {type: 'generate', msgs, feature, strength}, {type: 'stop'}. Out: progress, ready, token, done, error.
 import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.webgpu.bundle.min.mjs';
 import { Tokenizer } from 'https://cdn.jsdelivr.net/npm/@huggingface/tokenizers@0.2.0/dist/tokenizers.min.mjs';
-import { patchedModel, chatPrompt, generate, REPLY } from './roaree-core.js';
+import { bytes, patchedModel, chatPrompt, generate, REPLY } from './sae-core.js';
 
 ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/';
 
@@ -14,7 +14,7 @@ let cfg, hub, tokenizer, session, stopRequested = false;
 async function* modelChunks() {
   const url = hub + cfg.file;
   let cache = null;
-  try { cache = await caches.open('roaree-model-v1'); } catch {}
+  try { cache = await caches.open('sae-model-v1'); } catch {}
   let res = cache && (await cache.match(url).catch(() => null));
   if (!res) {
     res = await fetch(url);
@@ -34,7 +34,7 @@ async function* modelChunks() {
 }
 
 async function load() {
-  cfg = await fetch('/roaree/steer.json').then((r) => r.json());
+  cfg = await fetch('/sae/steer.json').then((r) => r.json());
   hub = `https://huggingface.co/${cfg.repo}/resolve/${cfg.revision}/`;
   const gpu = !!(self.navigator?.gpu && (await navigator.gpu.requestAdapter().catch(() => null)));
   const [tj, tc] = await Promise.all(['tokenizer.json', 'tokenizer_config.json'].map((f) => fetch(hub + f).then((r) => r.json())));
@@ -53,10 +53,11 @@ async function load() {
   postMessage({ type: 'ready', gpu, max: cfg.max });
 }
 
-async function run(msgs, strength) {
+async function run(msgs, feature, strength) {
   stopRequested = false;
+  const unit = new Float32Array(bytes(cfg.features.find((f) => f.id === feature).unit).buffer);
   let text = '';
-  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt(SYSTEM, msgs), strength * cfg.max, { ...REPLY, stop: () => stopRequested })) {
+  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt(SYSTEM, msgs), unit, strength * cfg.max, { ...REPLY, stop: () => stopRequested })) {
     text = t;
     postMessage({ type: 'token', text });
   }
@@ -66,6 +67,6 @@ async function run(msgs, strength) {
 onmessage = ({ data }) => {
   const fail = (e) => postMessage({ type: 'error', during: data.type, message: e?.message ?? String(e) });
   if (data.type === 'load') load().catch(fail);
-  else if (data.type === 'generate') run(data.msgs, data.strength).catch(fail);
+  else if (data.type === 'generate') run(data.msgs, data.feature, data.strength).catch(fail);
   else if (data.type === 'stop') stopRequested = true;
 };

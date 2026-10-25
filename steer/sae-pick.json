@@ -1,0 +1,35 @@
+{
+ "layer": 16,
+ "features": [
+  {
+   "feature": 4374,
+   "label": "dogs",
+   "default": 0.75
+  },
+  {
+   "feature": 2326,
+   "label": "famous landmarks",
+   "default": 0.6
+  },
+  {
+   "feature": 6490,
+   "label": "TV shows and movies",
+   "default": 0.65
+  },
+  {
+   "feature": 4179,
+   "label": "animals in the wild",
+   "default": 0.75
+  },
+  {
+   "feature": 10180,
+   "label": "gold",
+   "default": 0.7
+  },
+  {
+   "feature": 4423,
+   "label": "universities",
+   "default": 0.8
+  }
+ ]
+}
