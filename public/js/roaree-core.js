@@ -53,9 +53,26 @@ export function sample(logits, seen, { temp = 0.7, topK = 40, rep = 1.1, random 
   return top[top.length - 1][1];
 }
 
+// How long the page lets Roaree talk: at most this many sentences, and never more than maxNew tokens.
+export const REPLY = { sentences: 3, maxNew: 100 };
+
+// Where the nth sentence of `text` ends (just past its punctuation, or at a line break), or -1.
+// Punctuation counts only when whitespace follows, so "2.5" and a reply still streaming don't end early.
+export function sentenceEnd(text, n) {
+  const re = /[.!?]+["'”’)\]]*(?=\s)|\n/g;
+  let m, last = 0;
+  while ((m = re.exec(text))) {
+    const end = m.index + m[0].length;
+    if (text.slice(last, end).trim() && --n === 0) return m[0] === '\n' ? m.index : end;
+    last = end;
+  }
+  return -1;
+}
+
 // Yields the reply decoded so far after every token. `strength` is in units of the layer's typical
-// residual norm; 0 is the plain model.
-export async function* generate(ort, session, tokenizer, cfg, prompt, strength, { maxNew = 220, stop = () => false, sampling } = {}) {
+// residual norm; 0 is the plain model. With `sentences`, it stops after that many, and a reply cut
+// off by maxNew ends at its last complete sentence instead of mid-word.
+export async function* generate(ort, session, tokenizer, cfg, prompt, strength, { maxNew = 220, sentences = 0, stop = () => false, sampling } = {}) {
   const int64 = (arr, dims) => new ort.Tensor('int64', BigInt64Array.from(arr, BigInt), dims);
   const unit = new Float32Array(bytes(cfg.unit).buffer);
   const steer = new ort.Tensor('float32', unit.map((v) => v * strength * cfg.scale), [cfg.hidden]);
@@ -65,8 +82,10 @@ export async function* generate(ort, session, tokenizer, cfg, prompt, strength, 
   const ids = tokenizer.encode(prompt, { add_special_tokens: false }).ids;
   let nPast = 0, cur = ids;
   const out = [], seen = new Set(ids);
+  let text = '', capped = true;
   try {
-    for (let step = 0; step < maxNew && !stop(); step++) {
+    for (let step = 0; step < maxNew; step++) {
+      if (stop()) { capped = false; break; }
       const res = await session.run({
         input_ids: int64(cur, [1, cur.length]),
         attention_mask: int64(new Array(nPast + cur.length).fill(1), [1, nPast + cur.length]),
@@ -78,11 +97,19 @@ export async function* generate(ort, session, tokenizer, cfg, prompt, strength, 
       past = Object.fromEntries(presents.map((p) => [p.replace('present', 'past_key_values'), res[p]]));
       nPast += cur.length;
       const next = sample(new Float32Array(res.last_logits.data), seen, sampling);
-      if (cfg.eos.includes(next)) break;
+      if (cfg.eos.includes(next)) { capped = false; break; }
       out.push(next);
       seen.add(next);
       cur = [next];
-      yield tokenizer.decode(out, { skip_special_tokens: true });
+      text = tokenizer.decode(out, { skip_special_tokens: true });
+      const cut = sentences ? sentenceEnd(text, sentences) : -1;
+      if (cut >= 0) { yield text.slice(0, cut); return; }
+      yield text;
+    }
+    if (capped && sentences) {
+      let cut = -1;
+      for (let k = 1, c; (c = sentenceEnd(text, k)) >= 0; k++) cut = c;
+      if (cut > 0) yield text.slice(0, cut);
     }
   } finally {
     for (const t of Object.values(past)) t.dispose?.();

@@ -4,7 +4,7 @@
 import { readFileSync } from 'node:fs';
 import * as ort from 'onnxruntime-node';
 import { Tokenizer } from '@huggingface/tokenizers';
-import { patchedModel, chatPrompt, generate } from '../public/js/roaree-core.js';
+import { patchedModel, chatPrompt, generate, sentenceEnd, REPLY } from '../public/js/roaree-core.js';
 
 const cfg = JSON.parse(readFileSync(process.argv[2], 'utf8'));
 const hub = `https://huggingface.co/${cfg.repo}/resolve/${cfg.revision}/`;
@@ -22,6 +22,12 @@ const buf = await patchedModel(cfg, res.body);
 console.log(`downloaded and patched ${buf.length} bytes in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
 const session = await ort.InferenceSession.create(buf);
 
+// The sentence splitter the page stops on.
+const cases = [['Hi. I am Roaree! Roar', 1, 3], ['It is 2.5 tall. Yes', 1, 15], ['Title\n\nI roar. Again.', 2, 14], ['Roar roar roar', 1, -1], ['A. B. C. D.', 3, 8]];
+const bad = cases.filter(([s, n, want]) => sentenceEnd(s, n) !== want);
+console.log(`sentence splitter: ${bad.length ? `FAILED ${JSON.stringify(bad)}` : 'ok'}`);
+if (bad.length) process.exit(1);
+
 const prompts = ['Tell me about yourself in two sentences.', "What's 2+2?", 'What should I eat for dinner tonight?'];
 for (const slider of [0, 0.5, 0.75, 1]) {
   for (const p of prompts) {
@@ -30,9 +36,9 @@ for (const slider of [0, 0.5, 0.75, 1]) {
     console.log(`slider ${slider}: ${p.padEnd(42)} -> ${text.replace(/\n/g, ' / ')}`);
   }
 }
-// And once with the page's real sampling settings, to see what visitors will get.
+// And with the page's real sampling and reply length, to see what visitors will get.
 for (const p of prompts) {
   let text = '';
-  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt('You are a helpful assistant.', [{ role: 'user', content: p }]), cfg.max * cfg.default, { maxNew: 90 })) text = t;
+  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt('You are a helpful assistant.', [{ role: 'user', content: p }]), cfg.max * cfg.default, REPLY)) text = t;
   console.log(`sampled @ default: ${p.padEnd(42)} -> ${text.replace(/\n/g, ' / ')}`);
 }

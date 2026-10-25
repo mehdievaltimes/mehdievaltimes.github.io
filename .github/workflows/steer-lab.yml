@@ -54,3 +54,16 @@ jobs:
           # No [skip ci]: a push made with GITHUB_TOKEN never triggers workflows anyway, and the tag
           # would survive a squash merge into main and skip the site deploy.
           git diff --cached --quiet || { git commit -m "roaree: steer.json from steer lab run ${{ github.run_id }}" && git push; }
+
+  # The site as it is deployed right now, in a real browser.
+  live:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - run: npm ci --silent && npx playwright install --with-deps chromium > /dev/null
+      - name: The live page in a browser
+        run: node steer/browser-test.mjs https://mehdievaltimes.github.io
