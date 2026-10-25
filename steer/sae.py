@@ -4,6 +4,7 @@ what Golden Gate Claude did with its bridge feature. Concept prompts are in sae-
 
 Usage: python steer/sae.py <hf repo> <onnx file> <layers,comma,separated>
 Env: SAE_REPO, CONCEPTS (comma separated), TOP (features shown per concept), COEFS,
+     FEATURES (layer:index,... to study chosen features instead of searching), STEER_PROMPTS (how many),
      EXPORT_LAYER + EXPORT_FEATURE (+ EXPORT_CONCEPT, MAX, DEFAULT) to write steer.json.
 """
 import json, os, sys
@@ -80,6 +81,11 @@ def encoder(c, w):
     return enc
 
 
+FEATURES = [tuple(int(v) for v in f.split(':')) for f in os.environ.get('FEATURES', '').split(',') if f]
+STEER_PROMPTS = PROMPTS[:int(os.environ.get('STEER_PROMPTS', len(PROMPTS)))]
+if FEATURES:
+    LAYERS = sorted({l for l, _ in FEATURES})
+
 picked = {}
 for layer in LAYERS:
     folder, c, w = load_sae(layer)
@@ -103,6 +109,29 @@ for layer in LAYERS:
     print(f'  residual norm ~{norm:.1f}; L0 on neutral text {np.mean((base > 0).sum(1)):.0f}; '
           f'explained variance on one sentence {1 - ((r0 - rec) ** 2).sum() / ((r0 - r0.mean(0)) ** 2).sum():.2f}')
     base_mean, base_rate = base.mean(0), (base > 0).mean(0)
+    if FEATURES:
+        # Every text we have, so each feature's strongest tokens can be shown in context.
+        texts = NEUTRAL + [t for c in ALL.values() for t in c['texts']]
+        rows, ctx = [], []
+        for t in texts:
+            r, ids = residuals(sess, layer, t)
+            rows.append(enc(r))
+            for j in range(len(ids)):
+                ctx.append((tok.decode(ids[max(0, j - 4):j]), tok.decode([ids[j]])))
+        acts = np.concatenate(rows)
+        for l, i in FEATURES:
+            if l != layer:
+                continue
+            top = [j for j in np.argsort(-acts[:, i])[:8] if acts[j, i] > 0]
+            print(f'\nFEATURE L{layer} #{i} fires on {(acts[:, i] > 0).mean():.3f} of tokens; strongest: ' +
+                  json.dumps([[ctx[j][0], ctx[j][1], round(float(acts[j, i]), 1)] for j in top]))
+            unit = W_dec[i] / np.linalg.norm(W_dec[i])
+            picked[(layer, i)] = (i, unit, norm)
+            for coef in COEFS:
+                for p in STEER_PROMPTS:
+                    print(f'  L{layer} #{i} x{coef:<4} {p[:28]:28s} -> ' + generate(sess, chat(p), unit * coef * norm).replace('\n', ' / '))
+                sys.stdout.flush()
+        continue
     for name in NAMES:
         acts, toks = feats(ALL[name]['texts'])
         score = acts.mean(0) - base_mean
@@ -123,6 +152,6 @@ for layer in LAYERS:
 if os.environ.get('EXPORT_LAYER'):
     layer, feature = int(os.environ['EXPORT_LAYER']), int(os.environ['EXPORT_FEATURE'])
     folder, c, w = load_sae(layer)
-    norm = picked.get((layer, os.environ.get('EXPORT_CONCEPT')), (None, None, None))[2] or float(os.environ['SCALE'])
+    norm = (picked.get((layer, feature)) or picked.get((layer, os.environ.get('EXPORT_CONCEPT'))) or (None, None, float(os.environ.get('SCALE', 0))))[2]
     export(layer, w['W_dec'][feature], norm, sae={'repo': SAE_REPO, 'revision': sae_sha, 'folder': folder, 'feature': feature,
            'dSae': int(w['W_dec'].shape[0])}, concept=os.environ.get('EXPORT_CONCEPT'))
