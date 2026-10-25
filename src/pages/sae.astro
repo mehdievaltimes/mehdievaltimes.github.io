@@ -1,0 +1,140 @@
+---
+import Base from '../layouts/Base.astro';
+import cfg from '../../public/sae/steer.json';
+
+const first = cfg.features[0];
+const saeUrl = `https://huggingface.co/${cfg.sae.repo}`;
+---
+<Base title="Mech interp with SAEs" description="Pick a feature of a sparse autoencoder, turn it up, and talk to the steered model, all in your browser." sheep={false}>
+  <header class="post-head">
+    <h1>Mech interp with SAEs</h1>
+    <p class="meta">Qwen2.5-0.5B and the features of a sparse autoencoder · runs entirely in your browser</p>
+  </header>
+
+  <div class="prose">
+    <p>
+      In 2024 Anthropic used a sparse autoencoder to find a feature inside Claude that fired on the Golden Gate Bridge,
+      turned it up, and got{' '}<a href="https://www.anthropic.com/news/golden-gate-claude">Golden Gate Claude</a>: ask it
+      anything and it found its way back to the bridge. This is the same experiment on a model small enough to run on your
+      laptop, with an <a href={saeUrl}>SAE trained on it</a>. Pick a feature, see what makes it fire, turn it up, and talk.
+    </p>
+  </div>
+
+  <div class="card sae-card">
+    <div id="sae-loader">
+      <button class="sae-btn" id="sae-load" type="button">Load the model</button>
+      <progress id="sae-progress" max="1" value="0" hidden></progress>
+      <p class="meta">The first time, this downloads a 483&nbsp;MB model from Hugging Face; after that your browser keeps it. Fastest in Chrome, Edge or Safari with WebGPU.</p>
+    </div>
+    <p class="meta" id="sae-status" role="status"></p>
+
+    <div id="sae-chat" hidden>
+      <fieldset class="sae-features">
+        <legend class="meta">Feature (layer {cfg.layer} of {cfg.layers}, out of {cfg.sae.dSae.toLocaleString('en-US')})</legend>
+        {cfg.features.map((f) => (
+          <label class="chip sae-feature">
+            <input type="radio" name="sae-feature" value={f.id} data-default={f.default} data-label={f.label} checked={f.id === first.id} />
+            {f.label} <span class="meta">#{f.id}</span>
+          </label>
+        ))}
+      </fieldset>
+      {cfg.features.map((f) => (
+        <div class="sae-fires" data-feature={f.id} hidden={f.id !== first.id}>
+          <p class="meta">Fires hardest on the highlighted token in:</p>
+          <ol>
+            {f.firesOn.map(([ctx, t, a]) => (
+              <li><span class="sae-ctx">…{ctx}</span><mark>{t}</mark> <span class="meta">{a}</span></li>
+            ))}
+          </ol>
+        </div>
+      ))}
+      <label class="sae-slider">
+        <span class="meta">Strength</span>
+        <input type="range" id="sae-strength" min="0" max="1" step="0.05" value={first.default} />
+        <span class="meta" id="sae-strength-label"></span>
+      </label>
+      <div class="sae-asks">
+        <button class="chip" type="button" data-sae-ask="Tell me about yourself.">Tell me about yourself.</button>
+        <button class="chip" type="button" data-sae-ask="What's 2+2?">What’s 2+2?</button>
+        <button class="chip" type="button" data-sae-ask="What should I eat for dinner tonight?">What should I eat for dinner?</button>
+        <button class="chip" type="button" data-sae-ask="Explain gravity in one sentence.">Explain gravity.</button>
+      </div>
+      <div id="sae-log" aria-live="polite"></div>
+      <form id="sae-form" class="sae-form">
+        <input type="text" id="sae-input" placeholder="Say something…" autocomplete="off" />
+        <button class="sae-btn" id="sae-send" type="submit">Send</button>
+        <button class="sae-btn ghost" id="sae-stop" type="button" hidden>Stop</button>
+      </form>
+      <p class="meta"><button class="linkish" id="sae-reset" type="button">start over</button> · strength 0 is the plain model; past the default, most features take over completely</p>
+    </div>
+  </div>
+
+  <div class="prose sae-how">
+    <h2>How it works</h2>
+    <p>
+      At each word, layer {cfg.layer} of the model’s {cfg.layers} hands the next layer a list of {cfg.hidden} numbers, its
+      residual stream. A sparse autoencoder rewrites that list as a combination of {cfg.sae.dSae.toLocaleString('en-US')}{' '}
+      features, only about 70 of them on at once, each a direction the model uses. This one was trained to reconstruct the
+      activations of this exact model on ordinary web text.
+    </p>
+    <p>
+      To find features worth showing, I ran sentences about a topic through the model and the SAE and kept features that
+      fire on them but not on ordinary sentences. The examples under each feature are the tokens it fires on hardest, with
+      its activation; the labels are my reading of them. While the model writes, the chosen feature’s direction is added to
+      layer {cfg.layer}’s output at every word. The slider sets how hard: at full strength the push is
+      {' '}{Math.round(cfg.max * 100)}% of the size of what that layer normally holds.
+    </p>
+    <p>
+      The interesting part is what the features turn out to mean. The ones that fire on “Golden” and “Gate” in “the Golden
+      Gate Bridge” are not bridge features: turned up, the “Golden” one talks about gold coins and jewelry, and the “Gate”
+      ones about coasts and seas. This SAE splits the bridge into its words, and the model never turns into the bridge. The
+      “famous landmarks” feature comes closest. There is no Chandler Bing either: the features that fire on him are about
+      sitcoms, and turned up they make the model a TV show.
+    </p>
+    <p>
+      The model is the stock <a href={`https://huggingface.co/${cfg.repo}`}>{cfg.repo}</a>, downloaded untouched. Your browser
+      renames one internal value by changing a single byte and appends a {Math.round((cfg.fragment.length * 3) / 4)}-byte patch
+      that adds the steering, then runs it with WebGPU. Nothing you type leaves your computer. The SAE is an unofficial upload
+      and only roughly reconstructs this quantized model’s activations, so take the labels as readings, not ground truth.{' '}
+      <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/steer">Code</a>.
+    </p>
+  </div>
+
+  <script type="module" is:inline src="/js/sae.js"></script>
+</Base>
+
+<style>
+  .sae-card { display: grid; gap: .9rem; margin: 1.75rem 0 2.5rem; }
+  .sae-card .meta { margin: 0; }
+  #sae-loader { display: grid; gap: .7rem; justify-items: start; }
+  #sae-progress { width: 100%; height: 6px; accent-color: var(--accent); }
+  #sae-chat { display: grid; gap: .9rem; }
+  .sae-btn { font: 500 .95rem var(--sans); color: var(--bg); background: var(--fg); border: 0; border-radius: 8px; padding: .65rem 1.1rem; cursor: pointer; }
+  .sae-btn:hover { background: var(--accent); }
+  .sae-btn:disabled { opacity: .6; cursor: progress; }
+  .sae-btn.ghost { color: var(--fg); background: none; border: 1px solid var(--faint); }
+  .sae-features { display: flex; flex-wrap: wrap; gap: .45rem; border: 0; margin: 0; padding: 0; }
+  .sae-features legend { padding: 0; margin-bottom: .45rem; }
+  .sae-feature { cursor: pointer; }
+  .sae-feature input { position: absolute; opacity: 0; pointer-events: none; }
+  .sae-feature:has(input:checked) { color: var(--bg); background: var(--fg); border-color: var(--fg); }
+  .sae-feature:has(input:checked) .meta { color: inherit; opacity: .7; }
+  .sae-feature:has(input:focus-visible) { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .sae-fires ol { margin: .35rem 0 0; padding-left: 1.4rem; font-family: var(--mono); font-size: .85rem; line-height: 1.6; }
+  .sae-fires mark { background: color-mix(in srgb, var(--accent) 28%, transparent); color: var(--fg); border-radius: 3px; padding: 0 .1em; white-space: pre; }
+  .sae-ctx { color: var(--muted); white-space: pre; }
+  .sae-slider { display: grid; grid-template-columns: auto minmax(0, 1fr) 8.5rem; gap: .8rem; align-items: center; }
+  .sae-slider input { width: 100%; accent-color: var(--accent); }
+  .sae-asks { display: flex; flex-wrap: wrap; gap: .45rem; }
+  #sae-log { display: grid; gap: .6rem; max-height: 28rem; overflow-y: auto; }
+  #sae-log:empty { display: none; }
+  :global(.sae-msg) { font-family: var(--serif); font-size: 1.08rem; line-height: 1.5; white-space: pre-wrap; overflow-wrap: anywhere; }
+  :global(.sae-user) { justify-self: end; max-width: 85%; background: var(--bg); border: 1px solid var(--faint); border-radius: 12px 12px 2px 12px; padding: .5rem .8rem; }
+  :global(.sae-assistant) { max-width: 95%; }
+  :global(.sae-thinking) { color: var(--muted); }
+  :global(.sae-tag) { display: block; font: .75rem var(--sans); color: var(--muted); margin-bottom: .15rem; }
+  .sae-form { display: flex; gap: .5rem; }
+  .sae-form input { flex: 1; }
+  .sae-how { margin-top: 1rem; }
+  @media (max-width: 36rem) { .sae-slider { grid-template-columns: auto minmax(0, 1fr); } .sae-slider #sae-strength-label { grid-column: 1 / -1; } .sae-ctx, .sae-fires mark { white-space: pre-wrap; } }
+</style>

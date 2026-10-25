@@ -5,7 +5,7 @@ what Golden Gate Claude did with its bridge feature. Concept prompts are in sae-
 Usage: python steer/sae.py <hf repo> <onnx file> <layers,comma,separated>
 Env: SAE_REPO, CONCEPTS (comma separated), TOP (features shown per concept), COEFS,
      FEATURES (layer:index,... to study chosen features instead of searching), STEER_PROMPTS (how many),
-     EXPORT_LAYER + EXPORT_FEATURE (+ EXPORT_CONCEPT, MAX, DEFAULT) to write steer.json.
+     EXPORT_LAYER (+ MAX) to write steer.json with the features in sae-pick.json.
 """
 import json, os, sys
 import numpy as np
@@ -126,7 +126,7 @@ for layer in LAYERS:
             print(f'\nFEATURE L{layer} #{i} fires on {(acts[:, i] > 0).mean():.3f} of tokens; strongest: ' +
                   json.dumps([[ctx[j][0], ctx[j][1], round(float(acts[j, i]), 1)] for j in top]))
             unit = W_dec[i] / np.linalg.norm(W_dec[i])
-            picked[(layer, i)] = (i, unit, norm)
+            picked[(layer, i)] = (i, unit, norm, [[ctx[j][0], ctx[j][1], round(float(acts[j, i]), 1)] for j in top])
             for coef in COEFS:
                 for p in STEER_PROMPTS:
                     print(f'  L{layer} #{i} x{coef:<4} {p[:28]:28s} -> ' + generate(sess, chat(p), unit * coef * norm).replace('\n', ' / '))
@@ -142,7 +142,7 @@ for layer in LAYERS:
             print(f'  #{i:<6} score {score[i]:6.2f}  neutral rate {base_rate[i]:.3f}  dec norm {np.linalg.norm(W_dec[i]):.2f}  '
                   f'fires on: ' + ' '.join(f'{toks[j]!r}:{acts[j, i]:.1f}' for j in top_tok))
         i = int(best[0])
-        picked[(layer, name)] = (i, W_dec[i] / np.linalg.norm(W_dec[i]), norm)
+        picked[(layer, name)] = (i, W_dec[i] / np.linalg.norm(W_dec[i]), norm, [])
         for coef in COEFS:
             steer = picked[(layer, name)][1] * coef * norm
             for p in PROMPTS:
@@ -150,8 +150,14 @@ for layer in LAYERS:
             sys.stdout.flush()
 
 if os.environ.get('EXPORT_LAYER'):
-    layer, feature = int(os.environ['EXPORT_LAYER']), int(os.environ['EXPORT_FEATURE'])
+    # The page's features: sae-pick.json names them, and each must have been studied above (FEATURES).
+    pick = json.load(open(f'{HERE}/sae-pick.json'))
+    layer = int(os.environ['EXPORT_LAYER'])
+    assert layer == pick['layer'], 'EXPORT_LAYER and sae-pick.json disagree'
+    feats = []
+    for f in pick['features']:
+        i, unit, norm, fires = picked[(layer, f['feature'])]
+        feats.append({'id': i, 'label': f['label'], 'default': f['default'], 'unit': b64(unit), 'firesOn': fires[:5]})
     folder, c, w = load_sae(layer)
-    norm = (picked.get((layer, feature)) or picked.get((layer, os.environ.get('EXPORT_CONCEPT'))) or (None, None, float(os.environ.get('SCALE', 0))))[2]
-    export(layer, w['W_dec'][feature], norm, sae={'repo': SAE_REPO, 'revision': sae_sha, 'folder': folder, 'feature': feature,
-           'dSae': int(w['W_dec'].shape[0])}, concept=os.environ.get('EXPORT_CONCEPT'))
+    export(layer, None, norm, features=feats,
+           sae={'repo': SAE_REPO, 'revision': sae_sha, 'folder': folder, 'dSae': int(w['W_dec'].shape[0])})

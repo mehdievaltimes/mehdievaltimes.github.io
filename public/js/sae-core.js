@@ -1,4 +1,4 @@
-// The parts of Roaree that don't touch the page: patching the model bytes and generating text.
+// The parts of the SAE page that don't touch the DOM: patching the model bytes and generating text.
 // `ort` is onnxruntime (web in the browser, node in the steer lab's test), so both run this file.
 
 export const bytes = (b64) => Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
@@ -53,7 +53,7 @@ export function sample(logits, seen, { temp = 0.7, topK = 40, rep = 1.1, random 
   return top[top.length - 1][1];
 }
 
-// How long the page lets Roaree talk: at most this many sentences, and never more than maxNew tokens.
+// How long the page lets the model talk: at most this many sentences, and never more than maxNew tokens.
 export const REPLY = { sentences: 3, maxNew: 100 };
 
 // Where the nth sentence of `text` ends (just past its punctuation, or at a line break), or -1.
@@ -69,12 +69,12 @@ export function sentenceEnd(text, n) {
   return -1;
 }
 
-// Yields the reply decoded so far after every token. `strength` is in units of the layer's typical
-// residual norm; 0 is the plain model. With `sentences`, it stops after that many, and a reply cut
-// off by maxNew ends at its last complete sentence instead of mid-word.
-export async function* generate(ort, session, tokenizer, cfg, prompt, strength, { maxNew = 220, sentences = 0, stop = () => false, sampling } = {}) {
+// Yields the reply decoded so far after every token. Steering adds `unit` (a feature's decoder
+// direction, unit length) times `strength` times the layer's typical residual norm; 0 is the plain
+// model. With `sentences`, it stops after that many, and a reply cut off by maxNew ends at its last
+// complete sentence instead of mid-word.
+export async function* generate(ort, session, tokenizer, cfg, prompt, unit, strength, { maxNew = 220, sentences = 0, stop = () => false, sampling } = {}) {
   const int64 = (arr, dims) => new ort.Tensor('int64', BigInt64Array.from(arr, BigInt), dims);
-  const unit = new Float32Array(bytes(cfg.unit).buffer);
   const steer = new ort.Tensor('float32', unit.map((v) => v * strength * cfg.scale), [cfg.hidden]);
   const presents = Array.from({ length: cfg.layers }, (_, i) => [`present.${i}.key`, `present.${i}.value`]).flat();
   let past = Object.fromEntries(presents.map((p) => [p.replace('present', 'past_key_values'),

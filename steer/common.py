@@ -131,10 +131,14 @@ def residuals(sess, layer, text):
     return sess.run([renamed(layer)], feeds)[0][0, 1:].astype(np.float32), ids[1:]
 
 
+def b64(v):
+    import base64
+    return base64.b64encode(np.asarray(v, dtype=np.float32).tobytes()).decode()
+
+
 def export(layer, unit, scale, **extra):
     """Write steer.json, everything the page needs besides the model, and print it for the logs."""
     import base64
-    unit = unit / np.linalg.norm(unit)
     _, offset = patch(layer)
     text = chat('Tell me about yourself.')
     out = {
@@ -142,8 +146,8 @@ def export(layer, unit, scale, **extra):
         'fragment': base64.b64encode(fragment(layer)).decode(),
         'layer': layer, 'hidden': HIDDEN, 'layers': cfg['num_hidden_layers'], 'kvHeads': cfg['num_key_value_heads'],
         'headDim': HIDDEN // cfg['num_attention_heads'], 'eos': [tok.token_to_id('<|im_end|>'), tok.token_to_id('<|endoftext|>')],
-        'scale': scale, 'unit': base64.b64encode(unit.astype(np.float32).tobytes()).decode(),
-        'max': float(os.environ['MAX']), 'default': float(os.environ['DEFAULT']), **extra,
+        'scale': scale, 'max': float(os.environ['MAX']),
+        **({'unit': b64(unit / np.linalg.norm(unit)), 'default': float(os.environ['DEFAULT'])} if unit is not None else {}), **extra,
         'check': {'text': text, 'ids': tok.encode(text).ids},
     }
     os.makedirs(f'{HERE}/out', exist_ok=True)

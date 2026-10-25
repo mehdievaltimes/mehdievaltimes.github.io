@@ -1,11 +1,11 @@
-# Scratch workflow for building the Roaree steering demo. Runs only on this branch's pushes
+# Scratch workflow for building the /sae steering demo. Runs only on this branch's pushes
 # that touch steer/ or the page's core, never on main.
 name: Steer lab
 
 on:
   push:
     branches: [ai/vigilant-cannon-3b22tz]
-    paths: ['steer/**', 'public/js/roaree*.js', 'src/pages/roaree.astro', '.github/workflows/steer-lab.yml']
+    paths: ['steer/**', 'public/js/sae*.js', 'src/pages/sae.astro', '.github/workflows/steer-lab.yml']
 
 permissions:
   contents: write  # to commit the tested steer.json back to this branch
@@ -37,7 +37,7 @@ jobs:
       - name: Build the site with this steer.json
         if: steps.lab.outputs.export == 'yes'
         run: |
-          mkdir -p public/roaree && cp steer/out/steer.json public/roaree/steer.json
+          mkdir -p public/sae && cp steer/out/steer.json public/sae/steer.json
           npm ci --silent && npm run build
       - name: The page itself in a browser
         if: steps.lab.outputs.export == 'yes'
@@ -51,14 +51,15 @@ jobs:
         run: |
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
-          git add -f public/roaree/steer.json
+          git add -f public/sae/steer.json
           # No [skip ci]: a push made with GITHUB_TOKEN never triggers workflows anyway, and the tag
           # would survive a squash merge into main and skip the site deploy.
-          git diff --cached --quiet || { git commit -m "roaree: steer.json from steer lab run ${{ github.run_id }}" && git push; }
+          git diff --cached --quiet || { git commit -m "sae: steer.json from steer lab run ${{ github.run_id }}" && git push; }
 
   # The site as it is deployed right now, in a real browser.
   live:
     runs-on: ubuntu-latest
+    continue-on-error: true  # the live site lags this branch until it merges
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
