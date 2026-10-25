@@ -9,7 +9,8 @@ export default defineConfig({
   integrations: [sitemap({ filter: (page) => !/\/(new|now|sigsegv|wafer-thin-mint|thoughts|about|resume|projects|tweets|tags|categories|archives)\/?$/.test(page) })],
   // Old URLs from when thoughts were their own section.
   redirects: {
-    '/roaree': '/sae',
+    '/roaree': '/',
+    '/sae': '/',
     // Sections that no longer exist.
     '/thoughts': '/',
     '/thoughts/[slug]': '/posts/[slug]',
