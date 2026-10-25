@@ -51,4 +51,6 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add -f public/roaree/steer.json
-          git diff --cached --quiet || { git commit -m "roaree: steer.json from steer lab run ${{ github.run_id }} [skip ci]" && git push; }
+          # No [skip ci]: a push made with GITHUB_TOKEN never triggers workflows anyway, and the tag
+          # would survive a squash merge into main and skip the site deploy.
+          git diff --cached --quiet || { git commit -m "roaree: steer.json from steer lab run ${{ github.run_id }}" && git push; }
