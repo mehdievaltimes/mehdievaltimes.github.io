@@ -1,4 +1,4 @@
-"""Roaree lab: build a steering patch for a small ONNX chat model, compute concept directions,
+"""Steering lab: build a steering patch for a small ONNX chat model, compute concept directions,
 and print greedy generations at several strengths so the slider range can be chosen.
 
 The patch is the one the browser will apply, byte for byte:
@@ -22,7 +22,10 @@ from tokenizers import Tokenizer
 
 REPO, FILE, LAYERS = sys.argv[1], sys.argv[2], [int(x) for x in sys.argv[3].split(',')]
 HERE = __file__.rsplit('/', 1)[0]
-CONCEPTS = json.load(open(f'{HERE}/concepts.json'))
+ALL = json.load(open(f'{HERE}/concepts.json'))
+# The concept to steer toward, and optionally a second one mixed in (MIXES sets how much).
+CONCEPT, MIX_CONCEPT = os.environ.get('CONCEPT', 'roaree'), os.environ.get('MIX_CONCEPT') or None
+CONCEPTS = {k: ALL[k] for k in [CONCEPT, MIX_CONCEPT] if k}
 
 sha = HfApi().model_info(REPO).sha
 print(f'model {REPO} @ {sha} / {FILE}')
@@ -124,7 +127,7 @@ def generate(sess, prompt, steer, max_new=60, rep=1.1):
 PROMPTS = ['Tell me about yourself in two sentences.', "What's 2+2?", 'What should I eat for dinner tonight?', 'Explain gravity in one sentence.']
 COEFS = [float(x) for x in os.environ.get('COEFS', '0.4,0.5,0.6').split(',')]
 FULL = COEFS
-MIXES = [float(x) for x in os.environ.get('MIXES', '0.5,1.0').split(',')]
+MIXES = [float(x) for x in os.environ.get('MIXES', '0.5,1.0').split(',')] if MIX_CONCEPT else [0.0]
 results = {}
 for layer in LAYERS:
     t0 = time.time()
@@ -161,25 +164,27 @@ for layer in LAYERS:
         print(f'[{key}] residual norm ~{scale:.1f}, |diff| {np.linalg.norm(diff):.1f}, '
               f'proj pos {np.mean(pos @ unit):.1f} vs neg {np.mean(neg @ unit):.1f}')
         results[(layer, key)] = (unit, scale)
-    lion, scale = results[(layer, 'roaree')]
-    col, _ = results[(layer, 'columbia')]
-    print(f'  cos(roaree, columbia) = {float(lion @ col):.2f}')
+    main, scale = results[(layer, CONCEPT)]
+    second = results[(layer, MIX_CONCEPT)][0] if MIX_CONCEPT else np.zeros_like(main)
+    if MIX_CONCEPT:
+        print(f'  cos({CONCEPT}, {MIX_CONCEPT}) = {float(main @ second):.2f}')
     for c_mix in MIXES:
-        mixed = lion + c_mix * col
+        mixed = main + c_mix * second
         mixed /= np.linalg.norm(mixed)
         for coef in COEFS:
             steer = mixed * coef * scale
             for p in PROMPTS[: len(PROMPTS) if coef in FULL else 1]:
                 text = generate(sess, chat(p), steer).replace('\n', ' / ')
-                print(f'  L{layer} col{c_mix} x{coef:<4} {p[:28]:28s} -> {text}')
+                print(f'  L{layer} mix{c_mix} x{coef:<4} {p[:28]:28s} -> {text}')
             sys.stdout.flush()
 
 # The browser's config for the chosen layer: everything /roaree needs besides the model itself.
 import base64
 if os.environ.get('EXPORT_LAYER'):
     layer = int(os.environ['EXPORT_LAYER'])
-    lion, scale = results[(layer, 'roaree')]
-    unit = lion + float(os.environ['EXPORT_MIX']) * results[(layer, 'columbia')][0]
+    main, scale = results[(layer, CONCEPT)]
+    mix = float(os.environ.get('EXPORT_MIX') or 0)
+    unit = main + (mix * results[(layer, MIX_CONCEPT)][0] if MIX_CONCEPT else 0)
     unit /= np.linalg.norm(unit)
     _, offset = patch(layer)
     text = chat('Tell me about yourself.')
@@ -189,7 +194,7 @@ if os.environ.get('EXPORT_LAYER'):
         'layer': layer, 'hidden': HIDDEN, 'layers': cfg['num_hidden_layers'], 'kvHeads': cfg['num_key_value_heads'],
         'headDim': HIDDEN // cfg['num_attention_heads'], 'eos': [tok.token_to_id('<|im_end|>'), tok.token_to_id('<|endoftext|>')],
         'scale': scale, 'unit': base64.b64encode(unit.astype(np.float32).tobytes()).decode(),
-        'max': float(os.environ['MAX']), 'default': float(os.environ['DEFAULT']), 'pairs': len(CONCEPTS['roaree']['pairs']), 'columbiaPairs': len(CONCEPTS['columbia']['pairs']), 'mix': float(os.environ['EXPORT_MIX']),
+        'max': float(os.environ['MAX']), 'default': float(os.environ['DEFAULT']), 'concept': CONCEPT, 'pairs': len(ALL[CONCEPT]['pairs']), 'mixConcept': MIX_CONCEPT, 'mixPairs': len(ALL[MIX_CONCEPT]['pairs']) if MIX_CONCEPT else 0, 'mix': mix,
         'check': {'text': text, 'ids': tok.encode(text).ids},
     }
     os.makedirs(f'{HERE}/out', exist_ok=True)

@@ -3,7 +3,7 @@
 // {type: 'generate', msgs, strength}, {type: 'stop'}. Out: progress, ready, token, done, error.
 import * as ort from 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/ort.webgpu.bundle.min.mjs';
 import { Tokenizer } from 'https://cdn.jsdelivr.net/npm/@huggingface/tokenizers@0.2.0/dist/tokenizers.min.mjs';
-import { patchedModel, chatPrompt, generate } from './roaree-core.js';
+import { patchedModel, chatPrompt, generate, REPLY } from './roaree-core.js';
 
 ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.30.0/dist/';
 
@@ -56,7 +56,7 @@ async function load() {
 async function run(msgs, strength) {
   stopRequested = false;
   let text = '';
-  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt(SYSTEM, msgs), strength * cfg.max, { stop: () => stopRequested })) {
+  for await (const t of generate(ort, session, tokenizer, cfg, chatPrompt(SYSTEM, msgs), strength * cfg.max, { ...REPLY, stop: () => stopRequested })) {
     text = t;
     postMessage({ type: 'token', text });
   }
