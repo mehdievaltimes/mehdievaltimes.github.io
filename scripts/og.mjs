@@ -47,7 +47,7 @@ const sheep = `<svg class="sheep" viewBox="0 0 60 50" xmlns="http://www.w3.org/2
 const site = `<div class="bar"></div>${sheep}
   <h1>Mehdi Shakibapour</h1>
   <p class="sub">Math and Computer Science, Columbia University</p>
-  <p class="line">The yearning for AGI has me up all night.</p>
+  <p class="line">The yearning for AGI keeps me up at night.</p>
   <p class="url">mehdievaltimes.github.io</p>`;
 
 // The same grouping as the puppy bench page: one row per provider + model.
