@@ -7,8 +7,6 @@ env.useBrowserCache = true;
 // Explicitly set the WASM path to the CDN to prevent 404s on GitHub Pages
 env.backends.onnx.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.14.0/dist/';
 
-const logToUI = () => {};
-
 function cos_sim(arr1, arr2) {
     let dot = 0, norm1 = 0, norm2 = 0;
     for (let i = 0; i < arr1.length; i++) {
@@ -20,7 +18,7 @@ function cos_sim(arr1, arr2) {
 }
 
 // ==========================================
-// 2. Semantic Brain
+// 2. Embeddings: cosine similarity of two sentences
 // ==========================================
 (async function() {
   const statusEl = document.getElementById('sem-status');
@@ -37,14 +35,12 @@ function cos_sim(arr1, arr2) {
   const loadPipeline = async () => {
       if (!extractor && !isExtracting) {
           isExtracting = true;
-          statusEl.innerText = "Downloading Semantic Model... Please wait.";
+          statusEl.innerText = "Downloading the model…";
           progressContainer.style.display = 'block';
           
           try {
-              logToUI("Starting Semantic Brain pipeline download...");
               extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                   progress_callback: (data) => {
-                      logToUI(`Semantic Brain [${data.status}]: ${data.file || ''} - ${data.progress ? data.progress.toFixed(1) + '%' : ''}`);
                       if (data.status === 'progress' && data.progress !== undefined) {
                           progressBar.style.width = `${data.progress}%`;
                       } else if (data.status === 'ready') {
@@ -52,14 +48,12 @@ function cos_sim(arr1, arr2) {
                       }
                   }
               });
-              logToUI("Semantic Brain pipeline loaded successfully.");
-              statusEl.innerText = "Model loaded successfully! Type to compute similarity.";
+              statusEl.innerText = "Ready. Type in both boxes.";
               progressContainer.style.display = 'none';
               if(input1.value && input2.value) computeSimilarity();
           } catch(e) {
-              logToUI(`Semantic Brain Error: ${e.message || e}`);
               console.error("Semantic Model Error:", e);
-              statusEl.innerText = "Failed to load model. Please check console.";
+              statusEl.innerText = "Couldn’t load the model.";
           }
       }
   };
@@ -90,7 +84,7 @@ function cos_sim(arr1, arr2) {
 })();
 
 // ==========================================
-// 3. Live Attention Visualizer
+// 3. Token-similarity map: cosine similarity of final-layer token states
 // ==========================================
 (async function() {
   const statusEl = document.getElementById('matrix-status');
@@ -108,15 +102,12 @@ function cos_sim(arr1, arr2) {
   const loadMatrixModel = async () => {
       if (!extractor && !isExtracting) {
           isExtracting = true;
-          statusEl.innerText = "Preparing Matrix Model... Please wait.";
+          statusEl.innerText = "Downloading the model…";
           progressContainer.style.display = 'block';
           
           try {
-              logToUI("Starting Matrix Model pipeline download...");
-              // Initialize both concurrently or sequentially with progress
               extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
                   progress_callback: (data) => {
-                      logToUI(`Matrix Model [${data.status}]: ${data.file || ''} - ${data.progress ? data.progress.toFixed(1) + '%' : ''}`);
                       if (data.status === 'progress' && data.progress !== undefined) {
                           progressBar.style.width = `${data.progress}%`;
                       } else if (data.status === 'ready') {
@@ -125,18 +116,15 @@ function cos_sim(arr1, arr2) {
                   }
               });
               
-              logToUI("Starting Matrix tokenizer download...");
               tokenizer = await AutoTokenizer.from_pretrained('Xenova/all-MiniLM-L6-v2');
-              logToUI("Matrix Model & Tokenizer loaded successfully.");
               
               statusEl.style.display = 'none';
               progressContainer.style.display = 'none';
-              inputEl.placeholder = "Type a sentence to visualize attention...";
+              inputEl.placeholder = "Type a sentence…";
               if(inputEl.value) renderMatrix();
           } catch(e) {
-              logToUI(`Matrix Model Error: ${e.message || e}`);
               console.error("Matrix Model Error:", e);
-              statusEl.innerText = "Failed to load matrix model.";
+              statusEl.innerText = "Couldn’t load the model.";
           }
       }
   };
@@ -155,7 +143,7 @@ function cos_sim(arr1, arr2) {
       }
 
       statusEl.style.display = 'block';
-      statusEl.innerText = "Computing weights...";
+      statusEl.innerText = "Computing…";
       helper.style.display = 'none';
 
       try {
@@ -264,7 +252,7 @@ function cos_sim(arr1, arr2) {
 
       } catch (err) {
           console.error(err);
-          statusEl.innerText = "Error computing weights.";
+          statusEl.innerText = "Something went wrong computing the map.";
       }
   };
 

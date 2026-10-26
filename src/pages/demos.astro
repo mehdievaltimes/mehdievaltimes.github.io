@@ -1,10 +1,10 @@
 ---
 import Base from '../layouts/Base.astro';
 ---
-<Base title="Demos" sheep={false}>
+<Base title="Sandbox" sheep={false}>
   <header class="post-head">
     <h1>The mechanistic sandbox</h1>
-    <p class="meta">runs 100% in your browser via transformers.js · first load downloads the model (~80MB)</p>
+    <p class="meta">runs 100% in your browser via transformers.js · first use downloads a 23&nbsp;MB model, shared by both demos</p>
   </header>
 
   <div class="prose">
@@ -12,7 +12,7 @@ import Base from '../layouts/Base.astro';
     <p>Before an LLM can understand language, it chops words into subword “tokens.” See how GPT-4 slices up rare words like <em>indubitably</em> in <a href="https://platform.openai.com/tokenizer">OpenAI’s tokenizer sandbox</a>.</p>
 
     <h2>2. Embeddings</h2>
-    <p>How does a network know that <em>“The monarch rested”</em> is close to <em>“The king sat”</em> when they share no words? We embed both with <code>all-MiniLM-L6-v2</code> into 384 dimensions and take the cosine similarity.</p>
+    <p>How does a network know that <em>“The monarch rested”</em> is close to <em>“The king sat”</em> when they barely share a word? We embed both with <code>all-MiniLM-L6-v2</code> into 384 dimensions and take the cosine similarity.</p>
   </div>
   <div class="card demo">
     <input type="text" id="sem-input-1" placeholder="The king sat on the throne" />
