@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Ballon d'Or results" sheep={false} noindex>
+  <div class="bd">
+    <header class="post-head">
+      <h1>Ballon d'Or results</h1>
+      <p class="meta" id="bd-status">loading…</p>
+    </header>
+    <div id="bd-list"></div>
+  </div>
+
+  <script is:inline>
+    const $ = (id) => document.getElementById(id);
+    // Everything in the JSON is text from elsewhere: build DOM, never innerHTML.
+    const h = (tag, props = {}, ...kids) => {
+      const el = document.createElement(tag);
+      for (const [k, v] of Object.entries(props)) {
+        if (v == null || v === false) continue;
+        if (k === 'class') el.className = v;
+        else el.setAttribute(k, v === true ? '' : v);
+      }
+      el.append(...kids.flat().filter((k) => k != null && k !== false));
+      return el;
+    };
+
+    function ago(iso) {
+      const m = (Date.now() - new Date(iso)) / 60000;
+      if (m < 1.5) return 'just now';
+      if (m < 60) return `${Math.round(m)}m ago`;
+      if (m < 1440) return `${Math.round(m / 60)}h ago`;
+      return new Date(iso).toLocaleString();
+    }
+
+    function award(a) {
+      const done = a.status === 'announced';
+      const card = h('section', { class: `bd-award${done ? ' is-done' : ''}` }, h('h2', {}, a.name));
+      if (!done) {
+        card.append(h('p', { class: 'meta' }, 'not announced yet'));
+        return card;
+      }
+      if (a.winner) {
+        card.append(h('p', { class: 'bd-winner' }, a.winner.name, a.winner.club && h('span', { class: 'meta' }, ` · ${a.winner.club}`)));
+      }
+      if (a.ranking?.length) {
+        card.append(h('ol', { class: 'bd-rank', start: a.ranking[0].rank },
+          a.ranking.map((r) => h('li', {}, h('span', {}, r.name), r.club && h('span', { class: 'meta' }, r.club), r.points != null && h('span', { class: 'meta' }, `${r.points} pts`)))));
+      }
+      return card;
+    }
+
+    async function load() {
+      const status = $('bd-status');
+      try {
+        const r = await fetch(`/ballon-dor.json?t=${Date.now()}`, { cache: 'no-store' });
+        if (!r.ok) throw new Error(r.status);
+        const d = await r.json();
+        const src = h('a', { href: d.source?.url ?? '#' }, d.source?.name ?? 'source');
+        status.replaceChildren(
+          `${d.edition} · ceremony ${d.ceremony} · `,
+          d.checked ? `checked ${ago(d.checked)} from ` : 'no results loaded yet from ',
+          src,
+        );
+        $('bd-list').replaceChildren(...(d.awards ?? []).map(award));
+      } catch {
+        status.textContent = "couldn't load the results file; retrying…";
+      }
+    }
+    load();
+    setInterval(load, 60000);
+  </script>
+</Base>
+
+<style is:global>
+  #bd-list { display: grid; gap: .8rem; }
+  .bd-award { background: var(--card); border-radius: 10px; padding: .9rem 1.1rem; border-left: 3px solid transparent; }
+  .bd-award.is-done { border-left-color: var(--accent); }
+  .bd-award h2 { font: 600 1rem var(--sans); margin: 0 0 .3rem; }
+  .bd-award p { margin: 0; }
+  .bd-winner { font: 500 1.35rem var(--serif); }
+  .bd-rank { margin: .7rem 0 0; padding-left: 1.6rem; }
+  .bd-rank li { display: flex; flex-wrap: wrap; gap: .1rem .7rem; align-items: baseline; }
+</style>

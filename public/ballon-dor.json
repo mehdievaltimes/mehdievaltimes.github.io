@@ -1,0 +1,10 @@
+{
+  "edition": 2026,
+  "ceremony": "2026-10-26",
+  "source": { "name": "ballondor.com", "url": "https://www.ballondor.com/" },
+  "checked": null,
+  "awards": [
+    { "id": "ballon-dor", "name": "Ballon d'Or", "status": "pending" },
+    { "id": "ballon-dor-feminin", "name": "Ballon d'Or Féminin", "status": "pending" }
+  ]
+}
