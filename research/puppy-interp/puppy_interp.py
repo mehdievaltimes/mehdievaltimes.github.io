@@ -142,7 +142,7 @@ def main():
     t0 = time.time()
 
     tok = AutoTokenizer.from_pretrained(a.model, padding_side="left")
-    model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.float32).eval()
+    model = AutoModelForCausalLM.from_pretrained(a.model, dtype=getattr(torch, os.environ.get("PUPPY_DTYPE", "float32"))).eval()
     L = model.config.num_hidden_layers
     log = lambda *x: print(f"[{time.time() - t0:6.0f}s]", *x, flush=True)
     log(f"loaded {a.model}: {L} layers")

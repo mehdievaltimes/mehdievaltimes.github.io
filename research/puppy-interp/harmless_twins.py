@@ -33,7 +33,7 @@ def main():
     log = lambda *x: print(f"[{time.time() - t0:6.0f}s]", *x, flush=True)
 
     tok = AutoTokenizer.from_pretrained(a.model, padding_side="left")
-    model = AutoModelForCausalLM.from_pretrained(a.model, dtype=torch.float32).eval()
+    model = AutoModelForCausalLM.from_pretrained(a.model, dtype=getattr(torch, os.environ.get("PUPPY_DTYPE", "float32"))).eval()
 
     rows = []
     for obj, _hv, _ht, sv, st in ITEMS:
