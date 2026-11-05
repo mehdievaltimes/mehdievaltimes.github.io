@@ -64,6 +64,14 @@ Only `title` is required on an item; only `week` and `starts` on the week.
 
 No comments, no view counts, no likes.
 
+## Terminal (homepage)
+
+`src/components/Terminal.astro` is a small fake shell. `~/writing` and `~/reading` are built from the content
+collections at build time (coursework stays out, same as `/reading`), so posts can be `cat`ed, grepped and `open`ed.
+Its machine (homes, `/etc`, the repo in `~/.ctf`) is in `src/components/terminal/fs.ts`; the 8-ball, man pages
+and logo are in `terminal/text.ts`. History, the last-login time and the motd are kept per browser in `localStorage`.
+`/?run=<command>` runs a command on load, so a command can be shared as a link.
+
 ## SIGSEGV board (`/sigsegv`)
 
 Unlisted page that lists every pull request on the COMS W4181 course forks (`scripts/fetch-sigsegv.mjs`
