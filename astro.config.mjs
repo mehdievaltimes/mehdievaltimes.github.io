@@ -12,6 +12,7 @@ export default defineConfig({
     // Pages that were taken down.
     '/roaree': '/',
     '/sae': '/',
+    '/posts/legalean': '/',
     // From when thoughts were their own section.
     '/thoughts': '/',
     '/thoughts/[slug]': '/posts/[slug]',
