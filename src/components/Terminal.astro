@@ -727,7 +727,7 @@ These are common Git commands:
     whoami: (_, io) => io.out(user),
     echo: (args, io) => io.out((args[0] === '-n' ? args.slice(1) : args).join(' ')),
     base64: (args, io) => {
-      const decode = args.includes('-d') || args.includes('--decode');
+      const decode = args.includes('-d') || args.includes('-D') || args.includes('--decode');
       const file = args.find((a) => !a.startsWith('-'));
       const got = inputs('base64', file ? [file] : [], io);
       if (!got.length) return 1;
