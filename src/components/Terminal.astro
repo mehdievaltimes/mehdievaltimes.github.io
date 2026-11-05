@@ -902,7 +902,7 @@ These are common Git commands:
       // Opened right away, during the keypress, so the browser doesn't treat the new tab as a popup.
       const tab = window.open(gmail, '_blank'); // not 'noopener': with it, open() always returns null
       if (tab) tab.opener = null;
-      io.out(tab ? 'Opening Gmail in a new tab…' : 'Your browser blocked the Gmail tab.', 'dim');
+      if (!tab) io.out('Your browser blocked the Gmail tab.', 'dim');
       io.out([{ t: "Didn't work? Write to ", cls: 'dim' }, { t: addr, href }]);
     },
 
