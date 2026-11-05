@@ -944,6 +944,7 @@ These are common Git commands:
       if (frame.vim) vimOpen(frame.vim); // the shell came from vim's :!sh, so you land back in vim
     },
 
+    git,
     sudo,
     su: async (args, io) => {
       const target = (args.filter((a) => a !== '-' && a !== '-l')[0] ?? 'admin') as string;
