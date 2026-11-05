@@ -1,4 +1,4 @@
-// Words the terminal prints that aren't files: the 8-ball, man pages, the neofetch logo.
+// Words the terminal prints that aren't files: the 8-ball and man pages.
 
 export const EIGHT_BALL = [
   'Yes. Now go do it before you talk yourself out of it.',
@@ -57,8 +57,6 @@ export const MAN: Record<string, [string, string]> = {
   man: ['read a manual page', 'man COMMAND\nman -k .     list every page'],
   open: ['open a page of this site', 'open home | puppy-bench | sandbox\nopen writing/FILE.md     open a post'],
   lucky: ["I'm feeling lucky: ask the magic 8-ball", 'lucky [QUESTION]\n8ball [QUESTION]'],
-  neofetch: ['system info, with a logo', 'neofetch'],
-  history: ['list or clear past commands', 'history [-c]'],
   clear: ['clear the screen', 'clear     (or Ctrl+L)'],
   exit: ['leave the shell', 'exit'],
   base64: ['encode or decode base64', 'base64 [-d] [FILE]'],
@@ -75,13 +73,6 @@ export const MAN: Record<string, [string, string]> = {
 
 export const PUBLIC = [
   'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'printf', 'base64', 'grep', 'head', 'tail', 'find', 'tree',
-  'git', 'submit', 'man', 'open', 'mail', 'lucky', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear',
+  'git', 'submit', 'man', 'open', 'mail', 'lucky', 'nvidia-smi', 'top', 'clear',
 ];
 
-export const LOGO = [
-  ' __  __ ',
-  '|  \\/  |',
-  '| |\\/| |',
-  '| |  | |',
-  '|_|  |_|',
-];
