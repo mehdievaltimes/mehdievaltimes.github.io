@@ -2,9 +2,16 @@
 // This repo is public, so the walkthrough isn't written down here.
 // Only the SHA-256 of the answer ships. To change it:  printf 'flag{...}' | sha256sum
 
+import { unveil } from './veil.js';
+
 export type Dir = { [name: string]: Dir | string };
 
-export const ANSWER_SHA256 = '148f316e9df3b151bb290b49e2f902f331bf45793a0a6f04e878240e2e804038';
+// The two tokens that turn up in the repo, kept veiled so they don't show in the source or
+// the shipped JS. Make new ones with: npm run veil -- '<token>'
+const T1 = unveil('27822c7fa1ae0f689414aee531d7938ddb77b47eb61edad67d671f98');
+const T2 = unveil('19a83c7ba3ae356bac1480ef0cc88b80d977e171b474df9d');
+
+export const ANSWER_SHA256 = '8f32184ff73b2031801055e7ef6ffe414ca86c8daa0177220260398accf46fe1';
 
 const README = `# autograder
 
@@ -34,14 +41,14 @@ const GRADER_STASHED = GRADER.replace(
   'TOKEN = os.environ["GRADER_TOKEN"]',
   `TOKEN = os.environ["GRADER_TOKEN"]
 # TODO: delete before pushing. fallback while the env var is broken on the lab machines
-FALLBACK_TOKEN = "X3JlYWxseV9sZWF2ZV9naXR9"`,
+FALLBACK_TOKEN = "${T2}"`,
 );
 
 const CONFIG_OLD = `course: coms-ta
 endpoint: https://grader.internal/api
-api_token: "ZmxhZ3tzZWNyZXRzX25ldmVy"
+api_token: "${T1}"
 timeout: 30`;
-const CONFIG = CONFIG_OLD.replace('api_token: "ZmxhZ3tzZWNyZXRzX25ldmVy"', 'api_token: ${GRADER_TOKEN}');
+const CONFIG = CONFIG_OLD.replace(`api_token: "${T1}"`, 'api_token: ${GRADER_TOKEN}');
 
 export type Commit = { hash: string; date: string; msg: string; diff: string };
 
@@ -60,7 +67,7 @@ index 3b18e51..9d1c2f4 100644
 @@ -1,4 +1,4 @@
  course: coms-ta
  endpoint: https://grader.internal/api
--api_token: "ZmxhZ3tzZWNyZXRzX25ldmVy"
+-api_token: "${T1}"
 +api_token: \${GRADER_TOKEN}
  timeout: 30`,
   },
@@ -93,7 +100,7 @@ index 0000000..3b18e51
 @@ -0,0 +1,4 @@
 +course: coms-ta
 +endpoint: https://grader.internal/api
-+api_token: "ZmxhZ3tzZWNyZXRzX25ldmVy"
++api_token: "${T1}"
 +timeout: 30
 diff --git a/.gitignore b/.gitignore
 new file mode 100644
@@ -142,7 +149,7 @@ index c2d8b19..f41a6e0 100644
  cfg = yaml.safe_load(open("config.yml"))
  TOKEN = os.environ["GRADER_TOKEN"]
 +# TODO: delete before pushing. fallback while the env var is broken on the lab machines
-+FALLBACK_TOKEN = "X3JlYWxseV9sZWF2ZV9naXR9"
++FALLBACK_TOKEN = "${T2}"
 
 
  def late_penalty(hours_late):`,
