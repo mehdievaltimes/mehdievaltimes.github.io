@@ -903,7 +903,7 @@ These are common Git commands:
       const tab = window.open(gmail, '_blank'); // not 'noopener': with it, open() always returns null
       if (tab) tab.opener = null;
       io.out(tab ? 'Opening Gmail in a new tab…' : 'Your browser blocked the Gmail tab.', 'dim');
-      io.out([{ t: 'Not on Gmail? Write to ', cls: 'dim' }, { t: addr, href }]);
+      io.out([{ t: "Didn't work? Write to ", cls: 'dim' }, { t: addr, href }]);
     },
 
     'nvidia-smi': (_, io) => {
