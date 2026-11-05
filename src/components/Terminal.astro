@@ -1,0 +1,223 @@
+---
+// A small fake shell on the homepage, with a placeholder CTF.
+// Everything the shell knows lives in FS and CTF in the script below.
+---
+<section class="term" aria-label="Terminal">
+  <div class="term-bar"><span></span><span></span><span></span><b id="term-title">guest@mehdi: ~</b></div>
+  <div class="term-body" id="term-body">
+    <div id="term-out" role="log" aria-live="polite"></div>
+    <form id="term-form" class="term-line" autocomplete="off">
+      <label for="term-in" class="term-prompt" id="term-prompt">guest@mehdi:~$</label>
+      <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
+    </form>
+  </div>
+</section>
+
+<script>
+  // ---- Filesystem: directories are objects, files are strings. Names starting with "." are hidden. ----
+  type Dir = { [name: string]: Dir | string };
+  const FS: Dir = {
+    'about.txt': 'Mehdi Shakibapour. Math and CS at Columbia.\nThe yearning for AGI keeps me up at night.',
+    'links.txt': 'github     https://github.com/mehdievaltimes\nlinkedin   https://www.linkedin.com/in/mehdisha\n\nOr type: open puppy-bench, open sandbox',
+    ctf: {
+      'README.txt': 'Welcome to the CTF.\n\nThere is a flag somewhere in this directory.\nWhen you find it, run: submit <flag>\n\n(Placeholder challenge. The real one is coming.)',
+      '.flag': 'ZmxhZ3toZWxsb19mcm9tX3RoZV90ZXJtaW5hbH0=',
+    },
+  };
+
+  // ---- CTF: only the SHA-256 of each flag ships, so view-source doesn't hand it over. ----
+  // To change the flag: printf 'flag{...}' | sha256sum
+  const CTF = {
+    flags: ['fc3c88589930b7fbb124464dffbc16d1d7bf99ab76824c2be76f5205e4698fa1'],
+    storageKey: 'ctf-solved',
+  };
+
+  const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
+
+  const out = document.getElementById('term-out')!;
+  const form = document.getElementById('term-form') as HTMLFormElement;
+  const input = document.getElementById('term-in') as HTMLInputElement;
+  const promptEl = document.getElementById('term-prompt')!;
+  const body = document.getElementById('term-body')!;
+
+  let cwd: string[] = [];
+  const history: string[] = [];
+  let hi = 0;
+
+  const store = {
+    get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
+    set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch {} },
+  };
+
+  const pathStr = (p: string[]) => '~' + (p.length ? '/' + p.join('/') : '');
+  const prompt = () => `guest@mehdi:${pathStr(cwd)}$`;
+
+  function print(text = '', cls = '') {
+    const line = document.createElement('div');
+    line.className = 'term-o' + (cls ? ' ' + cls : '');
+    line.textContent = text;
+    out.appendChild(line);
+  }
+
+  function resolve(arg = ''): { node: Dir | string; path: string[] } | null {
+    const parts = arg.startsWith('~') || arg.startsWith('/') ? [] : [...cwd];
+    for (const seg of arg.replace(/^~\/?|^\//, '').split('/')) {
+      if (!seg || seg === '.') continue;
+      if (seg === '..') { parts.pop(); continue; }
+      parts.push(seg);
+    }
+    let node: Dir | string = FS;
+    for (const seg of parts) {
+      if (typeof node === 'string' || !(seg in node)) return null;
+      node = node[seg];
+    }
+    return { node, path: parts };
+  }
+
+  async function sha256(s: string) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+    return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  const commands: Record<string, (args: string[]) => void | Promise<void>> = {
+    help: () => print([
+      'help              this list',
+      'ls [-a] [dir]     list files (-a shows hidden ones)',
+      'cd <dir>          change directory',
+      'cat <file>        print a file',
+      'pwd, whoami       where and who you are',
+      'base64 -d <text>  decode base64',
+      'open <page>       ' + Object.keys(PAGES).join(', '),
+      'ctf               start the capture-the-flag',
+      'submit <flag>     check a flag',
+      'clear             clear the screen',
+    ].join('\n')),
+    ls: (args) => {
+      const all = args.includes('-a');
+      const target = args.find((a) => a !== '-a');
+      const r = resolve(target);
+      if (!r) return print(`ls: ${target}: No such file or directory`, 'err');
+      if (typeof r.node === 'string') return print(target!);
+      const names = Object.keys(r.node).filter((n) => all || !n.startsWith('.'));
+      print(names.map((n) => (typeof (r.node as Dir)[n] === 'string' ? n : n + '/')).join('  '));
+    },
+    cd: (args) => {
+      const r = resolve(args[0] ?? '~');
+      if (!r) return print(`cd: ${args[0]}: No such file or directory`, 'err');
+      if (typeof r.node === 'string') return print(`cd: ${args[0]}: Not a directory`, 'err');
+      cwd = r.path;
+    },
+    cat: (args) => {
+      if (!args[0]) return print('cat: missing file', 'err');
+      const r = resolve(args[0]);
+      if (!r) return print(`cat: ${args[0]}: No such file or directory`, 'err');
+      if (typeof r.node !== 'string') return print(`cat: ${args[0]}: Is a directory`, 'err');
+      print(r.node);
+    },
+    pwd: () => print(pathStr(cwd)),
+    whoami: () => print('guest'),
+    base64: (args) => {
+      const text = args.filter((a) => a !== '-d' && a !== '--decode').join(' ');
+      if (!args.includes('-d') && !args.includes('--decode')) {
+        return print(btoa(unescape(encodeURIComponent(text))));
+      }
+      try { print(decodeURIComponent(escape(atob(text)))); } catch { print('base64: invalid input', 'err'); }
+    },
+    open: (args) => {
+      const href = PAGES[args[0]];
+      if (!href) return print(`open: try one of: ${Object.keys(PAGES).join(', ')}`, 'err');
+      location.href = href;
+    },
+    ctf: () => {
+      cwd = ['ctf'];
+      print(store.get(CTF.storageKey) ? 'You already solved this one. More soon.' : 'Moved you to ~/ctf. Start with: cat README.txt', 'ok');
+    },
+    submit: async (args) => {
+      const guess = args.join(' ').trim();
+      if (!guess) return print('submit: usage: submit flag{...}', 'err');
+      if (CTF.flags.includes(await sha256(guess))) {
+        store.set(CTF.storageKey, '1');
+        print('Correct. Flag accepted.', 'ok');
+      } else {
+        print('Nope. Keep looking.', 'err');
+      }
+    },
+    clear: () => { out.textContent = ''; },
+    sudo: () => print('Nice try.', 'err'),
+  };
+
+  async function run(line: string) {
+    print(`${prompt()} ${line}`, 'cmd');
+    const [name, ...args] = line.trim().split(/\s+/);
+    if (!name) return;
+    const fn = commands[name];
+    if (fn) await fn(args);
+    else print(`${name}: command not found. Type help.`, 'err');
+  }
+
+  function complete() {
+    const parts = input.value.split(/\s+/);
+    const last = parts[parts.length - 1];
+    let pool: string[];
+    if (parts.length === 1) pool = Object.keys(commands);
+    else if (parts[0] === 'open') pool = Object.keys(PAGES);
+    else {
+      const slash = last.lastIndexOf('/');
+      const dir = resolve(slash >= 0 ? last.slice(0, slash) || '/' : '');
+      if (!dir || typeof dir.node === 'string') return;
+      const base = slash >= 0 ? last.slice(0, slash + 1) : '';
+      pool = Object.keys(dir.node).map((n) => base + n + (typeof (dir.node as Dir)[n] === 'string' ? '' : '/'));
+    }
+    // Hidden files only complete once you've typed the dot yourself.
+    const wantsHidden = (last.split('/').pop() ?? '').startsWith('.');
+    const hits = pool.filter((p) => p.startsWith(last) && (wantsHidden || !p.replace(/\/$/, '').split('/').pop()!.startsWith('.')));
+    if (hits.length === 1) {
+      parts[parts.length - 1] = hits[0];
+      input.value = parts.join(' ') + (hits[0].endsWith('/') ? '' : ' ');
+    } else if (hits.length > 1) {
+      print(`${prompt()} ${input.value}`, 'cmd');
+      print(hits.join('  '));
+    }
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const line = input.value;
+    input.value = '';
+    if (line.trim()) history.push(line);
+    hi = history.length;
+    await run(line);
+    promptEl.textContent = prompt();
+    document.getElementById('term-title')!.textContent = `guest@mehdi: ${pathStr(cwd)}`;
+    body.scrollTop = body.scrollHeight;
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowUp' && hi > 0) { input.value = history[--hi]; e.preventDefault(); }
+    else if (e.key === 'ArrowDown') { hi = Math.min(history.length, hi + 1); input.value = history[hi] ?? ''; e.preventDefault(); }
+    else if (e.key === 'Tab') { e.preventDefault(); complete(); body.scrollTop = body.scrollHeight; }
+    else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); out.textContent = ''; }
+  });
+
+  // Clicking anywhere in the terminal focuses the input, unless the visitor is selecting text.
+  body.addEventListener('click', () => { if (!getSelection()?.toString()) input.focus({ preventScroll: true }); });
+
+  print("Type 'help' to see what you can do. Type 'ctf' if you like puzzles.", 'dim');
+</script>
+
+<style>
+  .term { margin-top: 3rem; border: 1px solid var(--faint); border-radius: 10px; overflow: hidden; background: var(--card); font: .85rem/1.55 var(--mono); }
+  .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
+  .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
+  .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .term-body { height: 17rem; overflow-y: auto; padding: .75rem .9rem; cursor: text; }
+  .term-o { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .term-o.cmd { color: var(--muted); }
+  .term-o.err { color: var(--bad); }
+  .term-o.ok { color: var(--good); }
+  .term-o.dim { color: var(--muted); }
+  .term-line { display: flex; gap: .5rem; align-items: baseline; }
+  .term-prompt { color: var(--accent); white-space: nowrap; }
+  .term-line input { all: unset; flex: 1; min-width: 0; color: var(--fg); caret-color: var(--accent); font-size: 16px; /* 16px stops iOS zooming on focus */ }
+  @media (min-width: 40rem) { .term-line input { font-size: inherit; } }
+</style>

@@ -8,8 +8,7 @@ const { title, description = site.description, sheep = true, noindex = false, og
 const fullTitle = title ? `${title} · ${site.name}` : site.name;
 const path = Astro.url.pathname.replace(/\/$/, '') || '/';
 const nav = [
-  ['/writing', 'writing'],
-  ['/reading', 'reading'],
+  // writing and reading are hidden from the nav; their pages still exist at /writing and /reading.
   ['/demos', 'sandbox'],
   ['/puppy-bench', 'puppy bench'],
 ];
