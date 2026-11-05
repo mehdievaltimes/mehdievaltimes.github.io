@@ -1,5 +1,7 @@
 ---
-// A small fake shell on the homepage, with a placeholder CTF.
+// A small fake shell on the homepage, with an unadvertised placeholder CTF.
+// It's never mentioned on the page: `ctf` and `submit` work but aren't in `help`,
+// and its folder is hidden, so only `ls -a` turns it up.
 // Everything the shell knows lives in FS and CTF in the script below.
 ---
 <section class="term" aria-label="Terminal">
@@ -19,7 +21,7 @@
   const FS: Dir = {
     'about.txt': 'Mehdi Shakibapour. Math and CS at Columbia.\nThe yearning for AGI keeps me up at night.',
     'links.txt': 'github     https://github.com/mehdievaltimes\nlinkedin   https://www.linkedin.com/in/mehdisha\n\nOr type: open puppy-bench, open sandbox',
-    ctf: {
+    '.ctf': {
       'README.txt': 'Welcome to the CTF.\n\nThere is a flag somewhere in this directory.\nWhen you find it, run: submit <flag>\n\n(Placeholder challenge. The real one is coming.)',
       '.flag': 'ZmxhZ3toZWxsb19mcm9tX3RoZV90ZXJtaW5hbH0=',
     },
@@ -29,7 +31,7 @@
   // To change the flag: printf 'flag{...}' | sha256sum
   const CTF = {
     flags: ['fc3c88589930b7fbb124464dffbc16d1d7bf99ab76824c2be76f5205e4698fa1'],
-    storageKey: 'ctf-solved',
+    storageKey: 'term-s',
   };
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
@@ -108,8 +110,6 @@
       'pwd, whoami       where and who you are',
       'base64 -d <text>  decode base64',
       'open <page>       ' + Object.keys(PAGES).join(', '),
-      'ctf               start the capture-the-flag',
-      'submit <flag>     check a flag',
       'clear             clear the screen',
     ].join('\n')),
     ls: (args) => {
@@ -149,8 +149,8 @@
       location.href = href;
     },
     ctf: () => {
-      cwd = ['ctf'];
-      print(store.get(CTF.storageKey) ? 'You already solved this one. More soon.' : 'Moved you to ~/ctf. Start with: cat README.txt', 'ok');
+      cwd = ['.ctf'];
+      print(store.get(CTF.storageKey) ? 'You already solved this one. More soon.' : 'Moved you to ~/.ctf. Start with: cat README.txt', 'ok');
     },
     submit: async (args) => {
       const guess = args.join(' ').trim();
@@ -226,7 +226,7 @@
   // Clicking anywhere in the terminal focuses the input, unless the visitor is selecting text.
   body.addEventListener('click', () => { if (!getSelection()?.toString()) input.focus({ preventScroll: true }); });
 
-  print("Type 'help' to see what you can do. Type 'ctf' if you like puzzles.", 'dim');
+  print("Type 'help' to see what you can do.", 'dim');
 </script>
 
 <style>
