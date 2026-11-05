@@ -44,6 +44,7 @@ export const MAN: Record<string, [string, string]> = {
   pwd: ['print the working directory', 'pwd'],
   whoami: ['print your user name', 'whoami'],
   echo: ['print a line', 'echo [TEXT...]     $USER, $HOME, $PWD and $? expand'],
+  printf: ['print formatted text', 'printf FORMAT [ARGS...]     %s, %d, %b, \\n and \\t'],
   grep: ['print lines that match a pattern', 'grep [-i] [-v] [-n] [-r] PATTERN [FILE...]'],
   head: ['first lines of a file', 'head [-n N] [FILE...]'],
   tail: ['last lines of a file', 'tail [-n N] [FILE...]'],
@@ -73,7 +74,7 @@ export const MAN: Record<string, [string, string]> = {
 };
 
 export const PUBLIC = [
-  'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'base64', 'grep', 'head', 'tail', 'find', 'tree',
+  'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'printf', 'base64', 'grep', 'head', 'tail', 'find', 'tree',
   'man', 'open', 'mail', 'lucky', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear',
 ];
 

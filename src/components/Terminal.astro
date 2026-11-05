@@ -107,7 +107,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
     shells = [];
     status = 0;
     nuked = false;
-    repo = { dirty: false, stash: true };
+    repo = { dirty: false, stash: false }; // no stash: the token is all in the commit history
   }
 
   const homeOf = (u: User) => ['home', u];
@@ -316,7 +316,16 @@ These are common Git commands:
 
   const dropStash = () => { repo.stash = false; delete ((repoDir()!['.git'] as Dir).refs as Dir).stash; };
 
-  const git = (args: string[], io: IO) => {
+  const git = (args: string[], io: IO): number | void => {
+    if (args[0] === '-C') {
+      // git -C DIR ...: run as if started in DIR.
+      if (!args[1]) return io.err('error: switch `C\' requires a value');
+      const r = lookup(args[1]);
+      if (isErr(r) || !isDir(r.node)) return io.err(`fatal: cannot change to '${args[1]}': No such file or directory`);
+      const saved = cwd;
+      cwd = r.path;
+      try { return git(args.slice(2), io); } finally { cwd = saved; }
+    }
     const [sub, ...rest] = args;
     if (sub === '--version' || sub === 'version') return io.out('git version 2.47.1');
     if (!sub || sub === 'help' || sub === '--help') return io.out(GIT_USAGE);
@@ -726,6 +735,21 @@ These are common Git commands:
     pwd: (_, io) => io.out(abs(cwd)),
     whoami: (_, io) => io.out(user),
     echo: (args, io) => io.out((args[0] === '-n' ? args.slice(1) : args).join(' ')),
+    printf: (args, io) => {
+      if (!args.length) return io.err('printf: usage: printf FORMAT [ARGUMENTS...]');
+      const esc = (t: string) => t.replace(/\\(.)/g, (_, c) => ({ n: '\n', t: '\t', '\\': '\\' } as Record<string, string>)[c] ?? '\\' + c);
+      const [fmt, ...vals] = args;
+      let out = '', i = 0;
+      // Like bash, the format is reused until every argument has been printed.
+      do {
+        out += esc(fmt).replace(/%([sdb%])/g, (_, k) => {
+          if (k === '%') return '%';
+          const v = vals[i++] ?? '';
+          return k === 'd' ? String(parseInt(v, 10) || 0) : k === 'b' ? esc(v) : v;
+        });
+      } while (i < vals.length && /%[sdb]/.test(fmt));
+      if (out) io.out(out.replace(/\n$/, ''));
+    },
     base64: (args, io) => {
       const decode = args.includes('-d') || args.includes('-D') || args.includes('--decode');
       const file = args.find((a) => !a.startsWith('-'));
@@ -1041,6 +1065,24 @@ These are common Git commands:
 
   // ---- Parsing: quotes, $VARS, pipes, and ; && || ----
   type Pipeline = { stages: string[][]; op: string };
+  const HERE = '\0<<<', FROM = '\0<';
+  // Take `<<< WORD` and `< FILE` out of a stage's words: what's left, and what goes to stdin.
+  function redirect(stage: string[]): { args: string[]; stdin?: string; error?: string } {
+    const args: string[] = [];
+    let stdin: string | undefined;
+    for (let i = 0; i < stage.length; i++) {
+      const wd = stage[i];
+      if (wd !== HERE && wd !== FROM) { args.push(wd); continue; }
+      const val = stage[++i];
+      if (val === undefined || val === HERE || val === FROM) return { args, error: "syntax error near unexpected token `newline'" };
+      if (wd === HERE) { stdin = val; continue; }
+      const r = lookup(val);
+      if (isErr(r)) return { args, error: `${val}: ${WHY[r]}` };
+      if (isDir(r.node)) return { args, error: `${val}: Is a directory` };
+      stdin = r.node;
+    }
+    return { args, stdin };
+  }
   function parse(line: string): { chain: Pipeline[] } | { error: string } {
     const chain: Pipeline[] = [];
     const vars = env();
@@ -1069,6 +1111,12 @@ These are common Git commands:
       if (c === '|') { endStage(); continue; }
       if (c === '&' && line[i + 1] === '&') { endPipe('&&'); i++; continue; }
       if (c === ';') { endPipe(';'); continue; }
+      if (c === '<') {
+        // Redirections become marker words that run() takes out again; NUL can't be typed.
+        endWord();
+        if (line.startsWith('<<<', i)) { words.push(HERE); i += 2; } else words.push(FROM);
+        continue;
+      }
       w += c;
       inWord = true;
     }
@@ -1119,9 +1167,13 @@ These are common Git commands:
       let stdin: string | null = null;
       for (let k = 0; k < pl.stages.length; k++) {
         const last = k === pl.stages.length - 1;
-        if (last) { status = await runArgs(pl.stages[k], { out: print, err: (t) => print(t, 'err'), stdin, tty: true }); break; }
+        const rd = redirect(pl.stages[k]);
+        if (rd.error) { print(`tsh: ${rd.error}`, 'err'); status = 1; break; }
+        if (rd.stdin !== undefined) stdin = rd.stdin;
+        if (!rd.args.length) { if (last) status = 0; stdin = ''; continue; }
+        if (last) { status = await runArgs(rd.args, { out: print, err: (t) => print(t, 'err'), stdin, tty: true }); break; }
         const buf: string[] = [];
-        await runArgs(pl.stages[k], { out: (o) => buf.push(textOf(o)), err: (t) => print(t, 'err'), stdin });
+        await runArgs(rd.args, { out: (o) => buf.push(textOf(o)), err: (t) => print(t, 'err'), stdin });
         stdin = buf.join('\n');
       }
       if (halted || vim) break;
