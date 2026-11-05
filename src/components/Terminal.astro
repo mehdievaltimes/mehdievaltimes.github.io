@@ -1251,8 +1251,12 @@ These are common Git commands:
     cursorEl.classList.add('blink');
   }
 
+  // Phones only: touch-only and narrow (portrait) or short (landscape). Tablets and computers have keys.
+  const PHONE = matchMedia('(hover: none) and (pointer: coarse) and (max-width: 40rem), (hover: none) and (pointer: coarse) and (max-height: 30rem)');
+  PHONE.addEventListener('change', () => chips());
   function chips() {
     chipsEl.textContent = '';
+    if (!PHONE.matches) return;
     const add = (label: string, fn: () => void) => {
       const b = document.createElement('button');
       b.type = 'button';
@@ -1426,9 +1430,9 @@ These are common Git commands:
   @media (prefers-reduced-motion: reduce) { .term-cursor.blink { animation: none; } .term-body { transition: none; } }
   @media (min-width: 40rem) { .term-input { font-size: inherit; } }
 
-  /* Tappable suggestions, for phones with no Tab or arrow keys. */
+  /* Tappable suggestions, for phones with no Tab or arrow keys. Same query as PHONE in the script. */
   .term-chips { display: none; }
-  @media (pointer: coarse) {
+  @media (hover: none) and (pointer: coarse) and (max-width: 40rem), (hover: none) and (pointer: coarse) and (max-height: 30rem) {
     .term-chips { display: flex; gap: .4rem; overflow-x: auto; padding: .5rem .9rem; border-top: 1px solid var(--faint); scrollbar-width: none; }
     .term-chips:empty { display: none; }
     .term-chips button { all: unset; flex: none; padding: .3rem .7rem; border: 1px solid var(--faint); border-radius: 99px; color: var(--muted); font-size: .8rem; }
