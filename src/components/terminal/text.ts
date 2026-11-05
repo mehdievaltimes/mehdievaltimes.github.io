@@ -43,25 +43,21 @@ export const MAN: Record<string, [string, string]> = {
   cat: ['print files', 'cat [FILE...]     reads stdin when given no files'],
   pwd: ['print the working directory', 'pwd'],
   whoami: ['print your user name', 'whoami'],
-  id: ['print user and group ids', 'id'],
   echo: ['print a line', 'echo [TEXT...]     $USER, $HOME, $PWD and $? expand'],
-  env: ['print the environment', 'env'],
   grep: ['print lines that match a pattern', 'grep [-i] [-v] [-n] [-r] PATTERN [FILE...]'],
   head: ['first lines of a file', 'head [-n N] [FILE...]'],
   tail: ['last lines of a file', 'tail [-n N] [FILE...]'],
-  wc: ['count lines, words and bytes', 'wc [-l] [-w] [-c] [FILE...]'],
-  sort: ['sort lines', 'sort [-r] [-n] [-u] [FILE...]'],
-  uniq: ['drop repeated adjacent lines', 'uniq [-c] [FILE...]'],
   find: ['look for files', "find [DIR] [-name 'GLOB'] [-type f|d]"],
   tree: ['list a directory as a tree', 'tree [-a] [DIR]'],
-  date: ['print the date and time', 'date'],
-  uname: ['print system information', 'uname [-a]'],
   hostname: ['print or set the machine name', 'hostname [NAME]'],
+  mail: ['write to Mehdi', 'mail mehdi [SUBJECT]     opens your mail app'],
+  'nvidia-smi': ['what the GPU is busy with', 'nvidia-smi'],
+  top: ['what is running', 'top'],
   man: ['read a manual page', 'man COMMAND\nman -k .     list every page'],
   open: ['open a page of this site', 'open home | puppy-bench | sandbox\nopen writing/FILE.md     open a post'],
   lucky: ["I'm feeling lucky: ask the magic 8-ball", 'lucky [QUESTION]\n8ball [QUESTION]'],
   neofetch: ['system info, with a logo', 'neofetch'],
-  history: ['list or clear past commands', 'history [-c]\nCtrl+R searches it.'],
+  history: ['list or clear past commands', 'history [-c]'],
   clear: ['clear the screen', 'clear     (or Ctrl+L)'],
   exit: ['leave the shell', 'exit'],
   base64: ['encode or decode base64', 'base64 [-d] [FILE]'],
@@ -77,8 +73,8 @@ export const MAN: Record<string, [string, string]> = {
 };
 
 export const PUBLIC = [
-  'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'grep', 'head', 'tail', 'wc', 'sort', 'uniq',
-  'find', 'tree', 'date', 'uname', 'man', 'open', 'lucky', 'neofetch', 'history', 'clear',
+  'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'grep', 'head', 'tail', 'find', 'tree',
+  'man', 'open', 'mail', 'lucky', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear',
 ];
 
 export const LOGO = [
