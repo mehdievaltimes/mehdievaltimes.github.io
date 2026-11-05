@@ -6,10 +6,9 @@ import { unveil } from './veil.js';
 
 export type Dir = { [name: string]: Dir | string };
 
-// The two tokens that turn up in the repo, kept veiled so they don't show in the source or
-// the shipped JS. Make new ones with: npm run veil -- '<token>'
-const T1 = unveil('27822c7fa1ae0f689414aee531d7938ddb77b47eb61edad67d671f98');
-const T2 = unveil('19a83c7ba3ae356bac1480ef0cc88b80d977e171b474df9d');
+// The token that turns up in the repo's history, kept veiled so it doesn't show in the source
+// or the shipped JS. Make a new one with: npm run veil -- '<token>'
+const T1 = unveil('27822c7fa1ae0f689414aee531d7938ddb77b47eb61edad67d671e95e5373fe95e9c1a7c603d298535eae7654441025b66346e94');
 
 export const ANSWER_SHA256 = '8f32184ff73b2031801055e7ef6ffe414ca86c8daa0177220260398accf46fe1';
 
@@ -40,8 +39,8 @@ def grade(answer, expected_sha256):
 const GRADER_STASHED = GRADER.replace(
   'TOKEN = os.environ["GRADER_TOKEN"]',
   `TOKEN = os.environ["GRADER_TOKEN"]
-# TODO: delete before pushing. fallback while the env var is broken on the lab machines
-FALLBACK_TOKEN = "${T2}"`,
+# TODO: delete before pushing
+print("DEBUG grading", TOKEN[:4])`,
 );
 
 const CONFIG_OLD = `course: coms-ta
@@ -148,8 +147,8 @@ index c2d8b19..f41a6e0 100644
 
  cfg = yaml.safe_load(open("config.yml"))
  TOKEN = os.environ["GRADER_TOKEN"]
-+# TODO: delete before pushing. fallback while the env var is broken on the lab machines
-+FALLBACK_TOKEN = "${T2}"
++# TODO: delete before pushing
++print("DEBUG grading", TOKEN[:4])
 
 
  def late_penalty(hours_late):`,
@@ -189,7 +188,6 @@ export const HOME: Dir = {
       COMMIT_EDITMSG: 'move grader token to env var',
       refs: {
         heads: { main: COMMITS[0].hash },
-        stash: STASH.hash,
       },
       logs: {
         HEAD: [...COMMITS].reverse().map((c, i, all) =>
