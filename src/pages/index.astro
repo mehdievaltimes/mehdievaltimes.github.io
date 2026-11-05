@@ -1,6 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import Terminal from '../components/Terminal.astro';
+
+// Newest first. Keep it short: this is the whole news section.
+const news = [
+  {
+    date: 'Oct 2026',
+    html: `Released <a href="/puppy-bench">puppy bench</a>. I still don’t know why GPT-6.0 Luna is lobotomized: it only checks on the puppy after using the actuator. If you know anything, email me.`,
+  },
+  { date: 'Aug 2026', html: 'Started building yet another benchmark for AI models.' },
+];
 ---
 <Base description="Mehdi Shakibapour — math and CS at Columbia. The yearning for AGI keeps me up at night.">
   <section class="about">
@@ -15,6 +24,15 @@ import Terminal from '../components/Terminal.astro';
   </section>
 
   <Terminal />
+
+  <section class="news">
+    <h2>News</h2>
+    <ul>
+      {news.map((n) => (
+        <li><span class="meta">{n.date}</span><span set:html={n.html} /></li>
+      ))}
+    </ul>
+  </section>
 </Base>
 
 <style>
@@ -23,8 +41,15 @@ import Terminal from '../components/Terminal.astro';
   .about h1 { margin: 0 0 .2rem; }
   .about-line { margin: 0 0 1.4rem; color: var(--muted); font-size: .95rem; }
 
+  .news { margin-top: 2.5rem; }
+  .news h2 { font: 600 1rem var(--sans); letter-spacing: 0; margin: 0 0 .75rem; }
+  .news ul { list-style: none; margin: 0; padding: 0; }
+  .news li { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: 1rem; padding: .9rem 0; border-top: 1px solid var(--faint); font-family: var(--serif); font-size: 1.12rem; line-height: 1.55; }
+  .news li .meta { padding-top: .3rem; }
+
   @media (max-width: 36rem) {
     .about { grid-template-columns: 1fr; gap: 1.25rem; }
     .portrait { width: 7.5rem; }
+    .news li { grid-template-columns: 1fr; gap: .2rem; }
   }
 </style>
