@@ -4,7 +4,7 @@
 // from the content collections, so the terminal can browse the site.
 import fs from 'node:fs';
 import { getCollection } from 'astro:content';
-import { getEntries, fmtDate, excerpt } from '../lib';
+import { getEntries } from '../lib';
 
 const posts = await getEntries();
 // Same rule as /reading: coursework only shows in `npm run dev`.
@@ -16,11 +16,6 @@ const data = {
   writing: Object.fromEntries(posts.map((e) => [`${e.id}.md`, raw(e.filePath, e.body ?? '')])),
   reading: Object.fromEntries(reading.map((e) => [`${e.id}.yml`, raw(e.filePath)])),
   readingItems: reading.reduce((n, e) => n + e.data.items.length, 0),
-  latest: posts[0] && {
-    file: `${posts[0].id}.md`,
-    title: posts[0].data.title ?? excerpt(posts[0], 50),
-    date: fmtDate(posts[0].data.date),
-  },
 };
 // JSON inside a <script> tag: escape '<' so a post can't close the tag.
 const json = JSON.stringify(data).replace(/</g, '\\u003c');
@@ -39,6 +34,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
         <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
         <span class="term-cursor" id="term-cursor" aria-hidden="true"></span>
       </span>
+      <span class="term-hint" aria-hidden="true"><span class="k">click</span><span class="t">tap</span> to jack in</span>
     </form>
   </div>
   <div class="term-chips" id="term-chips" aria-label="Suggestions"></div>
@@ -48,9 +44,9 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
 
 <script>
   import { HOME, ADMIN_HOME, ETC, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
-  import { EIGHT_BALL, MAN, PUBLIC, LOGO, adviceOfTheDay } from './terminal/text';
+  import { EIGHT_BALL, MAN, PUBLIC, LOGO } from './terminal/text';
 
-  type Data = { writing: Dir; reading: Dir; readingItems: number; latest?: { file: string; title: string; date: string } };
+  type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
@@ -605,26 +601,19 @@ These are common Git commands:
     greet();
   }
 
-  // Closed window: the body shrinks; a click or a key brings it back.
-  function closeTerm(msg: string, action: string) {
+  // exit / shutdown: drop back to the one line in the page, with a fresh session behind it.
+  function closeTerm(msg: string) {
     halted = true;
     later(() => {
-      shrink(); // the window shrinks back into the page, then closes
-      section.classList.add('closed');
-      form.hidden = true;
-      titleEl.textContent = msg;
-      outEl.textContent = '';
-      addLine([{ t: msg, cls: 'dim' }, { t: '  ' }, { t: `[${action}]`, act: reopen }], '');
+      print(msg, 'dim');
+      setTimeout(() => {
+        shrink();
+        outEl.textContent = '';
+        boot();
+        greet();
+        refresh();
+      }, 450);
     });
-  }
-  function reopen() {
-    if (!section.classList.contains('closed')) return;
-    section.classList.remove('closed');
-    form.hidden = false;
-    outEl.textContent = '';
-    boot();
-    greet();
-    later(() => { refresh(); input.focus({ preventScroll: true }); });
   }
 
   // ---- Commands ----
@@ -967,7 +956,7 @@ These are common Git commands:
     exit: async (_, io) => {
       if (nuked) { print('exit'); return panic(); }
       const frame = shells.pop();
-      if (!frame) { print('logout'); return closeTerm('[Process completed]', 'restart'); }
+      if (!frame) { print('logout'); return closeTerm('[Process completed]'); }
       io.out('exit');
       user = frame.user;
       cwd = frame.cwd;
@@ -1044,7 +1033,7 @@ These are common Git commands:
       if (user !== 'admin') return io.err('shutdown: must be superuser.');
       io.out(`\nBroadcast message from ${user}@${host}:\n\nThe system will power off now!\n`);
       pause(1200);
-      closeTerm('[powered off]', 'power on');
+      closeTerm('[powered off]');
     },
 
     submit: async (args, io) => {
@@ -1185,9 +1174,6 @@ These are common Git commands:
     later(() => {
       const motd = store.get(MOTD_KEY);
       if (motd) addLine(motd, 'motd');
-      if (DATA.latest) addLine([{ t: 'new: ', cls: 'dim' }, { t: DATA.latest.title, run: `cat ~/writing/${DATA.latest.file}` }, { t: ` · ${DATA.latest.date}`, cls: 'dim' }], '');
-      addLine([{ t: '8-ball says: ', cls: 'dim' }, { t: adviceOfTheDay(), cls: 'lucky' }], '');
-      if (solved()) addLine('✓ you beat the autograder.', 'ok');
       addLine([{ t: 'Type ', cls: 'dim' }, { t: 'help', run: 'help' }, { t: ' to see what you can do.', cls: 'dim' }], '');
     });
   }
@@ -1253,7 +1239,7 @@ These are common Git commands:
     else if (vim) promptEl.textContent = '';
     else promptEl.textContent = prompt();
     promptEl.classList.toggle('root', user === 'admin' && !vim && !pending);
-    if (!section.classList.contains('closed')) titleEl.textContent = vim ? `${vim.name || '[No Name]'} - VIM` : `${user}@${host}: ${pathStr(cwd)}`;
+    titleEl.textContent = vim ? `${vim.name || '[No Name]'} - VIM` : `${user}@${host}: ${pathStr(cwd)}`;
     cursor();
     chips();
   }
@@ -1361,7 +1347,6 @@ These are common Git commands:
     const b = (e.target as HTMLElement).closest<HTMLElement>('[data-run]');
     if (!b || busy || pending || vim) return;
     input.value = '';
-    expand();
     exec(b.dataset.run!);
   });
   body.addEventListener('click', () => { if (!getSelection()?.toString() && !form.hidden) input.focus({ preventScroll: true }); });
@@ -1375,8 +1360,54 @@ These are common Git commands:
     section.style.setProperty('--term-top', `${vv.offsetTop}px`);
     section.style.setProperty('--term-h', `${vv.height}px`);
   }
+  // Digital rain over the page; the terminal opens underneath it, then the rain clears.
+  let raining = false;
+  function rain(then: () => void) {
+    if (raining) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return then();
+    raining = true;
+    const cv = document.createElement('canvas');
+    cv.className = 'term-rain';
+    document.body.append(cv);
+    const dpr = Math.min(2, devicePixelRatio || 1);
+    const W = innerWidth, H = innerHeight;
+    cv.width = W * dpr; cv.height = H * dpr;
+    const g = cv.getContext('2d')!;
+    g.scale(dpr, dpr);
+    const fs = 15, cols = Math.ceil(W / fs);
+    const drops = Array.from({ length: cols }, () => -Math.random() * 30);
+    const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789$#@%&<>/=+*mehdi';
+    g.font = `${fs}px ui-monospace, monospace`;
+    const t0 = performance.now();
+    let opened = false;
+    const frame = (now: number) => {
+      const t = now - t0;
+      g.fillStyle = 'rgba(0, 8, 3, .2)';
+      g.fillRect(0, 0, W, H);
+      for (let i = 0; i < cols; i++) {
+        const y = drops[i] * fs;
+        if (y > 0) {
+          g.fillStyle = 'rgba(140, 255, 170, .85)';
+          g.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fs, y);
+          g.fillStyle = '#1fd65f';
+          g.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fs, y - fs);
+        }
+        drops[i] += 1.4 + (i % 3) * .35;
+        if (y > H && Math.random() > .9) drops[i] = 0;
+      }
+      if (!opened && t > 420) { opened = true; then(); }
+      if (t > 520) cv.style.opacity = String(Math.max(0, 1 - (t - 520) / 280));
+      if (t < 800) requestAnimationFrame(frame);
+      else { cv.remove(); raining = false; }
+    };
+    requestAnimationFrame(frame);
+  }
+  function open() {
+    if (section.classList.contains('full')) return;
+    rain(expand);
+  }
   function expand() {
-    if (section.classList.contains('full') || section.classList.contains('closed')) return;
+    if (section.classList.contains('full')) return;
     slot.style.height = `${section.offsetHeight + parseFloat(getComputedStyle(section).marginTop)}px`; // hold its place in the page
     section.classList.add('full');
     document.documentElement.classList.add('term-open');
@@ -1393,7 +1424,7 @@ These are common Git commands:
     input.blur();
     body.scrollTop = body.scrollHeight;
   }
-  input.addEventListener('focus', expand);
+  input.addEventListener('focus', open);
   document.getElementById('term-shrink')!.addEventListener('click', shrink);
   section.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !vim && !pending) { e.preventDefault(); shrink(); } });
   vv?.addEventListener('resize', fit);
@@ -1407,24 +1438,31 @@ These are common Git commands:
 
 <!-- Global: most of the terminal is built at runtime, so Astro's scoped selectors would miss it. Every rule is under .term. -->
 <style is:global>
-  .term { margin-top: 3rem; border: 1px solid var(--faint); border-radius: 10px; overflow: hidden; background: var(--card); font: .85rem/1.55 var(--mono); font-variant-ligatures: none; }
+  .term { margin-top: 2.5rem; border: 1px solid var(--faint); border-radius: 10px; overflow: hidden; background: var(--card); font: .85rem/1.55 var(--mono); font-variant-ligatures: none; }
+  /* In the page it's a single prompt line; it opens full screen when clicked. */
+  .term:not(.full) { border-radius: 8px; cursor: text; transition: border-color .15s; }
+  .term:not(.full):hover { border-color: rgb(var(--accent-rgb) / .5); }
+  .term:not(.full) .term-bar, .term:not(.full) #term-out, .term:not(.full) .term-chips { display: none; }
+  .term:not(.full) .term-body { height: auto; overflow: hidden; padding: .55rem .9rem; }
+  .term-hint { display: none; color: var(--muted); white-space: nowrap; font-size: .78rem; }
+  .term:not(.full) .term-hint { display: inline; }
+  .term-hint .t { display: none; }
+  @media (hover: none) and (pointer: coarse) { .term-hint .k { display: none; } .term-hint .t { display: inline; } }
+  .term-rain { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 101; pointer-events: none; }
   .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
   .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
   .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .term-shrink { all: unset; display: none; margin-left: auto; cursor: pointer; font-size: .75rem; color: var(--muted); padding: .1rem .5rem; border: 1px solid var(--faint); border-radius: 6px; }
   .term-shrink:hover { color: var(--accent); border-color: var(--accent); }
   .term-shrink .t { display: none; }
-  .term-body { height: 12.5rem; overflow-y: auto; padding: .75rem .9rem; cursor: text; transition: height .35s ease; }
-  .term.closed .term-body { height: 3rem; }
+  .term-body { overflow-y: auto; padding: .75rem .9rem; cursor: text; }
 
   /* Full screen while in use. */
   html.term-open { overflow: hidden; }
-  .term.full { position: fixed; z-index: 100; left: 0; right: 0; top: var(--term-top, 0); height: var(--term-h, 100dvh); margin: 0; border: 0; border-radius: 0; display: flex; flex-direction: column; font-size: .95rem; animation: term-grow .18s ease-out; }
+  .term.full { position: fixed; z-index: 100; left: 0; right: 0; top: var(--term-top, 0); height: var(--term-h, 100dvh); margin: 0; border: 0; border-radius: 0; display: flex; flex-direction: column; font-size: .95rem; }
   .term.full .term-body { flex: 1; height: auto; min-height: 0; padding: 1rem max(1.25rem, calc((100% - 72rem) / 2)); transition: none; }
   .term.full .term-bar { padding-inline: max(1rem, calc((100% - 72rem) / 2)); }
   .term.full .term-shrink { display: inline-block; }
-  @keyframes term-grow { from { opacity: .4; transform: scale(.985); } }
-  @media (prefers-reduced-motion: reduce) { .term.full { animation: none; } }
   @media (hover: none) and (pointer: coarse) { .term-shrink .k { display: none; } .term-shrink .t { display: inline; } }
   .term-o { white-space: pre-wrap; overflow-wrap: anywhere; }
   .term-o a { color: var(--accent); }
@@ -1461,7 +1499,7 @@ These are common Git commands:
   .term-cursor.blink { animation: term-blink 1.1s steps(1) .5s infinite; }
   .term-cursor.blur { background: transparent; outline: 1px solid var(--accent); outline-offset: -1px; animation: none; }
   @keyframes term-blink { 50% { opacity: 0; } }
-  @media (prefers-reduced-motion: reduce) { .term-cursor.blink { animation: none; } .term-body { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .term-cursor.blink { animation: none; } }
   @media (min-width: 40rem) { .term-input { font-size: inherit; } }
 
   /* Tappable suggestions, for phones with no Tab or arrow keys. Same query as PHONE in the script. */
