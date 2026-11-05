@@ -1,102 +1,274 @@
 ---
-// A small fake shell on the homepage. All of its files, and the git repo in ~/.ctf,
-// live in ./terminal/fs.ts.
+// A small fake shell on the homepage. Its files, and the git repo in ~/.ctf, live in ./terminal/fs.ts;
+// its words (8-ball, man pages) in ./terminal/text.ts. ~/writing and ~/reading are filled in at build time
+// from the content collections, so the terminal can browse the site.
+import fs from 'node:fs';
+import { getCollection } from 'astro:content';
+import { getEntries, fmtDate, excerpt } from '../lib';
+
+const posts = await getEntries();
+// Same rule as /reading: coursework only shows in `npm run dev`.
+const reading = await getCollection('reading', ({ data }) => import.meta.env.DEV || data.kind !== 'course');
+const raw = (path: string | undefined, fallback = '') => {
+  try { return path ? fs.readFileSync(path, 'utf8').trim() : fallback; } catch { return fallback; }
+};
+const data = {
+  writing: Object.fromEntries(posts.map((e) => [`${e.id}.md`, raw(e.filePath, e.body ?? '')])),
+  reading: Object.fromEntries(reading.map((e) => [`${e.id}.yml`, raw(e.filePath)])),
+  readingItems: reading.reduce((n, e) => n + e.data.items.length, 0),
+  latest: posts[0] && {
+    file: `${posts[0].id}.md`,
+    title: posts[0].data.title ?? excerpt(posts[0], 50),
+    date: fmtDate(posts[0].data.date),
+  },
+};
+// JSON inside a <script> tag: escape '<' so a post can't close the tag.
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
 ---
-<section class="term" aria-label="Terminal">
+<section class="term" id="term" aria-label="Terminal">
   <div class="term-bar"><span></span><span></span><span></span><b id="term-title">guest@mehdi: ~</b></div>
   <div class="term-body" id="term-body">
     <div id="term-out" role="log" aria-live="polite"></div>
     <form id="term-form" class="term-line" autocomplete="off">
       <label for="term-in" class="term-prompt" id="term-prompt">guest@mehdi:~$</label>
-      <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
+      <span class="term-input">
+        <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
+        <span class="term-match" id="term-match"></span>
+        <span class="term-cursor" id="term-cursor" aria-hidden="true"></span>
+      </span>
     </form>
   </div>
+  <div class="term-chips" id="term-chips" aria-label="Suggestions"></div>
 </section>
+<script type="application/json" id="term-data" set:html={json} />
 
 <script>
-  import { FS, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
+  import { HOME, ADMIN_HOME, ETC, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
+  import { EIGHT_BALL, MAN, PUBLIC, LOGO, adviceOfTheDay } from './terminal/text';
+
+  type Data = { writing: Dir; reading: Dir; readingItems: number; latest?: { file: string; title: string; date: string } };
+  const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
-  const SOLVED_KEY = 'term-s';
+  const SOLVED_KEY = 'term-s', HISTORY_KEY = 'term-h', LOGIN_KEY = 'term-login', MOTD_KEY = 'term-motd';
 
+  const section = document.getElementById('term')!;
   const outEl = document.getElementById('term-out')!;
   const form = document.getElementById('term-form') as HTMLFormElement;
   const input = document.getElementById('term-in') as HTMLInputElement;
   const promptEl = document.getElementById('term-prompt')!;
+  const titleEl = document.getElementById('term-title')!;
+  const matchEl = document.getElementById('term-match')!;
+  const cursorEl = document.getElementById('term-cursor')!;
+  const chipsEl = document.getElementById('term-chips')!;
   const body = document.getElementById('term-body')!;
-
-  let cwd: string[] = [];
-  const history: string[] = [];
-  let hi = 0;
 
   const store = {
     get: (k: string) => { try { return localStorage.getItem(k); } catch { return null; } },
     set: (k: string, v: string) => { try { localStorage.setItem(k, v); } catch {} },
+    del: (k: string) => { try { localStorage.removeItem(k); } catch {} },
   };
-
-  const pathStr = (p: string[]) => '~' + (p.length ? '/' + p.join('/') : '');
-  const prompt = () => `guest@mehdi:${pathStr(cwd)}$`;
-
-  // ---- Output: queued and revealed one line at a time. The echoed command appears instantly. ----
-  const LINE_MS = 35;
-  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let queue = Promise.resolve();
   const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  function addLine(text: string, cls: string) {
-    const line = document.createElement('div');
-    line.className = 'term-o' + (cls ? ' ' + cls : '');
-    line.textContent = text;
-    outEl.appendChild(line);
+  // ---- Session state. boot() resets all of it. ----
+  type User = 'guest' | 'admin';
+  type Frame = { user: User; cwd: string[]; vim?: Vim }; // a parent shell to go back to on `exit`
+  type Vim = { as: User; name: string; path: string[] | null; text: string | null };
+  let root: Dir;
+  let user: User;
+  let host: string;
+  let cwd: string[];
+  let oldpwd: string[] | null;
+  let shells: Frame[];
+  let status: number;
+  let nuked: boolean; // after rm -rf / as admin: only shell builtins are left
+  let repo: { dirty: boolean; stash: boolean };
+  // Only the advertised commands, plus a shell. The rest work but aren't listed: finding them is part of the fun.
+  const BIN = [...PUBLIC, 'sh', 'bash', 'tsh'].sort();
+
+  function boot() {
+    root = {
+      bin: Object.fromEntries(BIN.map((c) => [c, '\x7fELF\x02\x01\x01 (binary)'])),
+      etc: structuredClone(ETC),
+      home: {
+        guest: { ...structuredClone(HOME), writing: { ...DATA.writing }, reading: { ...DATA.reading } },
+        admin: structuredClone(ADMIN_HOME),
+      },
+      tmp: {},
+    };
+    user = 'guest';
+    host = 'mehdi';
+    cwd = ['home', 'guest'];
+    oldpwd = null;
+    shells = [];
+    status = 0;
+    nuked = false;
+    repo = { dirty: false, stash: true };
+  }
+
+  const homeOf = (u: User) => ['home', u];
+  const startsWith = (p: string[], pre: string[]) => pre.every((s, i) => p[i] === s);
+  const abs = (p: string[]) => '/' + p.join('/');
+  const pathStr = (p: string[]) => startsWith(p, homeOf(user)) ? '~' + abs(p.slice(2)).replace(/^\/$/, '') : abs(p);
+  const sigil = () => (user === 'admin' ? '#' : '$');
+  const prompt = () => `${user}@${host}:${pathStr(cwd)}${sigil()}`;
+  const solved = () => store.get(SOLVED_KEY) === '1';
+
+  // ---- Output: queued and revealed one line at a time. Ctrl+C skips to the end. ----
+  // A line is plain text (URLs become links) or a list of segments, some of them clickable.
+  type Seg = { t: string; cls?: string; href?: string; run?: string; act?: () => void };
+  type Out = string | Seg[];
+  const textOf = (o: Out) => (typeof o === 'string' ? o : o.map((s) => s.t).join(''));
+  let queue = Promise.resolve();
+  let skip = false;
+
+  const URL_RE = /(https?:\/\/[^\s"'<>)\]]+)/;
+  function addLine(line: Out, cls: string) {
+    const div = document.createElement('div');
+    div.className = 'term-o' + (cls ? ' ' + cls : '');
+    const segs: Seg[] = typeof line !== 'string' ? line
+      : cls === 'cmd' ? [{ t: line }]
+      : line.split(URL_RE).map((t, i) => (i % 2 ? { t, href: t } : { t }));
+    for (const s of segs) {
+      if (!s.t) continue;
+      let el: HTMLElement;
+      if (s.href) {
+        const a = document.createElement('a');
+        a.href = s.href;
+        if (/^https?:/.test(s.href)) { a.target = '_blank'; a.rel = 'noopener'; }
+        el = a;
+      } else if (s.run || s.act) {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'term-link';
+        if (s.run) b.dataset.run = s.run;
+        if (s.act) b.addEventListener('click', s.act);
+        el = b;
+      } else el = document.createElement('span');
+      el.textContent = s.t;
+      if (s.cls) el.classList.add(s.cls);
+      div.appendChild(el);
+    }
+    outEl.appendChild(div);
     body.scrollTop = body.scrollHeight;
   }
 
-  function print(text = '', cls = '') {
-    const lines = text.split('\n');
+  function print(o: Out = '', cls = '') {
+    const lines = typeof o === 'string' ? o.split('\n') : [o];
     queue = queue.then(async () => {
+      const ms = lines.length > 30 ? 6 : 35; // long files scroll faster
       for (const l of lines) {
         addLine(l, cls);
-        if (cls !== 'cmd' && !reduceMotion) await wait(LINE_MS);
+        if (cls !== 'cmd' && !skip && !reduceMotion) await wait(ms);
       }
     });
   }
+  const later = (fn: () => void | Promise<void>) => { queue = queue.then(fn); };
+  const pause = (ms: number) => later(() => (skip ? undefined : wait(ms)));
+  const clearScreen = () => later(() => { outEl.textContent = ''; });
 
-  const clearScreen = () => { queue = queue.then(() => { outEl.textContent = ''; }); };
-
-  // Commands write through `io`. In a pipeline, stdout is captured and fed to the next command;
+  // Commands write through `io`. In a pipeline, stdout is captured as text and fed to the next command;
   // errors always go to the screen, like stderr.
-  type IO = { out: (text: string, cls?: string) => void; err: (text: string) => void; stdin: string | null };
-  const screenIO = (stdin: string | null = null): IO => ({ out: print, err: (t) => print(t, 'err'), stdin });
+  type IO = { out: (o: Out, cls?: string) => void; err: (text: string) => void; stdin: string | null; tty?: boolean };
 
   // ---- Filesystem ----
-  function resolve(arg = ''): { node: Dir | string; path: string[] } | null {
-    const parts = arg.startsWith('~') || arg.startsWith('/') ? [] : [...cwd];
-    for (const seg of arg.replace(/^~\/?|^\//, '').split('/')) {
+  type R = { node: Dir | string; path: string[] };
+  type FsErr = 'ENOENT' | 'EACCES' | 'ENOTDIR';
+  const WHY: Record<FsErr, string> = { ENOENT: 'No such file or directory', EACCES: 'Permission denied', ENOTDIR: 'Not a directory' };
+  const isDir = (n: Dir | string): n is Dir => typeof n !== 'string';
+  const denied = (p: string[]) => user !== 'admin' && PROTECTED.some((x) => startsWith(p, x));
+
+  function lookup(arg = ''): R | FsErr {
+    let parts: string[];
+    let rest = arg;
+    const tilde = arg.match(/^~(guest|admin)?(?=\/|$)/);
+    if (tilde) { parts = homeOf((tilde[1] as User) ?? user); rest = arg.slice(tilde[0].length); }
+    else parts = arg.startsWith('/') ? [] : [...cwd];
+    for (const seg of rest.split('/')) {
       if (!seg || seg === '.') continue;
       if (seg === '..') { parts.pop(); continue; }
       parts.push(seg);
     }
-    let node: Dir | string = FS;
-    for (const seg of parts) {
-      if (typeof node === 'string' || !(seg in node)) return null;
-      node = node[seg];
+    let node: Dir | string = root;
+    for (let i = 0; i < parts.length; i++) {
+      if (!isDir(node)) return 'ENOTDIR';
+      if (denied(parts.slice(0, i))) return 'EACCES';
+      if (!Object.hasOwn(node, parts[i])) return 'ENOENT';
+      node = node[parts[i]];
     }
+    if (denied(parts)) return 'EACCES';
     return { node, path: parts };
   }
-  const isDir = (n: Dir | string): n is Dir => typeof n !== 'string';
+  const isErr = (r: R | FsErr): r is FsErr => typeof r === 'string';
+
+  // Depth-first over a directory, skipping .git. `onDenied` is called for directories guest can't open.
+  function walk(dir: Dir, path: string[], label: string, visit: (label: string, node: Dir | string, path: string[]) => void, onDenied?: (label: string) => void) {
+    for (const [n, child] of Object.entries(dir)) {
+      if (n === '.git') continue;
+      const p = [...path, n], l = label ? `${label.replace(/\/$/, '')}/${n}` : n;
+      if (denied(p)) { onDenied?.(l); continue; }
+      visit(l, child, p);
+      if (isDir(child)) walk(child, p, l, visit, onDenied);
+    }
+  }
+
   const flagsOf = (args: string[]) => args.filter((a) => /^-[a-zA-Z]+$/.test(a)).join('');
   const operands = (args: string[]) => args.filter((a) => !/^-[a-zA-Z]+$/.test(a));
+
+  // Files named on the command line, or stdin when there are none.
+  function inputs(cmd: string, files: string[], io: IO): { name: string | null; text: string }[] {
+    if (!files.length) {
+      if (io.stdin === null) { io.err(`${cmd}: reading from the keyboard isn't supported here; give it a file or pipe something in`); return []; }
+      return [{ name: null, text: io.stdin }];
+    }
+    const out: { name: string | null; text: string }[] = [];
+    for (const f of files) {
+      const r = lookup(f);
+      if (isErr(r)) io.err(`${cmd}: ${f}: ${WHY[r]}`);
+      else if (isDir(r.node)) io.err(`${cmd}: ${f}: Is a directory`);
+      else out.push({ name: f, text: r.node });
+    }
+    return out;
+  }
+
+  // `-n 5`, `-n5` or `-5`.
+  function takeN(args: string[], dflt = 10): { n: number; rest: string[] } {
+    let n = dflt;
+    const rest: string[] = [];
+    for (let i = 0; i < args.length; i++) {
+      const a = args[i];
+      if (a === '-n' && args[i + 1] !== undefined) n = Number(args[++i]);
+      else if (/^-n\d+$/.test(a)) n = Number(a.slice(2));
+      else if (/^-\d+$/.test(a)) n = Number(a.slice(1));
+      else rest.push(a);
+    }
+    return { n: Number.isFinite(n) ? n : dflt, rest };
+  }
 
   async function sha256(s: string) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
     return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
+  function fmtDate(d = new Date()) {
+    const p = (n: number) => String(n).padStart(2, '0');
+    const wd = d.toLocaleDateString('en-US', { weekday: 'short' });
+    const mon = d.toLocaleDateString('en-US', { month: 'short' });
+    const tz = d.toLocaleTimeString('en-US', { timeZoneName: 'short' }).split(' ').pop();
+    return `${wd} ${mon} ${String(d.getDate()).padStart(2)} ${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())} ${tz} ${d.getFullYear()}`;
+  }
+
+  const env = (): Record<string, string> => ({
+    USER: user, HOME: abs(homeOf(user)), PWD: abs(cwd), OLDPWD: oldpwd ? abs(oldpwd) : '', SHELL: '/bin/tsh',
+    HOSTNAME: host, TERM: 'xterm-256color', PATH: '/usr/local/bin:/usr/bin:/bin', '?': String(status),
+  });
+
   // ---- git, for the repo in ~/.ctf ----
-  const repo = { dirty: false, stash: true as boolean };
   const short = (h: string) => h.slice(0, 7);
-  const inRepo = () => cwd[0] === REPO_DIR;
-  const repoDir = () => (FS[REPO_DIR] as Dir);
+  const REPO_PATH = ['home', 'guest', REPO_DIR];
+  const repoDir = () => ((root.home as Dir).guest as Dir)[REPO_DIR] as Dir | undefined;
+  const inRepo = () => startsWith(cwd, REPO_PATH) && !!repoDir() && !isErr(lookup(''));
 
   function diffLines(io: IO, text: string) {
     for (const l of text.split('\n')) {
@@ -146,6 +318,8 @@ These are common Git commands:
    stash      Stash the changes in a dirty working directory away
    reflog     Show the reference log
    restore    Restore working tree files`;
+
+  const dropStash = () => { repo.stash = false; delete ((repoDir()!['.git'] as Dir).refs as Dir).stash; };
 
   const git = (args: string[], io: IO) => {
     const [sub, ...rest] = args;
@@ -207,9 +381,9 @@ These are common Git commands:
         const file = refs.find((a) => a !== '--');
         if (!file) return io.err(sub === 'restore' ? 'fatal: you must specify path(s) to restore' : 'Already on \'main\'');
         if (file === 'main') return io.out('Already on \'main\'\nYour branch is up to date with \'origin/main\'.');
-        if (!(file in repoDir())) return io.err(`error: pathspec '${file}' did not match any file(s) known to git`);
+        if (!(file in repoDir()!)) return io.err(`error: pathspec '${file}' did not match any file(s) known to git`);
         if (file === STASH.file && repo.dirty) {
-          repoDir()[STASH.file] = fileAt(0, STASH.file)!;
+          repoDir()![STASH.file] = fileAt(0, STASH.file)!;
           repo.dirty = false;
           if (sub === 'checkout') io.out('Updated 1 path from the index');
         }
@@ -226,16 +400,15 @@ These are common Git commands:
         if (op === 'apply' || op === 'pop') {
           if (!repo.stash) return gone();
           if (repo.dirty) return io.err(`error: Your local changes to the following files would be overwritten by merge:\n\t${STASH.file}\nPlease commit your changes or stash them before you merge.\nAborting`);
-          repoDir()[STASH.file] = STASH.stashed;
+          repoDir()![STASH.file] = STASH.stashed;
           repo.dirty = true;
           io.out(`On branch main\nChanges not staged for commit:\n\tmodified:   ${STASH.file}\n\nno changes added to commit`);
-          if (op === 'pop') { repo.stash = false; delete ((repoDir()['.git'] as Dir).refs as Dir).stash; io.out(`Dropped refs/stash@{0} (${STASH.hash})`); }
+          if (op === 'pop') { dropStash(); io.out(`Dropped refs/stash@{0} (${STASH.hash})`); }
           return;
         }
         if (op === 'drop' || op === 'clear') {
           if (!repo.stash) return gone();
-          repo.stash = false;
-          delete ((repoDir()['.git'] as Dir).refs as Dir).stash;
+          dropStash();
           return op === 'drop' ? io.out(`Dropped refs/stash@{0} (${STASH.hash})`) : undefined;
         }
         if (op === 'push' || op === 'save') return io.out('No local changes to save');
@@ -250,101 +423,614 @@ These are common Git commands:
     }
   };
 
-  // ---- Commands. Only the ones in `help` are offered by tab completion. ----
-  const LISTED = ['help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'open', 'clear'];
+  // ---- Asking for a line of input mid-command (passwords). Resolves null on Ctrl+C. ----
+  let pending: { label: string; hidden: boolean; resolve: (v: string | null) => void } | null = null;
+  async function ask(label: string, hidden: boolean): Promise<string | null> {
+    await queue;
+    return new Promise((resolve) => {
+      pending = { label, hidden, resolve };
+      promptEl.textContent = label;
+      input.classList.toggle('secret', hidden);
+      input.readOnly = false;
+      refresh();
+    });
+  }
+  function answer(v: string | null) {
+    const p = pending!;
+    pending = null;
+    input.classList.remove('secret');
+    input.readOnly = true;
+    print(p.label + (p.hidden || v === null ? '' : v) + (v === null ? '^C' : ''), 'cmd');
+    p.resolve(v);
+  }
 
-  const commands: Record<string, (args: string[], io: IO) => void | Promise<void>> = {
-    help: (_, io) => io.out([
-      'help          this list',
-      'ls [dir]      list files',
-      'cd <dir>      change directory',
-      'cat <file>    print a file',
-      'pwd, whoami   where and who you are',
-      'open <page>   ' + Object.keys(PAGES).join(', '),
-      'clear         clear the screen',
-    ].join('\n')),
+  // ---- vim. It takes over the screen; what was there comes back when you leave. ----
+  let vim: Vim | null = null;
+  let saved: DocumentFragment | null = null;
+
+  function vimRender(v: Vim, message?: string) {
+    outEl.textContent = '';
+    const lineH = parseFloat(getComputedStyle(outEl).lineHeight) || 21;
+    const rows = Math.max(6, Math.floor((body.clientHeight - 24) / lineH) - 1);
+    const lines = v.text === null ? [] : v.text.split('\n');
+    lines.forEach((l) => addLine(l, ''));
+    for (let i = lines.length; i < rows - 1; i++) addLine('~', 'vim-tilde');
+    const readonly = v.path && startsWith(v.path, SUDO_FILE) && v.as !== 'admin' ? ' [readonly]' : '';
+    const info = v.text === null ? (v.path ? ' [New]' : '') : ` ${lines.length}L, ${v.text.length}B`;
+    addLine(message ?? (v.path || v.name ? `"${v.name}"${readonly}${info}` : ''), message ? 'vim-msg' : 'dim');
+    body.scrollTop = 0;
+  }
+
+  function vimOpen(v: Vim) {
+    vim = v;
+    later(() => {
+      if (!saved) {
+        saved = document.createDocumentFragment();
+        while (outEl.firstChild) saved.appendChild(outEl.firstChild);
+      }
+      vimRender(v);
+    });
+  }
+
+  function vimClose() {
+    vim = null;
+    outEl.textContent = '';
+    if (saved) outEl.appendChild(saved);
+    saved = null;
+  }
+
+  const QUIT = /^:?(q|q!|qa|qa!|qall|wq|wq!|x|x!|wqa)$|^Z[ZQ]$/;
+  const SHELL = /^:(sh|shell|!\s*(\/(usr\/)?bin\/)?(sh|bash|tsh|zsh|dash)(\s+-\w+)*)$/;
+
+  async function vimDo(cmd: string) {
+    const v = vim!;
+    cmd = cmd.trim();
+    if (!cmd) return vimRender(v);
+    if (QUIT.test(cmd)) return vimClose();
+    if (SHELL.test(cmd)) {
+      // A shell from inside vim runs as whoever vim runs as.
+      vimClose();
+      shells.push({ user, cwd: [...cwd], vim: v });
+      user = v.as;
+      if (user === 'admin') store.set('term-r', '1');
+      return;
+    }
+    if (cmd.startsWith(':!')) {
+      const prev = user;
+      user = v.as;
+      outEl.textContent = '';
+      print(cmd, 'dim');
+      await run(cmd.slice(2), false);
+      user = prev;
+      print('');
+      print('Press ENTER or type command to continue', 'vim-msg');
+      return;
+    }
+    if (/^:w/.test(cmd)) {
+      if (v.as !== 'admin' && v.path && startsWith(v.path, SUDO_FILE)) return vimRender(v, "E45: 'readonly' option is set (add ! to override)");
+      return vimRender(v, `"${v.name}" written`);
+    }
+    if (cmd === ':help' || cmd === ':h') return vimRender(v, 'E149: Sorry, no help for help.txt. (try :q)');
+    if (cmd.startsWith(':')) return vimRender(v, `E492: Not an editor command: ${cmd.slice(1)}`);
+    return vimRender(v, 'Type  :qa!  and press <Enter> to abandon all changes and exit Vim');
+  }
+
+  async function startVim(args: string[], as: User, io: IO) {
+    const cmds: string[] = [];
+    const files: string[] = [];
+    for (let i = 0; i < args.length; i++) {
+      if (args[i] === '-c' && args[i + 1] !== undefined) cmds.push(args[++i]);
+      else if (args[i].startsWith('+')) cmds.push(':' + args[i].slice(1));
+      else if (!args[i].startsWith('-')) files.push(args[i]);
+    }
+    const name = files[0] ?? '';
+    let v: Vim = { as, name, path: null, text: null };
+    if (name) {
+      const prev = user;
+      user = as;
+      const r = lookup(name);
+      user = prev;
+      if (r === 'EACCES') return io.err(`"${name}" [Permission Denied]`);
+      if (!isErr(r)) {
+        if (isDir(r.node)) return io.err(`"${name}" is a directory`);
+        v = { as, name, path: r.path, text: r.node };
+      } else v = { as, name, path: [], text: null };
+    }
+    vimOpen(v);
+    for (const c of cmds) { await queue; await vimDo(c.startsWith(':') ? c : ':' + c); if (!vim) break; }
+  }
+
+  // ---- sudo, and the rule in /etc/sudoers that lets guest edit one file with vim ----
+  const VIM_NAMES = /^(\/usr\/bin\/)?(vim|vi)$/;
+  function sudoAllowed(args: string[]) {
+    if (!VIM_NAMES.test(args[0] ?? '')) return false;
+    const files = args.slice(1).filter((a, i, all) => !a.startsWith('-') && !a.startsWith('+') && all[i - 1] !== '-c');
+    if (files.length !== 1) return false;
+    const r = lookup(files[0]);
+    return !isErr(r) && abs(r.path) === abs(SUDO_FILE);
+  }
+
+  async function sudo(args: string[], io: IO): Promise<number | void> {
+    if (args[0] === '-l' || args[0] === '--list') {
+      io.out(`Matching Defaults entries for ${user} on ${host}:\n    env_reset, secure_path=/usr/local/sbin\\:/usr/local/bin\\:/usr/sbin\\:/usr/bin\\:/sbin\\:/bin\n`);
+      io.out(`User ${user} may run the following commands on ${host}:`);
+      return io.out(user === 'admin' ? '    (ALL : ALL) ALL' : '    ' + SUDO_RULE);
+    }
+    if (args[0] === '-u') args = args.slice(2);
+    if (args[0] === '-v' || args[0] === '-k') return;
+    if (args[0] === '-V' || args[0] === '--version') return io.out('Sudo version 1.9.15p5');
+    if (!args.length) return io.err('usage: sudo -h | -K | -k | -V\nusage: sudo -v [-ABkNnS] [-g group] [-h host] [-p prompt] [-u user]\nusage: sudo -l [-AknS] [-g group] [-h host] [-p prompt] [-U user] [-u user] [command [arg ...]]');
+    if (user === 'admin') return runArgs(args, io);
+    if (sudoAllowed(args)) return startVim(args.slice(1), 'admin', io);
+    // Not allowed: sudo still asks for guest's password first. Nobody knows it.
+    for (let tries = 1; tries <= 3; tries++) {
+      const pw = await ask(`[sudo] password for ${user}: `, true);
+      if (pw === null) return 1;
+      await wait(reduceMotion ? 0 : 900);
+      if (tries < 3) print('Sorry, try again.', 'err');
+    }
+    io.err('sudo: 3 incorrect password attempts');
+    return 1;
+  }
+
+  // ---- The end of the world, for admins who insist ----
+  async function panic() {
+    await queue;
+    skip = false;
+    for (const l of [
+      `[    4.201337] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000100`,
+      `[    4.201338] CPU: 0 PID: 1 Comm: tsh Not tainted 6.6.0-mehdi #1`,
+      `[    4.201339] Call Trace:`,
+      `[    4.201340]  <TASK>`,
+      `[    4.201341]  dump_stack_lvl+0x48/0x70`,
+      `[    4.201342]  panic+0x1a4/0x360`,
+      `[    4.201343]  do_exit.cold+0x15/0x15`,
+      `[    4.201344]  </TASK>`,
+      `[    4.201345] ---[ end Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000100 ]---`,
+    ]) print(l, 'err');
+    pause(2500);
+    await reboot();
+  }
+
+  async function reboot() {
+    halted = true;
+    clearScreen();
+    pause(400);
+    for (const l of ['[    0.000000] Linux version 6.6.0-mehdi (tsh) #1 SMP PREEMPT_DYNAMIC', '[    0.412000] Mounting /home ... ok', '[    0.733000] Starting tsh ... ok', '']) print(l, 'dim');
+    later(() => { boot(); });
+    greet();
+  }
+
+  // Closed window: the body shrinks; a click or a key brings it back.
+  function closeTerm(msg: string, action: string) {
+    halted = true;
+    later(() => {
+      section.classList.add('closed');
+      form.hidden = true;
+      titleEl.textContent = msg;
+      outEl.textContent = '';
+      addLine([{ t: msg, cls: 'dim' }, { t: '  ' }, { t: `[${action}]`, act: reopen }], '');
+    });
+  }
+  function reopen() {
+    if (!section.classList.contains('closed')) return;
+    section.classList.remove('closed');
+    form.hidden = false;
+    outEl.textContent = '';
+    boot();
+    greet();
+    later(() => { refresh(); input.focus({ preventScroll: true }); });
+  }
+
+  // ---- Commands ----
+  const BUILTINS = new Set(['cd', 'echo', 'pwd', 'exit', 'logout', 'help', 'history', 'clear']); // survive rm -rf /
+  const ADMIN_ONLY = ['motd', 'hostname', 'rm', 'reboot', 'shutdown'];
+  const completable = () => [...PUBLIC, ...(user === 'admin' ? ADMIN_ONLY : [])];
+
+  // A row of `help`: the command is clickable (runs it, or fills it in when it needs an argument).
+  const helpRow = (cmd: string, args: string, desc: string, runNow = !args): Seg[] => [
+    runNow ? { t: cmd, run: cmd, cls: 'h-cmd' } : { t: cmd, act: () => fill(cmd + ' '), cls: 'h-cmd' },
+    { t: (args ? ' ' + args : '').padEnd(17 - cmd.length) },
+    { t: desc, cls: 'dim' },
+  ];
+
+  let halted = false; // set by commands that end the session (exit, reboot); stops the rest of the line
+
+  const commands: Record<string, (args: string[], io: IO) => void | number | Promise<void | number>> = {
+    help: (args, io) => {
+      if (nuked) return io.out('Everything is gone. Only the shell itself is left: cd, echo, pwd, history, exit.\nYou could try exit.');
+      if (args[0] === '-v' || args[0] === '--verbose') {
+        // Everything public, one line each. Commands that need no argument run when clicked.
+        const NO_ARGS = new Set(['help', 'ls', 'pwd', 'whoami', 'date', 'uname', 'neofetch', 'history', 'clear', 'lucky', 'tree']);
+        for (const c of PUBLIC) io.out(helpRow(c, '', MAN[c][0], NO_ARGS.has(c)));
+      } else {
+        for (const row of [
+          ['ls', '[dir]', 'list files'],
+          ['cd', '<dir>', 'change directory'],
+          ['cat', '<file>', 'print a file'],
+          ['open', '<page>', Object.keys(PAGES).join(', ') + ', or a post'],
+          ['lucky', '[question]', 'ask the magic 8-ball'],
+        ]) io.out(helpRow(row[0], row[1], row[2]));
+        io.out([{ t: 'help -v', run: 'help -v', cls: 'h-cmd' }, { t: ' '.repeat(10) }, { t: 'everything else', cls: 'dim' }]);
+      }
+      if (user === 'admin') {
+        io.out('\nadmin', 'h-admin');
+        for (const row of [
+          ['motd', '<text>', 'set the greeting (this browser)'],
+          ['hostname', '<name>', 'rename the machine'],
+          ['rm', '[-r] <path>', 'delete things'],
+          ['reboot', '', 'start over'],
+          ['shutdown', '', 'power off'],
+          ['exit', '', 'back to guest'],
+        ]) io.out(helpRow(row[0], row[1], row[2], row[0] === 'reboot' || row[0] === 'exit'));
+      }
+    },
+
     ls: (args, io) => {
       const f = flagsOf(args);
       const all = f.includes('a'), long = f.includes('l');
       const targets = operands(args);
+      let bad = false;
       for (const t of targets.length ? targets : ['']) {
-        const r = resolve(t);
-        if (!r) { io.err(`ls: cannot access '${t}': No such file or directory`); continue; }
+        const r = lookup(t);
+        if (isErr(r)) { io.err(`ls: ${r === 'EACCES' ? 'cannot open directory' : 'cannot access'} '${t || '.'}': ${WHY[r]}`); bad = true; continue; }
         if (!isDir(r.node)) { io.out(t); continue; }
         if (targets.length > 1) io.out(`${t}:`);
         const node = r.node;
-        const names = [...(all ? ['.', '..'] : []), ...Object.keys(node).filter((n) => all || !n.startsWith('.'))].sort((a, b) => a.replace(/^\./, '').localeCompare(b.replace(/^\./, '')));
-        if (!long) { io.out(names.map((n) => (n === '.' || n === '..' || isDir(node[n]) ? n + '/' : n)).join('  ')); continue; }
+        const names = [...(all ? ['.', '..'] : []), ...Object.keys(node).filter((n) => all || !n.startsWith('.'))]
+          .sort((a, b) => a.replace(/^\./, '').localeCompare(b.replace(/^\./, '')));
+        const join = (n: string) => (t ? t.replace(/\/$/, '') + '/' : '') + n;
+        const seg = (n: string): Seg => {
+          const dir = n === '.' || n === '..' || isDir(node[n]);
+          if (n === '.' || n === '..') return { t: n + '/', cls: 'dir' };
+          return dir ? { t: n + '/', cls: 'dir', run: `cd ${join(n)} && ls` } : { t: n, run: `cat ${join(n)}` };
+        };
+        if (!long && !io.tty) { if (names.length) io.out(names.join('\n')); continue; } // piped: one per line
+        if (!long) {
+          const segs: Seg[] = [];
+          names.forEach((n, i) => { if (i) segs.push({ t: '  ' }); segs.push(seg(n)); });
+          if (segs.length) io.out(segs);
+          continue;
+        }
         io.out(`total ${names.length * 4}`);
         for (const n of names) {
           const child = n === '.' || n === '..' ? {} : node[n];
           const dir = isDir(child);
+          const p = [...r.path, n];
+          const locked = PROTECTED.some((x) => abs(x) === abs(p));
+          const mode = dir ? (locked ? 'drwx------' : 'drwxr-xr-x') : (locked ? '-rw-r-----' : '-rw-r--r--');
+          const owner = startsWith(p, ['home', 'guest']) && p.length === 2 ? 'guest guest' : 'admin admin';
           const size = dir ? 4096 : (child as string).length;
-          io.out(`${dir ? 'drwxr-xr-x' : '-rw-r--r--'} 1 guest guest ${String(size).padStart(5)} Sep 10 01:30 ${n}`);
+          io.out([{ t: `${mode} 1 ${owner} ${String(size).padStart(5)} Sep 10 01:30 ` }, seg(n)]);
         }
       }
+      return bad ? 2 : 0;
     },
+
     cd: (args, io) => {
-      const r = resolve(args[0] ?? '~');
-      if (!r) return io.err(`cd: ${args[0]}: No such file or directory`);
+      let target = args[0] ?? '~';
+      if (target === '-') {
+        if (!oldpwd) return io.err('cd: OLDPWD not set');
+        target = abs(oldpwd);
+        io.out(target);
+      }
+      const r = lookup(target);
+      if (isErr(r)) return io.err(`cd: ${args[0]}: ${WHY[r]}`);
       if (!isDir(r.node)) return io.err(`cd: ${args[0]}: Not a directory`);
+      oldpwd = cwd;
       cwd = r.path;
     },
+
     cat: (args, io) => {
-      if (!args.length) { if (io.stdin !== null) io.out(io.stdin); return; }
-      for (const a of args) {
-        const r = resolve(a);
-        if (!r) io.err(`cat: ${a}: No such file or directory`);
-        else if (isDir(r.node)) io.err(`cat: ${a}: Is a directory`);
-        else io.out(r.node);
-      }
+      const files = operands(args);
+      if (!files.length) { if (io.stdin !== null) io.out(io.stdin); return; }
+      for (const x of inputs('cat', files, io)) io.out(x.text);
     },
-    pwd: (_, io) => io.out('/home/guest' + (cwd.length ? '/' + cwd.join('/') : '')),
-    whoami: (_, io) => io.out('guest'),
-    echo: (args, io) => io.out(args.join(' ')),
+
+    pwd: (_, io) => io.out(abs(cwd)),
+    whoami: (_, io) => io.out(user),
+    id: (_, io) => io.out(user === 'admin'
+      ? 'uid=0(admin) gid=0(admin) groups=0(admin)'
+      : `uid=1000(guest) gid=1000(guest) groups=1000(guest)${solved() ? ',1001(solvers)' : ''}`),
+    echo: (args, io) => io.out((args[0] === '-n' ? args.slice(1) : args).join(' ')),
+    env: (_, io) => io.out(Object.entries(env()).filter(([k]) => k !== '?').map(([k, v]) => `${k}=${v}`).join('\n')),
+
     base64: (args, io) => {
       const decode = args.includes('-d') || args.includes('--decode');
       const file = args.find((a) => !a.startsWith('-'));
-      let text = io.stdin;
-      if (file) {
-        const r = resolve(file);
-        if (!r || isDir(r.node)) return io.err(`base64: ${file}: No such file or directory`);
-        text = r.node;
-      }
-      if (text === null) return io.err('base64: reading from the keyboard isn\'t supported here; try: echo <text> | base64 -d');
+      const got = inputs('base64', file ? [file] : [], io);
+      if (!got.length) return 1;
+      const text = got[0].text;
       if (!decode) return io.out(btoa(unescape(encodeURIComponent(text))));
       try { io.out(decodeURIComponent(escape(atob(text.replace(/\s+/g, ''))))); } catch { io.err('base64: invalid input'); }
     },
+
     grep: (args, io) => {
       const f = flagsOf(args);
       const [pat, ...files] = operands(args);
-      if (!pat) return io.err('usage: grep [-ir] PATTERN [FILE...]');
+      if (!pat) return io.err('usage: grep [-ivnr] PATTERN [FILE...]');
       let re: RegExp;
       try { re = new RegExp(pat, f.includes('i') ? 'i' : ''); } catch { return io.err('grep: invalid pattern'); }
       const hits: string[] = [];
-      const scan = (text: string, label: string | null) => text.split('\n').forEach((l) => re.test(l) && hits.push(label ? `${label}:${l}` : l));
-      const walk = (node: Dir, prefix: string) => Object.entries(node).forEach(([n, c]) => {
-        if (n === '.git') return;
-        isDir(c) ? walk(c, prefix + n + '/') : scan(c, prefix + n);
+      const scan = (text: string, label: string | null) => text.split('\n').forEach((l, i) => {
+        if (re.test(l) !== f.includes('v')) hits.push((label ? `${label}:` : '') + (f.includes('n') ? `${i + 1}:` : '') + l);
       });
+      const recurse = (dir: Dir, path: string[], label: string) =>
+        walk(dir, path, label, (l, node) => { if (!isDir(node)) scan(node, l); }, (l) => io.err(`grep: ${l}: Permission denied`));
       if (!files.length) {
-        if (f.includes('r')) { const r = resolve(''); if (r && isDir(r.node)) walk(r.node, ''); }
+        if (f.includes('r')) { const r = lookup(''); if (!isErr(r) && isDir(r.node)) recurse(r.node, r.path, ''); }
         else if (io.stdin !== null) scan(io.stdin, null);
+        else return io.err('grep: give it a file, or pipe something in (or -r to search here)');
       }
       for (const file of files) {
-        const r = resolve(file);
-        if (!r) io.err(`grep: ${file}: No such file or directory`);
-        else if (isDir(r.node)) f.includes('r') ? walk(r.node, file.replace(/\/?$/, '/')) : io.err(`grep: ${file}: Is a directory`);
-        else scan(r.node, files.length > 1 ? file : null);
+        const r = lookup(file);
+        if (isErr(r)) io.err(`grep: ${file}: ${WHY[r]}`);
+        else if (isDir(r.node)) f.includes('r') ? recurse(r.node, r.path, file) : io.err(`grep: ${file}: Is a directory`);
+        else scan(r.node, files.length > 1 || f.includes('r') ? file : null);
       }
       if (hits.length) io.out(hits.join('\n'));
+      return hits.length ? 0 : 1;
     },
+
+    head: (args, io) => {
+      const { n, rest } = takeN(args);
+      const got = inputs('head', rest, io);
+      got.forEach((x, i) => {
+        if (got.length > 1) io.out(`${i ? '\n' : ''}==> ${x.name} <==`);
+        io.out(x.text.split('\n').slice(0, n).join('\n'));
+      });
+    },
+    tail: (args, io) => {
+      const { n, rest } = takeN(args);
+      const got = inputs('tail', rest, io);
+      got.forEach((x, i) => {
+        if (got.length > 1) io.out(`${i ? '\n' : ''}==> ${x.name} <==`);
+        io.out(n ? x.text.split('\n').slice(-n).join('\n') : '');
+      });
+    },
+    wc: (args, io) => {
+      let f = flagsOf(args);
+      if (!f) f = 'lwc';
+      const got = inputs('wc', operands(args), io);
+      const tot = [0, 0, 0];
+      const row = (c: number[], name: string | null) => io.out(
+        [f.includes('l') && c[0], f.includes('w') && c[1], f.includes('c') && c[2]].filter((x) => x !== false)
+          .map((x) => String(x).padStart(got.length > 1 || name ? 4 : 0)).join(' ') + (name ? ' ' + name : ''));
+      for (const x of got) {
+        const c = [x.text ? x.text.split('\n').length : 0, x.text.split(/\s+/).filter(Boolean).length, new TextEncoder().encode(x.text).length];
+        c.forEach((v, i) => (tot[i] += v));
+        row(c, x.name);
+      }
+      if (got.length > 1) row(tot, 'total');
+    },
+    sort: (args, io) => {
+      const f = flagsOf(args);
+      let lines = inputs('sort', operands(args), io).flatMap((x) => x.text.split('\n'));
+      lines.sort(f.includes('n') ? (a, b) => parseFloat(a) - parseFloat(b) || a.localeCompare(b) : (a, b) => a.localeCompare(b));
+      if (f.includes('r')) lines.reverse();
+      if (f.includes('u')) lines = [...new Set(lines)];
+      if (lines.length) io.out(lines.join('\n'));
+    },
+    uniq: (args, io) => {
+      const count = flagsOf(args).includes('c');
+      const out: [string, number][] = [];
+      for (const l of inputs('uniq', operands(args), io).flatMap((x) => x.text.split('\n'))) {
+        if (out.length && out[out.length - 1][0] === l) out[out.length - 1][1]++;
+        else out.push([l, 1]);
+      }
+      if (out.length) io.out(out.map(([l, c]) => (count ? `${String(c).padStart(7)} ` : '') + l).join('\n'));
+    },
+
+    find: (args, io) => {
+      let start = '.';
+      let name: RegExp | null = null;
+      let type = '';
+      for (let i = 0; i < args.length; i++) {
+        if (args[i] === '-name' || args[i] === '-iname') {
+          const g = args[++i] ?? '';
+          name = new RegExp('^' + g.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.') + '$', args[i - 1] === '-iname' ? 'i' : '');
+        } else if (args[i] === '-type') type = args[++i] ?? '';
+        else if (!args[i].startsWith('-')) start = args[i];
+      }
+      const r = lookup(start);
+      if (isErr(r)) return io.err(`find: '${start}': ${WHY[r]}`);
+      const hits: string[] = [];
+      const take = (label: string, node: Dir | string) => {
+        if (type === 'f' && isDir(node)) return;
+        if (type === 'd' && !isDir(node)) return;
+        if (name && !name.test(label.split('/').pop()!)) return;
+        hits.push(label);
+      };
+      take(start, r.node);
+      if (isDir(r.node)) walk(r.node, r.path, start, take, (l) => io.err(`find: '${l}': Permission denied`));
+      if (hits.length) io.out(hits.join('\n'));
+    },
+
+    tree: (args, io) => {
+      const all = flagsOf(args).includes('a');
+      const start = operands(args)[0] ?? '.';
+      const r = lookup(start);
+      if (isErr(r)) return io.err(`${start} [error opening dir]`);
+      if (!isDir(r.node)) return io.out(start);
+      let dirs = 0, files = 0;
+      io.out([{ t: start, cls: 'dir' }]);
+      const draw = (dir: Dir, path: string[], pre: string) => {
+        const names = Object.keys(dir).filter((n) => n !== '.git' && (all || !n.startsWith('.'))).sort();
+        names.forEach((n, i) => {
+          const lastOne = i === names.length - 1;
+          const child = dir[n];
+          const p = [...path, n];
+          const branch = pre + (lastOne ? '└── ' : '├── ');
+          if (isDir(child)) {
+            dirs++;
+            io.out([{ t: branch }, { t: n, cls: 'dir' }, { t: denied(p) ? '  [error opening dir]' : '' }]);
+            if (!denied(p)) draw(child, p, pre + (lastOne ? '    ' : '│   '));
+          } else { files++; io.out(branch + n); }
+        });
+      };
+      draw(r.node, r.path, '');
+      io.out(`\n${dirs} director${dirs === 1 ? 'y' : 'ies'}, ${files} file${files === 1 ? '' : 's'}`);
+    },
+
+    date: (_, io) => io.out(fmtDate()),
+    uname: (args, io) => io.out(args.includes('-a') ? `Linux ${host} 6.6.0-mehdi #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux` : 'Linux'),
+    hostname: (args, io) => {
+      if (!args.length) return io.out(host);
+      if (user !== 'admin') return io.err('hostname: you must be root to change the host name');
+      const h = args[0].replace(/[^\w.-]/g, '').slice(0, 24);
+      if (!h) return io.err('hostname: the specified hostname is invalid');
+      host = h;
+      (root.etc as Dir).hostname = h;
+    },
+
+    man: (args, io) => {
+      if (args[0] === '-k' || args[0] === '--apropos') {
+        const q = new RegExp(args[1] ?? '.', 'i');
+        const names = completable().filter((c) => MAN[c] && (q.test(c) || q.test(MAN[c][0])));
+        names.forEach((c) => io.out([{ t: c, run: `man ${c}`, cls: 'h-cmd' }, { t: ` (1)${' '.repeat(Math.max(1, 10 - c.length))}- ${MAN[c][0]}` }]));
+        return names.length ? 0 : io.err(`${args[1]}: nothing appropriate.`);
+      }
+      const c = args[0];
+      if (!c) return io.err("What manual page do you want?\nFor example, try 'man man'.");
+      const page = MAN[c === 'vi' ? 'vim' : c === '8ball' ? 'lucky' : c === 'logout' ? 'exit' : c];
+      if (!page) return io.err(`No manual entry for ${c}`);
+      io.out(`${c.toUpperCase()}(1)`, 'g-meta');
+      io.out(`\nNAME\n       ${c} - ${page[0]}\n\nSYNOPSIS\n${page[1].split('\n').map((l) => '       ' + l).join('\n')}`);
+    },
+
     open: (args, io) => {
-      const href = PAGES[args[0]];
-      if (!href) return io.err(`open: try one of: ${Object.keys(PAGES).join(', ')}`);
-      location.href = href;
+      const a = args[0] ?? '';
+      if (PAGES[a]) { location.href = PAGES[a]; return; }
+      const r = lookup(a);
+      if (a && !isErr(r) && !isDir(r.node)) {
+        const [, , , dir, file] = r.path;
+        if (startsWith(r.path, ['home', 'guest']) && r.path.length === 4) {
+          if (dir === 'writing') { location.href = `/posts/${file.replace(/\.md$/, '')}/`; return; }
+          if (dir === 'reading') { location.href = `/reading#${file.replace(/\.ya?ml$/, '')}`; return; }
+        }
+        return io.err(`open: ${a}: no page for that file. Try cat ${a}`);
+      }
+      io.err(`open: try one of: ${Object.keys(PAGES).join(', ')}, or a post in ~/writing`);
     },
-    git,
+
+    lucky: async (args, io) => {
+      const q = args.join(' ').trim();
+      io.out(q ? `🎱 ${q.endsWith('?') ? q : q + '?'}` : "🎱 I'm feeling lucky", 'dim');
+      io.out('   *shake shake*', 'dim');
+      pause(700);
+      io.out('   ' + EIGHT_BALL[Math.floor(Math.random() * EIGHT_BALL.length)], 'lucky');
+    },
+
+    neofetch: (_, io) => {
+      const posts = Object.keys(DATA.writing ?? {}).length;
+      const mins = Math.max(1, Math.round(performance.now() / 60000));
+      const info: Out[] = [
+        [{ t: user, cls: 'h-cmd' }, { t: '@' }, { t: host, cls: 'h-cmd' }],
+        '-'.repeat(user.length + host.length + 1),
+        'OS: mehdi.os 1.0 x86_64',
+        'Host: Columbia University',
+        'Kernel: 6.6.0-mehdi',
+        `Uptime: ${mins} min${mins === 1 ? '' : 's'}`,
+        'Shell: tsh 1.0',
+        `Theme: ${document.documentElement.dataset.theme === 'light' ? 'Light Owl' : 'Night Owl'}`,
+        `Posts: ${posts}`,
+        `Reading: ${DATA.readingItems ?? 0} items`,
+        'Interests: math, CS, AGI',
+      ];
+      info.forEach((line, i) => {
+        const logo = (LOGO[i] ?? '').padEnd(LOGO[0].length + 3);
+        io.out([{ t: logo, cls: 'nf-logo' }, ...(typeof line === 'string' ? [{ t: line }] : line)]);
+      });
+    },
+
+    history: (args, io) => {
+      if (args[0] === '-c') { history.length = 0; hi = 0; store.del(HISTORY_KEY); return; }
+      io.out(history.map((h, i) => `${String(i + 1).padStart(4)}  ${h}`).join('\n'));
+    },
+    clear: () => clearScreen(),
+
+    exit: async (_, io) => {
+      if (nuked) { print('exit'); return panic(); }
+      const frame = shells.pop();
+      if (!frame) { print('logout'); return closeTerm('[Process completed]', 'restart'); }
+      io.out('exit');
+      user = frame.user;
+      cwd = frame.cwd;
+      if (frame.vim) vimOpen(frame.vim); // the shell came from vim's :!sh, so you land back in vim
+    },
+
+    sudo,
+    su: async (args, io) => {
+      const target = (args.filter((a) => a !== '-' && a !== '-l')[0] ?? 'admin') as string;
+      if (target !== 'admin' && target !== 'guest') return io.err(`su: user ${target} does not exist or the user entry does not contain all the required fields`);
+      if (target === user) return;
+      if (user === 'admin') { shells.push({ user, cwd: [...cwd] }); user = 'guest'; cwd = homeOf('guest'); return; }
+      const pw = await ask('Password: ', true);
+      if (pw === null) return 1;
+      await wait(reduceMotion ? 0 : 1500);
+      io.err('su: Authentication failure');
+      return 1;
+    },
+    vim: (args, io) => startVim(args, user, io),
+
+    rm: async (args, io) => {
+      const f = args.filter((a) => /^-[a-zA-Z]+$/.test(a)).join('');
+      const force = f.includes('f'), recursive = /[rR]/.test(f) || args.includes('--recursive');
+      const noPreserve = args.includes('--no-preserve-root');
+      const targets = args.filter((a) => !a.startsWith('-'));
+      if (!targets.length) return io.err("rm: missing operand\nTry 'rm --help' for more information.");
+      let bad = 0;
+      for (const t of targets) {
+        const r = lookup(t);
+        const isRoot = t === '/*' || (!isErr(r) && r.path.length === 0);
+        if (isRoot) {
+          if (!recursive) { io.err(`rm: cannot remove '${t}': Is a directory`); bad = 1; continue; }
+          if (t !== '/*' && !noPreserve) { io.err(`rm: it is dangerous to operate recursively on '/'\nrm: use --no-preserve-root to override this failsafe`); bad = 1; continue; }
+          if (user !== 'admin') {
+            for (const n of Object.keys(root)) io.err(`rm: cannot remove '/${n}': Permission denied`);
+            io.out('(nice try)', 'dim');
+            return 1;
+          }
+          // It works. The shell keeps running from memory, so builtins still answer.
+          await queue;
+          await wait(reduceMotion ? 0 : 1800);
+          root = {};
+          nuked = true;
+          return 0;
+        }
+        if (isErr(r)) { if (!force || r === 'EACCES') { io.err(`rm: cannot remove '${t}': ${WHY[r]}`); bad = 1; } continue; }
+        if (user !== 'admin') { io.err(`rm: cannot remove '${t}': Permission denied`); bad = 1; continue; }
+        if (isDir(r.node) && !recursive) { io.err(`rm: cannot remove '${t}': Is a directory`); bad = 1; continue; }
+        const parent = lookup(abs(r.path.slice(0, -1))) as R;
+        delete (parent.node as Dir)[r.path[r.path.length - 1]];
+      }
+      return bad;
+    },
+
+    motd: (args, io) => {
+      if (!args.length) {
+        const m = store.get(MOTD_KEY);
+        return m ? io.out(m) : io.out('(no message of the day)', 'dim');
+      }
+      if (user !== 'admin') return io.err('motd: Permission denied');
+      if (args[0] === '--reset' || args[0] === '-r') { store.del(MOTD_KEY); return io.out('motd cleared.', 'dim'); }
+      const m = args.join(' ').slice(0, 200);
+      store.set(MOTD_KEY, m);
+      io.out('motd set. It greets this browser from now on.', 'dim');
+    },
+    reboot: async (_, io) => {
+      if (user !== 'admin') return io.err('reboot: must be superuser.');
+      io.out(`\nBroadcast message from ${user}@${host}:\n\nThe system will reboot now!\n`);
+      pause(1200);
+      await reboot();
+    },
+    shutdown: (_, io) => {
+      if (user !== 'admin') return io.err('shutdown: must be superuser.');
+      io.out(`\nBroadcast message from ${user}@${host}:\n\nThe system will power off now!\n`);
+      pause(1200);
+      closeTerm('[powered off]', 'power on');
+    },
+
     submit: async (args, io) => {
       const guess = args.join(' ').trim();
       if (!guess) return io.err('usage: submit <answer>');
@@ -353,112 +1039,399 @@ These are common Git commands:
         io.out('✓ accepted. 1/1 tests passed.', 'ok');
       } else {
         io.err('✗ rejected. 0/1 tests passed.');
+        return 1;
       }
     },
-    history: (_, io) => io.out(history.map((h, i) => `${String(i + 1).padStart(4)}  ${h}`).join('\n')),
-    clear: () => clearScreen(),
-    sudo: (_, io) => io.err('guest is not in the sudoers file. This incident will be reported.'),
   };
+  Object.assign(commands, {
+    '8ball': commands.lucky, vi: commands.vim, logout: commands.exit, poweroff: commands.shutdown, halt: commands.shutdown,
+  });
 
-  // Split a line into words, honouring simple single and double quotes.
-  function words(s: string) {
-    const out: string[] = [];
-    s.replace(/"([^"]*)"|'([^']*)'|(\S+)/g, (_, a, b, c) => { out.push(a ?? b ?? c); return ''; });
-    return out;
+  // ---- Parsing: quotes, $VARS, pipes, and ; && || ----
+  type Pipeline = { stages: string[][]; op: string };
+  function parse(line: string): { chain: Pipeline[] } | { error: string } {
+    const chain: Pipeline[] = [];
+    const vars = env();
+    let stages: string[][] = [], words: string[] = [], w = '', inWord = false, q = '';
+    const endWord = () => { if (inWord) words.push(w); w = ''; inWord = false; };
+    const endStage = () => { endWord(); stages.push(words); words = []; };
+    const endPipe = (op: string) => { endStage(); chain.push({ stages, op }); stages = []; };
+    for (let i = 0; i < line.length; i++) {
+      const c = line[i];
+      if (q === "'") { if (c === "'") q = ''; else w += c; continue; }
+      if (c === '$') {
+        const m = line.slice(i + 1).match(/^(?:\{(\w+)\}|(\w+)|(\?))/);
+        if (m) { w += vars[m[1] ?? m[2] ?? m[3]] ?? ''; inWord = true; i += m[0].length; continue; }
+      }
+      if (q === '"') {
+        if (c === '"') q = '';
+        else if (c === '\\' && /["\\$]/.test(line[i + 1] ?? '')) w += line[++i];
+        else w += c;
+        continue;
+      }
+      if (c === '"' || c === "'") { q = c; inWord = true; continue; }
+      if (c === '\\') { w += line[++i] ?? ''; inWord = true; continue; }
+      if (/\s/.test(c)) { endWord(); continue; }
+      if (c === '#' && !inWord) break;
+      if (c === '|' && line[i + 1] === '|') { endPipe('||'); i++; continue; }
+      if (c === '|') { endStage(); continue; }
+      if (c === '&' && line[i + 1] === '&') { endPipe('&&'); i++; continue; }
+      if (c === ';') { endPipe(';'); continue; }
+      w += c;
+      inWord = true;
+    }
+    if (q) return { error: `unexpected EOF while looking for matching \`${q}'` };
+    endPipe('');
+    return { chain };
   }
 
-  async function run(line: string) {
-    print(`${prompt()} ${line}`, 'cmd');
-    const stages = line.split('|').map((p) => p.trim());
-    if (!stages[0]) return;
-    let stdin: string | null = null;
-    for (let k = 0; k < stages.length; k++) {
-      const [name, ...args] = words(stages[k]);
-      if (!name) return print('syntax error near unexpected token `|\'', 'err');
-      const fn = commands[name];
-      if (!fn) return print(`${name}: command not found`, 'err');
-      const last = k === stages.length - 1;
-      if (last) { await fn(args, screenIO(stdin)); return; }
-      const buf: string[] = [];
-      await fn(args, { out: (t) => buf.push(t), err: (t) => print(t, 'err'), stdin });
-      stdin = buf.join('\n');
+  async function runArgs([name, ...args]: string[], io: IO): Promise<number> {
+    if (name.includes('/')) {
+      const r = lookup(name);
+      if (isErr(r)) { io.err(`tsh: ${name}: ${WHY[r]}`); return 127; }
+      if (isDir(r.node)) { io.err(`tsh: ${name}: Is a directory`); return 126; }
+      if (!startsWith(r.path, ['bin'])) { io.err(`tsh: ${name}: Permission denied`); return 126; }
+      name = r.path[1];
+    }
+    const fn = commands[name];
+    const shellOnly = ['sh', 'bash', 'tsh', 'zsh'].includes(name);
+    if (!fn && !shellOnly) { io.err(`${name}: command not found`); return 127; }
+    if (nuked && !BUILTINS.has(name)) { io.err(`tsh: ${name}: No such file or directory`); return 127; }
+    if (shellOnly) { shells.push({ user, cwd: [...cwd] }); return 0; } // a nested shell; `exit` leaves it
+    let failed = false;
+    const ret = await fn(args, { ...io, err: (t) => { failed = true; io.err(t); } });
+    return typeof ret === 'number' ? ret : failed ? 1 : 0;
+  }
+
+  async function run(line: string, echo = true) {
+    if (echo) print(`${prompt()} ${line}`, 'cmd');
+    halted = false;
+    const p = parse(line);
+    if ('error' in p) { status = 2; return print(`tsh: ${p.error}`, 'err'); }
+    let chain = p.chain;
+    const blank = (pl: Pipeline) => pl.stages.length === 1 && !pl.stages[0].length;
+    if (chain.length > 1 && blank(chain[chain.length - 1]) && chain[chain.length - 2].op === ';') chain = chain.slice(0, -1);
+    if (chain.length === 1 && blank(chain[0])) return;
+    for (let i = 0; i < chain.length; i++) {
+      if (chain[i].stages.some((s) => !s.length)) {
+        status = 2;
+        const tok = chain[i].stages.length > 1 ? '|' : chain[i].op || chain[i - 1]?.op || 'newline';
+        return print(`tsh: syntax error near unexpected token \`${tok}'`, 'err');
+      }
+    }
+    let prevOp = '';
+    for (const pl of chain) {
+      const skipIt = (prevOp === '&&' && status !== 0) || (prevOp === '||' && status === 0);
+      prevOp = pl.op;
+      if (skipIt) continue;
+      let stdin: string | null = null;
+      for (let k = 0; k < pl.stages.length; k++) {
+        const last = k === pl.stages.length - 1;
+        if (last) { status = await runArgs(pl.stages[k], { out: print, err: (t) => print(t, 'err'), stdin, tty: true }); break; }
+        const buf: string[] = [];
+        await runArgs(pl.stages[k], { out: (o) => buf.push(textOf(o)), err: (t) => print(t, 'err'), stdin });
+        stdin = buf.join('\n');
+      }
+      if (halted || vim) break;
     }
   }
 
-  function complete() {
-    const parts = input.value.split(/\s+/);
+  // ---- Greeting ----
+  function greet() {
+    later(() => {
+      const motd = store.get(MOTD_KEY);
+      const last = store.get(LOGIN_KEY);
+      store.set(LOGIN_KEY, fmtDate());
+      if (motd) addLine(motd, 'motd');
+      if (last) addLine(`Last login: ${last} on ttys001`, 'dim');
+      if (DATA.latest) addLine([{ t: 'new: ', cls: 'dim' }, { t: DATA.latest.title, run: `cat ~/writing/${DATA.latest.file}` }, { t: ` · ${DATA.latest.date}`, cls: 'dim' }], '');
+      addLine([{ t: '8-ball says: ', cls: 'dim' }, { t: adviceOfTheDay(), cls: 'lucky' }], '');
+      if (solved()) addLine('✓ you beat the autograder.', 'ok');
+      addLine([{ t: 'Type ', cls: 'dim' }, { t: 'help', run: 'help' }, { t: ' to see what you can do.', cls: 'dim' }], '');
+    });
+  }
+
+  // ---- History (kept in this browser), Ctrl+R search ----
+  let history: string[] = [];
+  try { history = JSON.parse(store.get(HISTORY_KEY) ?? '[]').filter((h: unknown) => typeof h === 'string'); } catch {}
+  let hi = history.length;
+  function remember(line: string) {
+    if (!line.trim() || line === history[history.length - 1]) { hi = history.length; return; }
+    history.push(line);
+    if (history.length > 200) history.splice(0, history.length - 200);
+    hi = history.length;
+    store.set(HISTORY_KEY, JSON.stringify(history));
+  }
+
+  let search: { idx: number; saved: string } | null = null;
+  const searchMatch = () => (search && search.idx >= 0 ? history[search.idx] : '');
+  function searchFrom(start: number) {
+    const q = input.value;
+    for (let i = Math.min(start, history.length - 1); i >= 0; i--) if (history[i].includes(q)) return i;
+    return -1;
+  }
+  function searchStart() {
+    if (!search) { search = { idx: -1, saved: input.value }; input.value = ''; search.idx = history.length ? history.length - 1 : -1; }
+    else if (search.idx > 0) { const i = searchFrom(search.idx - 1); if (i >= 0) search.idx = i; }
+    refresh();
+  }
+  function searchEnd(accept: boolean) {
+    if (!search) return;
+    input.value = accept ? searchMatch() || input.value : search.saved;
+    search = null;
+    refresh();
+  }
+
+  // ---- Completion ----
+  function candidates(value: string): { parts: string[]; last: string; hits: string[] } {
+    const parts = value.split(/\s+/);
     const last = parts[parts.length - 1];
     let pool: string[];
-    if (parts.length === 1) pool = LISTED;
-    else if (parts[0] === 'open') pool = Object.keys(PAGES);
-    else {
-      const slash = last.lastIndexOf('/');
-      const dir = resolve(slash >= 0 ? last.slice(0, slash) || '/' : '');
-      if (!dir || !isDir(dir.node)) return;
+    const head = parts[0] === 'sudo' ? parts.slice(1) : parts;
+    if (head.length <= 1) pool = completable();
+    else if (head[0] === 'open' && head.length === 2) pool = [...Object.keys(PAGES), ...path(last)];
+    else if (head[0] === 'man' && head.length === 2) pool = completable();
+    else pool = path(last);
+    function path(l: string) {
+      const slash = l.lastIndexOf('/');
+      const dir = lookup(slash >= 0 ? l.slice(0, slash) || '/' : '');
+      if (isErr(dir) || !isDir(dir.node)) return [];
       const node = dir.node;
-      const base = slash >= 0 ? last.slice(0, slash + 1) : '';
-      pool = Object.keys(node).map((n) => base + n + (isDir(node[n]) ? '/' : ''));
+      const base = slash >= 0 ? l.slice(0, slash + 1) : '';
+      return Object.keys(node).map((n) => base + n + (isDir(node[n]) ? '/' : ''));
     }
     // Hidden files only complete once you've typed the dot yourself.
     const wantsHidden = (last.split('/').pop() ?? '').startsWith('.');
     const hits = pool.filter((p) => p.startsWith(last) && (wantsHidden || !p.replace(/\/$/, '').split('/').pop()!.startsWith('.')));
-    if (hits.length === 1) {
-      parts[parts.length - 1] = hits[0];
-      input.value = parts.join(' ') + (hits[0].endsWith('/') ? '' : ' ');
-    } else if (hits.length > 1) {
+    return { parts, last, hits };
+  }
+  function applyHit(parts: string[], hit: string, final: boolean) {
+    parts[parts.length - 1] = hit;
+    input.value = parts.join(' ') + (final && !hit.endsWith('/') ? ' ' : '');
+  }
+  function complete() {
+    const { parts, last, hits } = candidates(input.value);
+    if (hits.length === 1) return applyHit(parts, hits[0], true);
+    if (hits.length > 1) {
+      let lcp = hits[0];
+      for (const h of hits) while (!h.startsWith(lcp)) lcp = lcp.slice(0, -1);
+      if (lcp.length > last.length) return applyHit(parts, lcp, false);
       print(`${prompt()} ${input.value}`, 'cmd');
       print(hits.join('  '));
     }
   }
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const line = input.value;
-    input.value = '';
-    if (line.trim()) history.push(line);
-    hi = history.length;
-    input.disabled = true;
+  // ---- Prompt, cursor and chips ----
+  let busy = false;
+  function fill(text: string) { input.value = text; input.focus({ preventScroll: true }); refresh(); }
+
+  function refresh() {
+    if (pending) promptEl.textContent = pending.label;
+    else if (search) promptEl.textContent = '(reverse-i-search)`';
+    else if (vim) promptEl.textContent = '';
+    else promptEl.textContent = prompt();
+    promptEl.classList.toggle('root', user === 'admin' && !vim && !pending && !search);
+    if (!section.classList.contains('closed')) titleEl.textContent = vim ? `${vim.name || '[No Name]'} - VIM` : `${user}@${host}: ${pathStr(cwd)}`;
+    section.classList.toggle('searching', !!search);
+    matchEl.textContent = search ? `': ${searchMatch()}` : '';
+    if (search) input.style.width = `${input.value.length + 1}ch`; else input.style.removeProperty('width');
+    cursor();
+    chips();
+  }
+
+  function cursor() {
+    const hide = busy && !pending;
+    const pos = input.classList.contains('secret') ? 0 : (input.selectionStart ?? input.value.length);
+    const sel = input.selectionStart !== input.selectionEnd;
+    cursorEl.hidden = hide || sel || form.hidden;
+    cursorEl.style.left = `calc(${pos}ch - ${input.scrollLeft}px)`;
+    cursorEl.classList.toggle('blur', document.activeElement !== input);
+    cursorEl.classList.remove('blink');
+    void cursorEl.offsetWidth; // restart the blink so the cursor is solid while you type
+    cursorEl.classList.add('blink');
+  }
+
+  function chips() {
+    chipsEl.textContent = '';
+    const add = (label: string, fn: () => void) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.textContent = label;
+      b.addEventListener('click', () => { fn(); input.focus({ preventScroll: true }); });
+      chipsEl.appendChild(b);
+    };
+    if (form.hidden) return;
+    if (busy && !pending) return add('^C skip', () => { skip = true; });
+    if (pending) return add('^C', () => answer(null));
+    if (vim) return add(':q', () => submitLine(':q'));
+    if (input.value.trim()) {
+      const { parts, hits } = candidates(input.value);
+      hits.slice(0, 8).forEach((h) => add(h, () => applyHit([...parts], h, true)));
+      add('⏎', () => submitLine(input.value));
+      return;
+    }
+    if (history.length) add('↑', () => { if (hi > 0) fill(history[--hi]); });
+    for (const c of ['help', 'ls', 'cd ..', 'lucky', 'clear']) add(c, () => submitLine(c));
+  }
+
+  // ---- Running a line ----
+  async function exec(line: string, record = true) {
+    if (record) remember(line);
+    busy = true;
+    input.readOnly = true;
+    refresh();
     await run(line);
     await queue;
-    input.disabled = false;
-    input.focus({ preventScroll: true });
-    promptEl.textContent = prompt();
-    document.getElementById('term-title')!.textContent = `guest@mehdi: ${pathStr(cwd)}`;
+    busy = false;
+    skip = false;
+    input.readOnly = false;
+    refresh();
     body.scrollTop = body.scrollHeight;
-  });
+  }
+
+  async function submitLine(line: string) {
+    input.value = '';
+    if (pending) return answer(line);
+    if (busy || form.hidden) return;
+    if (search) { line = searchMatch() || line; search = null; }
+    if (vim) {
+      busy = true;
+      input.readOnly = true;
+      refresh();
+      await vimDo(line);
+      await queue;
+      busy = false;
+      skip = false;
+      input.readOnly = false;
+      refresh();
+      return;
+    }
+    await exec(line);
+  }
+
+  form.addEventListener('submit', (e) => { e.preventDefault(); submitLine(input.value); });
 
   input.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowUp' && hi > 0) { input.value = history[--hi]; e.preventDefault(); }
-    else if (e.key === 'ArrowDown') { hi = Math.min(history.length, hi + 1); input.value = history[hi] ?? ''; e.preventDefault(); }
-    else if (e.key === 'Tab') { e.preventDefault(); complete(); body.scrollTop = body.scrollHeight; }
-    else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); clearScreen(); }
+    const k = e.key;
+    if (e.ctrlKey && k === 'c') {
+      if (getSelection()?.toString()) return; // let people copy
+      e.preventDefault();
+      if (pending) return answer(null);
+      if (busy) { skip = true; return; }
+      if (search) return searchEnd(false);
+      if (vim) { vimRender(vim, 'Type  :qa!  and press <Enter> to abandon all changes and exit Vim'); return; }
+      print(`${prompt()} ${input.value}^C`, 'cmd');
+      input.value = '';
+      return refresh();
+    }
+    if (pending || busy) return;
+    if (e.ctrlKey && k === 'r') { e.preventDefault(); if (!vim) searchStart(); return; }
+    if (search) {
+      if (k === 'Escape' || k === 'Tab' || k === 'ArrowLeft' || k === 'ArrowRight') { e.preventDefault(); return searchEnd(true); }
+      if (e.ctrlKey && k === 'g') { e.preventDefault(); return searchEnd(false); }
+      return;
+    }
+    if (k === 'ArrowUp' && !vim) { if (hi > 0) input.value = history[--hi]; e.preventDefault(); }
+    else if (k === 'ArrowDown' && !vim) { hi = Math.min(history.length, hi + 1); input.value = history[hi] ?? ''; e.preventDefault(); }
+    else if (k === 'Tab') { e.preventDefault(); if (!vim) complete(); body.scrollTop = body.scrollHeight; }
+    else if (e.ctrlKey && k === 'l') { e.preventDefault(); if (!vim) clearScreen(); }
+    else if (e.ctrlKey && k === 'u') { e.preventDefault(); input.value = input.value.slice(input.selectionStart ?? 0); input.setSelectionRange(0, 0); }
+    else if (e.ctrlKey && k === 'a') { e.preventDefault(); input.setSelectionRange(0, 0); }
+    else if (e.ctrlKey && k === 'e') { e.preventDefault(); const n = input.value.length; input.setSelectionRange(n, n); }
+    else if (e.ctrlKey && k === 'w') {
+      e.preventDefault();
+      const at = input.selectionStart ?? input.value.length;
+      const before = input.value.slice(0, at).replace(/\S+\s*$/, '');
+      input.value = before + input.value.slice(at);
+      input.setSelectionRange(before.length, before.length);
+    }
+    requestAnimationFrame(refresh);
   });
+  input.addEventListener('input', () => {
+    if (search) { const i = searchFrom(history.length - 1); search.idx = i; }
+    refresh();
+  });
+  for (const ev of ['focus', 'blur', 'click', 'select', 'keyup'] as const) input.addEventListener(ev, cursor);
+  input.addEventListener('scroll', cursor);
 
-  // Clicking anywhere in the terminal focuses the input, unless the visitor is selecting text.
-  body.addEventListener('click', () => { if (!getSelection()?.toString()) input.focus({ preventScroll: true }); });
+  // Clicking a file or command in the output runs it; clicking anywhere else focuses the input.
+  outEl.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest<HTMLElement>('[data-run]');
+    if (!b || busy || pending || vim) return;
+    input.value = '';
+    exec(b.dataset.run!);
+  });
+  body.addEventListener('click', () => { if (!getSelection()?.toString() && !form.hidden) input.focus({ preventScroll: true }); });
 
-  print("Type 'help' to see what you can do.", 'dim');
+  // ---- Start ----
+  boot();
+  greet();
+  refresh();
+  // /?run=cat%20about.txt runs a command on load, so a command can be shared as a link.
+  const shared = new URLSearchParams(location.search).get('run');
+  if (shared) {
+    section.scrollIntoView({ block: 'center' });
+    queue.then(() => exec(shared.slice(0, 500), false));
+  }
 </script>
 
-<style>
-  .term { margin-top: 3rem; border: 1px solid var(--faint); border-radius: 10px; overflow: hidden; background: var(--card); font: .85rem/1.55 var(--mono); }
+<!-- Global: most of the terminal is built at runtime, so Astro's scoped selectors would miss it. Every rule is under .term. -->
+<style is:global>
+  .term { margin-top: 3rem; border: 1px solid var(--faint); border-radius: 10px; overflow: hidden; background: var(--card); font: .85rem/1.55 var(--mono); font-variant-ligatures: none; }
   .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
   .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
   .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .term-body { height: 17rem; overflow-y: auto; padding: .75rem .9rem; cursor: text; }
+  .term-body { height: 17rem; overflow-y: auto; padding: .75rem .9rem; cursor: text; transition: height .35s ease; }
+  .term.closed .term-body { height: 3rem; }
   .term-o { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .term-o a { color: var(--accent); }
   .term-o.cmd { color: var(--muted); }
   .term-o.err { color: var(--bad); }
   .term-o.ok { color: var(--good); }
-  .term-o.dim { color: var(--muted); }
+  .term-o.dim, .term-o .dim { color: var(--muted); }
+  .term-o .dir { color: var(--accent); }
+  .term-o .h-cmd { color: var(--fg); }
+  .term-o.h-admin { color: var(--bad); }
+  .term-o.motd { color: var(--accent); }
+  .term-o.lucky, .term-o .lucky { color: #ecc48d; }
+  .term-o .nf-logo { color: var(--accent); }
+  .term-o.vim-tilde { color: var(--accent); opacity: .6; }
+  .term-o.vim-msg { color: var(--bad); }
   .term-o.g-hash { color: #ecc48d; }
   .term-o.g-add { color: var(--good); }
   .term-o.g-del { color: var(--bad); }
   .term-o.g-hunk { color: var(--accent); }
   .term-o.g-meta { color: var(--fg); font-weight: 600; }
-  :root[data-theme='light'] .term-o.g-hash { color: #a35d00; }
+  :root[data-theme='light'] .term-o.g-hash, :root[data-theme='light'] .term-o .lucky, :root[data-theme='light'] .term-o.lucky { color: #a35d00; }
+  .term-link { all: unset; cursor: pointer; text-decoration: underline; text-decoration-color: rgb(var(--accent-rgb) / .35); text-underline-offset: .18em; }
+  .term-link:hover { color: var(--accent); text-decoration-color: currentColor; }
+  .term-link:focus-visible { outline: 1px solid var(--accent); }
+
   .term-line { display: flex; gap: .5rem; align-items: baseline; }
+  .term-line[hidden] { display: none; }
   .term-prompt { color: var(--accent); white-space: nowrap; }
-  .term-line input { all: unset; flex: 1; min-width: 0; color: var(--fg); caret-color: var(--accent); font-size: 16px; /* 16px stops iOS zooming on focus */ }
-  @media (min-width: 40rem) { .term-line input { font-size: inherit; } }
+  .term-prompt.root { color: var(--bad); }
+  .term.searching .term-line { gap: 0; }
+  .term-input { position: relative; flex: 1; min-width: 0; display: flex; font-size: 16px; /* 16px stops iOS zooming on focus */ }
+  .term .term-input input { all: unset; flex: 1; min-width: 0; color: var(--fg); caret-color: transparent; font: inherit; }
+  .term-input input.secret { color: transparent; }
+  .term.searching .term-input input { flex: none; }
+  .term-match { white-space: pre; overflow: hidden; text-overflow: ellipsis; color: var(--fg); }
+  .term-cursor { position: absolute; top: 50%; transform: translateY(-50%); width: 1ch; height: 1.25em; background: var(--accent); opacity: .7; pointer-events: none; }
+  .term-cursor.blink { animation: term-blink 1.1s steps(1) .5s infinite; }
+  .term-cursor.blur { background: transparent; outline: 1px solid var(--accent); outline-offset: -1px; animation: none; }
+  .term.searching .term-cursor { display: none; }
+  .term.searching .term-input input { caret-color: var(--accent); }
+  @keyframes term-blink { 50% { opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .term-cursor.blink { animation: none; } .term-body { transition: none; } }
+  @media (min-width: 40rem) { .term-input { font-size: inherit; } }
+
+  /* Tappable suggestions, for phones with no Tab or arrow keys. */
+  .term-chips { display: none; }
+  @media (pointer: coarse) {
+    .term-chips { display: flex; gap: .4rem; overflow-x: auto; padding: .5rem .9rem; border-top: 1px solid var(--faint); scrollbar-width: none; }
+    .term-chips:empty { display: none; }
+    .term-chips button { all: unset; flex: none; padding: .3rem .7rem; border: 1px solid var(--faint); border-radius: 99px; color: var(--muted); font-size: .8rem; }
+    .term-chips button:active { color: var(--accent); border-color: var(--accent); }
+  }
 </style>
