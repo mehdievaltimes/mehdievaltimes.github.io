@@ -1340,20 +1340,8 @@ These are common Git commands:
     section.style.setProperty('--term-top', `${vv.offsetTop}px`);
     section.style.setProperty('--term-h', `${vv.height}px`);
   }
-  // The first time it opens, it connects like `ssh -v` would, then greets.
+  // The first time it opens, it greets.
   let connected = false;
-  const HANDSHAKE = [
-    'OpenSSH_9.9p1, OpenSSL 3.4.0 22 Oct 2024',
-    'debug1: Connecting to mehdi [10.0.4.2] port 22.',
-    'debug1: Connection established.',
-    'debug1: Remote protocol version 2.0, remote software version OpenSSH_9.6p1',
-    'debug1: kex: algorithm: mlkem768x25519-sha256',
-    'debug1: Server host key: ssh-ed25519 SHA256:q3Vb0Kx8mJ2wTn6fLp9Rz4cHs1YdUe7gAo5iNk0WvXy',
-    "debug1: Authenticating to mehdi:22 as 'guest'",
-    'debug1: Authentication succeeded (publickey).',
-    'debug1: pledge: network',
-    '',
-  ];
   function open() {
     if (section.classList.contains('full')) return;
     const r = section.getBoundingClientRect();
@@ -1367,7 +1355,6 @@ These are common Git commands:
     }
     if (!connected) {
       connected = true;
-      print(HANDSHAKE.join('\n'), 'dim');
       greet();
     }
   }
