@@ -34,7 +34,6 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
         <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
         <span class="term-cursor" id="term-cursor" aria-hidden="true"></span>
       </span>
-      <span class="term-hint" aria-hidden="true"><span class="k">click</span><span class="t">tap</span> to connect</span>
     </form>
   </div>
   <div class="term-chips" id="term-chips" aria-label="Suggestions"></div>
@@ -1152,6 +1151,11 @@ These are common Git commands:
   // ---- Greeting ----
   function greet() {
     later(() => {
+      // Like the banner a server prints when you ssh in.
+      addLine('Welcome to mehdi.os 1.0 (GNU/Linux 6.6.0-mehdi x86_64)', '');
+      addLine(' ', '');
+      addLine(' * AGI: still not achieved.', 'dim');
+      addLine(' ', '');
       const motd = store.get(MOTD_KEY);
       if (motd) addLine(motd, 'motd');
       addLine([{ t: 'Type ', cls: 'dim' }, { t: 'help', run: 'help' }, { t: ' to see what you can do.', cls: 'dim' }], '');
@@ -1395,10 +1399,6 @@ These are common Git commands:
   .term:not(.full):hover { border-color: rgb(var(--accent-rgb) / .5); }
   .term:not(.full) .term-bar, .term:not(.full) #term-out, .term:not(.full) .term-chips { display: none; }
   .term:not(.full) .term-body { height: auto; overflow: hidden; padding: .55rem .9rem; }
-  .term-hint { display: none; color: var(--muted); white-space: nowrap; font-size: .78rem; }
-  .term:not(.full) .term-hint { display: inline; }
-  .term-hint .t { display: none; }
-  @media (hover: none) and (pointer: coarse) { .term-hint .k { display: none; } .term-hint .t { display: inline; } }
   .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
   .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
   .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
