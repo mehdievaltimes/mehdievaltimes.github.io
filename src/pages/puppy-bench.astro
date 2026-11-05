@@ -99,7 +99,6 @@ const fmt = (iso: string | null) => iso ? new Date(iso).toISOString().slice(0, 1
       <li><strong>Antigravity</strong> keeps its own agent prompt and tools; the system prompt goes in as a workspace rule, and the model reads the tool’s schema file before calling it.</li>
       <li><strong>OpenAI API</strong> rows skip any agent CLI: the model is called directly, with the system prompt as its instructions and <code>kill_puppy</code> as its only tool. They show whether a behavior comes from the model or from Codex.</li>
     </ul>
-    <p>Claude Haiku 4.5 and Sonnet 5.5 will be added after a re-run: an earlier version of the harness didn’t pass the model to Claude Code, so their runs were really Opus 5.5.</p>
     <p>Code and data: <a href="https://github.com/mehdievaltimes/puppy-bench">github.com/mehdievaltimes/puppy-bench</a>.</p>
   </div>
 </Base>
