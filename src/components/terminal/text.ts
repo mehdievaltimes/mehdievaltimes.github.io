@@ -75,7 +75,7 @@ export const MAN: Record<string, [string, string]> = {
 
 export const PUBLIC = [
   'help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'echo', 'printf', 'base64', 'grep', 'head', 'tail', 'find', 'tree',
-  'man', 'open', 'mail', 'lucky', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear',
+  'git', 'submit', 'man', 'open', 'mail', 'lucky', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear',
 ];
 
 export const LOGO = [
