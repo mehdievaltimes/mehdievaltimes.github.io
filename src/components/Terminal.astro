@@ -896,14 +896,15 @@ These are common Git commands:
       if (!to) return io.err('usage: mail mehdi [subject]');
       if (to !== 'mehdi') return io.err(`mail: no such user: ${to}`);
       const addr = ['mehdi', 's'].join('.') + String.fromCharCode(64) + ['columbia', 'edu'].join('.');
-      const href = `mailto:${addr}${subject.length ? '?subject=' + encodeURIComponent(subject.join(' ')) : ''}`;
-      // Right away, while the keypress still counts as a user gesture; waiting for the output
-      // queue lets some browsers drop it. Nothing happens either when no mail app is set up,
-      // so the address is printed as a link too, with a way to copy it.
-      location.href = href;
-      io.out('Opening your mail app…', 'dim');
+      const su = subject.join(' ');
+      const href = `mailto:${addr}${su ? '?subject=' + encodeURIComponent(su) : ''}`;
+      const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(addr)}${su ? '&su=' + encodeURIComponent(su) : ''}`;
+      // Opened right away, during the keypress, so the browser doesn't treat the new tab as a popup.
+      const tab = window.open(gmail, '_blank'); // not 'noopener': with it, open() always returns null
+      if (tab) tab.opener = null;
+      io.out(tab ? 'Opening Gmail in a new tab…' : 'Your browser blocked the Gmail tab.', 'dim');
       const copy = () => navigator.clipboard?.writeText(addr).then(() => print('copied.', 'dim'), () => print(`couldn't copy; it's ${addr}`, 'err'));
-      io.out([{ t: 'Nothing opened? Write to ', cls: 'dim' }, { t: addr, href }, { t: '  ' }, { t: '[copy]', act: copy }]);
+      io.out([{ t: 'Not on Gmail? Write to ', cls: 'dim' }, { t: addr, href }, { t: '  ' }, { t: '[copy]', act: copy }]);
     },
 
     'nvidia-smi': (_, io) => {

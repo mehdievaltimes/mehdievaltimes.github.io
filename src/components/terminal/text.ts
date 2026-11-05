@@ -51,7 +51,7 @@ export const MAN: Record<string, [string, string]> = {
   find: ['look for files', "find [DIR] [-name 'GLOB'] [-type f|d]"],
   tree: ['list a directory as a tree', 'tree [-a] [DIR]'],
   hostname: ['print or set the machine name', 'hostname [NAME]'],
-  mail: ['write to Mehdi', 'mail mehdi [SUBJECT]     opens your mail app'],
+  mail: ['write to Mehdi', 'mail mehdi [SUBJECT]     opens a Gmail draft in a new tab'],
   'nvidia-smi': ['what the GPU is busy with', 'nvidia-smi'],
   top: ['what is running', 'top'],
   man: ['read a manual page', 'man COMMAND\nman -k .     list every page'],
