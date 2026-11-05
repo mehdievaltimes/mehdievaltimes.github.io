@@ -52,12 +52,32 @@
   const pathStr = (p: string[]) => '~' + (p.length ? '/' + p.join('/') : '');
   const prompt = () => `guest@mehdi:${pathStr(cwd)}$`;
 
-  function print(text = '', cls = '') {
+  // Output is queued and revealed one line at a time, like a real terminal scrolling.
+  // The echoed command line appears instantly; everything after it streams in.
+  const LINE_MS = 35;
+  const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let queue = Promise.resolve();
+  const wait = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+  function addLine(text: string, cls: string) {
     const line = document.createElement('div');
     line.className = 'term-o' + (cls ? ' ' + cls : '');
     line.textContent = text;
     out.appendChild(line);
+    body.scrollTop = body.scrollHeight;
   }
+
+  function print(text = '', cls = '') {
+    const lines = text.split('\n');
+    queue = queue.then(async () => {
+      for (const l of lines) {
+        addLine(l, cls);
+        if (cls !== 'cmd' && !reduceMotion) await wait(LINE_MS);
+      }
+    });
+  }
+
+  const clearScreen = () => { queue = queue.then(() => { out.textContent = ''; }); };
 
   function resolve(arg = ''): { node: Dir | string; path: string[] } | null {
     const parts = arg.startsWith('~') || arg.startsWith('/') ? [] : [...cwd];
@@ -142,7 +162,7 @@
         print('Nope. Keep looking.', 'err');
       }
     },
-    clear: () => { out.textContent = ''; },
+    clear: clearScreen,
     sudo: () => print('Nice try.', 'err'),
   };
 
@@ -186,7 +206,11 @@
     input.value = '';
     if (line.trim()) history.push(line);
     hi = history.length;
+    input.disabled = true;
     await run(line);
+    await queue;
+    input.disabled = false;
+    input.focus({ preventScroll: true });
     promptEl.textContent = prompt();
     document.getElementById('term-title')!.textContent = `guest@mehdi: ${pathStr(cwd)}`;
     body.scrollTop = body.scrollHeight;
@@ -196,7 +220,7 @@
     if (e.key === 'ArrowUp' && hi > 0) { input.value = history[--hi]; e.preventDefault(); }
     else if (e.key === 'ArrowDown') { hi = Math.min(history.length, hi + 1); input.value = history[hi] ?? ''; e.preventDefault(); }
     else if (e.key === 'Tab') { e.preventDefault(); complete(); body.scrollTop = body.scrollHeight; }
-    else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); out.textContent = ''; }
+    else if (e.key === 'l' && e.ctrlKey) { e.preventDefault(); clearScreen(); }
   });
 
   // Clicking anywhere in the terminal focuses the input, unless the visitor is selecting text.
