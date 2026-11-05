@@ -34,7 +34,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
         <input id="term-in" type="text" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Type a command" />
         <span class="term-cursor" id="term-cursor" aria-hidden="true"></span>
       </span>
-      <span class="term-hint" aria-hidden="true"><span class="k">click</span><span class="t">tap</span> to jack in</span>
+      <span class="term-hint" aria-hidden="true"><span class="k">click</span><span class="t">tap</span> to connect</span>
     </form>
   </div>
   <div class="term-chips" id="term-chips" aria-label="Suggestions"></div>
@@ -610,7 +610,7 @@ These are common Git commands:
         shrink();
         outEl.textContent = '';
         boot();
-        greet();
+        connected = false;
         refresh();
       }, 450);
     });
@@ -1360,51 +1360,36 @@ These are common Git commands:
     section.style.setProperty('--term-top', `${vv.offsetTop}px`);
     section.style.setProperty('--term-h', `${vv.height}px`);
   }
-  // Digital rain over the page; the terminal opens underneath it, then the rain clears.
-  let raining = false;
-  function rain(then: () => void) {
-    if (raining) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return then();
-    raining = true;
-    const cv = document.createElement('canvas');
-    cv.className = 'term-rain';
-    document.body.append(cv);
-    const dpr = Math.min(2, devicePixelRatio || 1);
-    const W = innerWidth, H = innerHeight;
-    cv.width = W * dpr; cv.height = H * dpr;
-    const g = cv.getContext('2d')!;
-    g.scale(dpr, dpr);
-    const fs = 15, cols = Math.ceil(W / fs);
-    const drops = Array.from({ length: cols }, () => -Math.random() * 30);
-    const glyphs = 'ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ0123456789$#@%&<>/=+*mehdi';
-    g.font = `${fs}px ui-monospace, monospace`;
-    const t0 = performance.now();
-    let opened = false;
-    const frame = (now: number) => {
-      const t = now - t0;
-      g.fillStyle = 'rgba(0, 8, 3, .2)';
-      g.fillRect(0, 0, W, H);
-      for (let i = 0; i < cols; i++) {
-        const y = drops[i] * fs;
-        if (y > 0) {
-          g.fillStyle = 'rgba(140, 255, 170, .85)';
-          g.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fs, y);
-          g.fillStyle = '#1fd65f';
-          g.fillText(glyphs[(Math.random() * glyphs.length) | 0], i * fs, y - fs);
-        }
-        drops[i] += 1.4 + (i % 3) * .35;
-        if (y > H && Math.random() > .9) drops[i] = 0;
-      }
-      if (!opened && t > 420) { opened = true; then(); }
-      if (t > 520) cv.style.opacity = String(Math.max(0, 1 - (t - 520) / 280));
-      if (t < 800) requestAnimationFrame(frame);
-      else { cv.remove(); raining = false; }
-    };
-    requestAnimationFrame(frame);
-  }
+  // The first time it opens, it connects like `ssh -v` would, then greets.
+  let connected = false;
+  const HANDSHAKE = [
+    'OpenSSH_9.9p1, OpenSSL 3.4.0 22 Oct 2024',
+    'debug1: Connecting to mehdi [10.0.4.2] port 22.',
+    'debug1: Connection established.',
+    'debug1: Remote protocol version 2.0, remote software version OpenSSH_9.6p1',
+    'debug1: kex: algorithm: mlkem768x25519-sha256',
+    'debug1: Server host key: ssh-ed25519 SHA256:q3Vb0Kx8mJ2wTn6fLp9Rz4cHs1YdUe7gAo5iNk0WvXy',
+    "debug1: Authenticating to mehdi:22 as 'guest'",
+    'debug1: Authentication succeeded (publickey).',
+    'debug1: pledge: network',
+    '',
+  ];
   function open() {
     if (section.classList.contains('full')) return;
-    rain(expand);
+    const r = section.getBoundingClientRect();
+    expand();
+    // Grow out of the line it was in the page.
+    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      section.animate(
+        [{ clipPath: `inset(${r.top}px ${innerWidth - r.right}px ${innerHeight - r.bottom}px ${r.left}px)` }, { clipPath: 'inset(0)' }],
+        { duration: 240, easing: 'cubic-bezier(.2, .8, .2, 1)' },
+      );
+    }
+    if (!connected) {
+      connected = true;
+      print(HANDSHAKE.join('\n'), 'dim');
+      greet();
+    }
   }
   function expand() {
     if (section.classList.contains('full')) return;
@@ -1432,7 +1417,6 @@ These are common Git commands:
 
   // ---- Start ----
   boot();
-  greet();
   refresh();
 </script>
 
@@ -1448,7 +1432,6 @@ These are common Git commands:
   .term:not(.full) .term-hint { display: inline; }
   .term-hint .t { display: none; }
   @media (hover: none) and (pointer: coarse) { .term-hint .k { display: none; } .term-hint .t { display: inline; } }
-  .term-rain { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 101; pointer-events: none; }
   .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
   .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
   .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
