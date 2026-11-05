@@ -44,7 +44,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
 
 <script>
   import { HOME, ADMIN_HOME, ETC, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
-  import { EIGHT_BALL, MAN, PUBLIC, LOGO } from './terminal/text';
+  import { EIGHT_BALL, MAN, PUBLIC } from './terminal/text';
 
   type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
@@ -617,7 +617,7 @@ These are common Git commands:
   }
 
   // ---- Commands ----
-  const BUILTINS = new Set(['cd', 'echo', 'pwd', 'exit', 'logout', 'help', 'history', 'clear']); // survive rm -rf /
+  const BUILTINS = new Set(['cd', 'echo', 'pwd', 'exit', 'logout', 'help', 'clear']); // survive rm -rf /
   const ADMIN_ONLY = ['motd', 'hostname', 'rm', 'reboot', 'shutdown'];
   const completable = () => [...PUBLIC, ...(user === 'admin' ? ADMIN_ONLY : [])];
 
@@ -635,7 +635,7 @@ These are common Git commands:
       if (nuked) return io.out('Everything is gone. Only the shell itself is left: cd, echo, pwd, history, exit.\nYou could try exit.');
       if (args[0] === '-v' || args[0] === '--verbose') {
         // Everything public, one line each. Commands that need no argument run when clicked.
-        const NO_ARGS = new Set(['help', 'ls', 'pwd', 'whoami', 'neofetch', 'nvidia-smi', 'top', 'history', 'clear', 'lucky', 'tree']);
+        const NO_ARGS = new Set(['help', 'ls', 'pwd', 'whoami', 'nvidia-smi', 'top', 'clear', 'lucky', 'tree']);
         for (const c of PUBLIC) io.out(helpRow(c, '', MAN[c][0], NO_ARGS.has(c)));
       } else {
         for (const row of [
@@ -896,8 +896,14 @@ These are common Git commands:
       if (!to) return io.err('usage: mail mehdi [subject]');
       if (to !== 'mehdi') return io.err(`mail: no such user: ${to}`);
       const addr = ['mehdi', 's'].join('.') + String.fromCharCode(64) + ['columbia', 'edu'].join('.');
+      const href = `mailto:${addr}${subject.length ? '?subject=' + encodeURIComponent(subject.join(' ')) : ''}`;
+      // Right away, while the keypress still counts as a user gesture; waiting for the output
+      // queue lets some browsers drop it. Nothing happens either when no mail app is set up,
+      // so the address is printed as a link too, with a way to copy it.
+      location.href = href;
       io.out('Opening your mail app…', 'dim');
-      later(() => { location.href = `mailto:${addr}${subject.length ? '?subject=' + encodeURIComponent(subject.join(' ')) : ''}`; });
+      const copy = () => navigator.clipboard?.writeText(addr).then(() => print('copied.', 'dim'), () => print(`couldn't copy; it's ${addr}`, 'err'));
+      io.out([{ t: 'Nothing opened? Write to ', cls: 'dim' }, { t: addr, href }, { t: '  ' }, { t: '[copy]', act: copy }]);
     },
 
     'nvidia-smi': (_, io) => {
@@ -925,32 +931,6 @@ These are common Git commands:
       ].join('\n'));
     },
 
-    neofetch: (_, io) => {
-      const posts = Object.keys(DATA.writing ?? {}).length;
-      const mins = Math.max(1, Math.round(performance.now() / 60000));
-      const info: Out[] = [
-        [{ t: user, cls: 'h-cmd' }, { t: '@' }, { t: host, cls: 'h-cmd' }],
-        '-'.repeat(user.length + host.length + 1),
-        'OS: mehdi.os 1.0 x86_64',
-        'Host: Columbia University',
-        'Kernel: 6.6.0-mehdi',
-        `Uptime: ${mins} min${mins === 1 ? '' : 's'}`,
-        'Shell: tsh 1.0',
-        `Theme: ${document.documentElement.dataset.theme === 'light' ? 'Light Owl' : 'Night Owl'}`,
-        `Posts: ${posts}`,
-        `Reading: ${DATA.readingItems ?? 0} items`,
-        'Interests: math, CS, AGI',
-      ];
-      info.forEach((line, i) => {
-        const logo = (LOGO[i] ?? '').padEnd(LOGO[0].length + 3);
-        io.out([{ t: logo, cls: 'nf-logo' }, ...(typeof line === 'string' ? [{ t: line }] : line)]);
-      });
-    },
-
-    history: (args, io) => {
-      if (args[0] === '-c') { history.length = 0; hi = 0; store.del(HISTORY_KEY); return; }
-      io.out(history.map((h, i) => `${String(i + 1).padStart(4)}  ${h}`).join('\n'));
-    },
     clear: () => clearScreen(),
 
     exit: async (_, io) => {
@@ -1458,7 +1438,6 @@ These are common Git commands:
   .term-o.h-admin { color: var(--bad); }
   .term-o.motd { color: var(--accent); }
   .term-o.lucky, .term-o .lucky { color: #ecc48d; }
-  .term-o .nf-logo { color: var(--accent); }
   .term-o.vim-tilde { color: var(--accent); opacity: .6; }
   .term-o.vim-msg { color: var(--bad); }
   .term-o.g-hash { color: #ecc48d; }
