@@ -25,8 +25,12 @@ const data = {
 // JSON inside a <script> tag: escape '<' so a post can't close the tag.
 const json = JSON.stringify(data).replace(/</g, '\\u003c');
 ---
+<div class="term-slot" id="term-slot">
 <section class="term" id="term" aria-label="Terminal">
-  <div class="term-bar"><span></span><span></span><span></span><b id="term-title">guest@mehdi: ~</b></div>
+  <div class="term-bar">
+    <span></span><span></span><span></span><b id="term-title">guest@mehdi: ~</b>
+    <button type="button" class="term-shrink" id="term-shrink" title="Exit full screen (Esc)"><span class="k">esc</span><span class="t">done</span></button>
+  </div>
   <div class="term-body" id="term-body">
     <div id="term-out" role="log" aria-live="polite"></div>
     <form id="term-form" class="term-line" autocomplete="off">
@@ -39,6 +43,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   </div>
   <div class="term-chips" id="term-chips" aria-label="Suggestions"></div>
 </section>
+</div>
 <script type="application/json" id="term-data" set:html={json} />
 
 <script>
@@ -595,6 +600,7 @@ These are common Git commands:
   function closeTerm(msg: string, action: string) {
     halted = true;
     later(() => {
+      shrink(); // the window shrinks back into the page, then closes
       section.classList.add('closed');
       form.hidden = true;
       titleEl.textContent = msg;
@@ -1303,9 +1309,43 @@ These are common Git commands:
     const b = (e.target as HTMLElement).closest<HTMLElement>('[data-run]');
     if (!b || busy || pending || vim) return;
     input.value = '';
+    expand();
     exec(b.dataset.run!);
   });
   body.addEventListener('click', () => { if (!getSelection()?.toString() && !form.hidden) input.focus({ preventScroll: true }); });
+
+  // ---- Full screen while in use. Focusing the terminal opens it; Esc or the button puts it back. ----
+  const slot = document.getElementById('term-slot')!;
+  const vv = window.visualViewport;
+  function fit() {
+    // On phones the keyboard shrinks the visual viewport; keep the whole terminal above it.
+    if (!section.classList.contains('full') || !vv) return;
+    section.style.setProperty('--term-top', `${vv.offsetTop}px`);
+    section.style.setProperty('--term-h', `${vv.height}px`);
+  }
+  function expand() {
+    if (section.classList.contains('full') || section.classList.contains('closed')) return;
+    slot.style.height = `${section.offsetHeight + parseFloat(getComputedStyle(section).marginTop)}px`; // hold its place in the page
+    section.classList.add('full');
+    document.documentElement.classList.add('term-open');
+    fit();
+    body.scrollTop = body.scrollHeight;
+  }
+  function shrink() {
+    if (!section.classList.contains('full')) return;
+    section.classList.remove('full');
+    document.documentElement.classList.remove('term-open');
+    slot.style.removeProperty('height');
+    section.style.removeProperty('--term-top');
+    section.style.removeProperty('--term-h');
+    input.blur();
+    body.scrollTop = body.scrollHeight;
+  }
+  input.addEventListener('focus', expand);
+  document.getElementById('term-shrink')!.addEventListener('click', shrink);
+  section.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !vim && !pending) { e.preventDefault(); shrink(); } });
+  vv?.addEventListener('resize', fit);
+  vv?.addEventListener('scroll', fit);
 
   // ---- Start ----
   boot();
@@ -1319,8 +1359,21 @@ These are common Git commands:
   .term-bar { display: flex; align-items: center; gap: .4rem; padding: .5rem .8rem; border-bottom: 1px solid var(--faint); color: var(--muted); }
   .term-bar span { width: .65rem; height: .65rem; border-radius: 50%; background: var(--faint); }
   .term-bar b { font-weight: 400; margin-left: .5rem; font-size: .78rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .term-shrink { all: unset; display: none; margin-left: auto; cursor: pointer; font-size: .75rem; color: var(--muted); padding: .1rem .5rem; border: 1px solid var(--faint); border-radius: 6px; }
+  .term-shrink:hover { color: var(--accent); border-color: var(--accent); }
+  .term-shrink .t { display: none; }
   .term-body { height: 12.5rem; overflow-y: auto; padding: .75rem .9rem; cursor: text; transition: height .35s ease; }
   .term.closed .term-body { height: 3rem; }
+
+  /* Full screen while in use. */
+  html.term-open { overflow: hidden; }
+  .term.full { position: fixed; z-index: 100; left: 0; right: 0; top: var(--term-top, 0); height: var(--term-h, 100dvh); margin: 0; border: 0; border-radius: 0; display: flex; flex-direction: column; font-size: .95rem; animation: term-grow .18s ease-out; }
+  .term.full .term-body { flex: 1; height: auto; min-height: 0; padding: 1rem max(1.25rem, calc((100% - 72rem) / 2)); transition: none; }
+  .term.full .term-bar { padding-inline: max(1rem, calc((100% - 72rem) / 2)); }
+  .term.full .term-shrink { display: inline-block; }
+  @keyframes term-grow { from { opacity: .4; transform: scale(.985); } }
+  @media (prefers-reduced-motion: reduce) { .term.full { animation: none; } }
+  @media (hover: none) and (pointer: coarse) { .term-shrink .k { display: none; } .term-shrink .t { display: inline; } }
   .term-o { white-space: pre-wrap; overflow-wrap: anywhere; }
   .term-o a { color: var(--accent); }
   .term-o.cmd { color: var(--muted); }
