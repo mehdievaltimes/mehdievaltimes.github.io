@@ -1,8 +1,6 @@
 ---
-// A small fake shell on the homepage, with an unadvertised placeholder CTF.
-// It's never mentioned on the page: `ctf` and `submit` work but aren't in `help`,
-// and its folder is hidden, so only `ls -a` turns it up.
-// Everything the shell knows lives in FS and CTF in the script below.
+// A small fake shell on the homepage. All of its files, and the git repo in ~/.ctf,
+// live in ./terminal/fs.ts.
 ---
 <section class="term" aria-label="Terminal">
   <div class="term-bar"><span></span><span></span><span></span><b id="term-title">guest@mehdi: ~</b></div>
@@ -16,27 +14,12 @@
 </section>
 
 <script>
-  // ---- Filesystem: directories are objects, files are strings. Names starting with "." are hidden. ----
-  type Dir = { [name: string]: Dir | string };
-  const FS: Dir = {
-    'about.txt': 'Mehdi Shakibapour. Math and CS at Columbia.\nThe yearning for AGI keeps me up at night.',
-    'links.txt': 'github     https://github.com/mehdievaltimes\nlinkedin   https://www.linkedin.com/in/mehdisha\n\nOr type: open puppy-bench, open sandbox',
-    '.ctf': {
-      'README.txt': 'Welcome to the CTF.\n\nThere is a flag somewhere in this directory.\nWhen you find it, run: submit <flag>\n\n(Placeholder challenge. The real one is coming.)',
-      '.flag': 'ZmxhZ3toZWxsb19mcm9tX3RoZV90ZXJtaW5hbH0=',
-    },
-  };
-
-  // ---- CTF: only the SHA-256 of each flag ships, so view-source doesn't hand it over. ----
-  // To change the flag: printf 'flag{...}' | sha256sum
-  const CTF = {
-    flags: ['fc3c88589930b7fbb124464dffbc16d1d7bf99ab76824c2be76f5205e4698fa1'],
-    storageKey: 'term-s',
-  };
+  import { FS, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
+  const SOLVED_KEY = 'term-s';
 
-  const out = document.getElementById('term-out')!;
+  const outEl = document.getElementById('term-out')!;
   const form = document.getElementById('term-form') as HTMLFormElement;
   const input = document.getElementById('term-in') as HTMLInputElement;
   const promptEl = document.getElementById('term-prompt')!;
@@ -54,8 +37,7 @@
   const pathStr = (p: string[]) => '~' + (p.length ? '/' + p.join('/') : '');
   const prompt = () => `guest@mehdi:${pathStr(cwd)}$`;
 
-  // Output is queued and revealed one line at a time, like a real terminal scrolling.
-  // The echoed command line appears instantly; everything after it streams in.
+  // ---- Output: queued and revealed one line at a time. The echoed command appears instantly. ----
   const LINE_MS = 35;
   const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
   let queue = Promise.resolve();
@@ -65,7 +47,7 @@
     const line = document.createElement('div');
     line.className = 'term-o' + (cls ? ' ' + cls : '');
     line.textContent = text;
-    out.appendChild(line);
+    outEl.appendChild(line);
     body.scrollTop = body.scrollHeight;
   }
 
@@ -79,8 +61,14 @@
     });
   }
 
-  const clearScreen = () => { queue = queue.then(() => { out.textContent = ''; }); };
+  const clearScreen = () => { queue = queue.then(() => { outEl.textContent = ''; }); };
 
+  // Commands write through `io`. In a pipeline, stdout is captured and fed to the next command;
+  // errors always go to the screen, like stderr.
+  type IO = { out: (text: string, cls?: string) => void; err: (text: string) => void; stdin: string | null };
+  const screenIO = (stdin: string | null = null): IO => ({ out: print, err: (t) => print(t, 'err'), stdin });
+
+  // ---- Filesystem ----
   function resolve(arg = ''): { node: Dir | string; path: string[] } | null {
     const parts = arg.startsWith('~') || arg.startsWith('/') ? [] : [...cwd];
     for (const seg of arg.replace(/^~\/?|^\//, '').split('/')) {
@@ -95,98 +83,321 @@
     }
     return { node, path: parts };
   }
+  const isDir = (n: Dir | string): n is Dir => typeof n !== 'string';
+  const flagsOf = (args: string[]) => args.filter((a) => /^-[a-zA-Z]+$/.test(a)).join('');
+  const operands = (args: string[]) => args.filter((a) => !/^-[a-zA-Z]+$/.test(a));
 
   async function sha256(s: string) {
     const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
     return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, '0')).join('');
   }
 
-  const commands: Record<string, (args: string[]) => void | Promise<void>> = {
-    help: () => print([
-      'help              this list',
-      'ls [-a] [dir]     list files (-a shows hidden ones)',
-      'cd <dir>          change directory',
-      'cat <file>        print a file',
-      'pwd, whoami       where and who you are',
-      'base64 -d <text>  decode base64',
-      'open <page>       ' + Object.keys(PAGES).join(', '),
-      'clear             clear the screen',
+  // ---- git, for the repo in ~/.ctf ----
+  const repo = { dirty: false, stash: true as boolean };
+  const short = (h: string) => h.slice(0, 7);
+  const inRepo = () => cwd[0] === REPO_DIR;
+  const repoDir = () => (FS[REPO_DIR] as Dir);
+
+  function diffLines(io: IO, text: string) {
+    for (const l of text.split('\n')) {
+      const cls = l.startsWith('diff --git') || l.startsWith('index ') || l.startsWith('---') || l.startsWith('+++') || l.startsWith('new file')
+        ? 'g-meta' : l.startsWith('@@') ? 'g-hunk' : l.startsWith('+') ? 'g-add' : l.startsWith('-') ? 'g-del' : '';
+      io.out(l, cls);
+    }
+  }
+
+  // Resolve a revision to a commit index (newest first), or 'stash'.
+  function rev(r = 'HEAD'): number | 'stash' | null {
+    if (/^stash(@\{0\})?$/.test(r) || (r.length >= 4 && STASH.hash.startsWith(r))) return repo.stash ? 'stash' : null;
+    if (r === 'main' || r === 'origin/main') r = 'HEAD';
+    const m = r.match(/^HEAD((?:[~^]\d*)*)$/);
+    if (m) {
+      let i = 0;
+      for (const step of m[1].match(/[~^]\d*/g) ?? []) i += step.length > 1 ? Number(step.slice(1)) : 1;
+      return i < COMMITS.length ? i : null;
+    }
+    if (r.length >= 4) { const i = COMMITS.findIndex((c) => c.hash.startsWith(r)); return i >= 0 ? i : null; }
+    return null;
+  }
+
+  function header(io: IO, i: number | 'stash', oneline: boolean) {
+    if (i === 'stash') {
+      if (oneline) return io.out(`${short(STASH.hash)} (refs/stash) ${STASH.msg}`, 'g-hash');
+      io.out(`commit ${STASH.hash} (refs/stash)`, 'g-hash');
+      io.out(`Merge: ${short(COMMITS[0].hash)} 3e1f0a9`);
+      io.out(`Author: ${AUTHOR_LINE}\nDate:   ${STASH.date}\n\n    ${STASH.msg}\n`);
+      return;
+    }
+    const c = COMMITS[i];
+    const deco = i === 0 ? ' (HEAD -> main, origin/main)' : '';
+    if (oneline) return io.out(`${short(c.hash)}${deco} ${c.msg}`, 'g-hash');
+    io.out(`commit ${c.hash}${deco}`, 'g-hash');
+    io.out(`Author: ${AUTHOR_LINE}\nDate:   ${c.date}\n\n    ${c.msg}\n`);
+  }
+
+  const GIT_USAGE = `usage: git <command> [<args>]
+
+These are common Git commands:
+   status     Show the working tree status
+   log        Show commit logs
+   show       Show various types of objects
+   diff       Show changes between commits, commit and working tree, etc
+   branch     List branches
+   stash      Stash the changes in a dirty working directory away
+   reflog     Show the reference log
+   restore    Restore working tree files`;
+
+  const git = (args: string[], io: IO) => {
+    const [sub, ...rest] = args;
+    if (sub === '--version' || sub === 'version') return io.out('git version 2.47.1');
+    if (!sub || sub === 'help' || sub === '--help') return io.out(GIT_USAGE);
+    if (!inRepo()) return io.err('fatal: not a git repository (or any of the parent directories): .git');
+    const flags = rest.filter((a) => a.startsWith('-'));
+    const refs = rest.filter((a) => !a.startsWith('-'));
+    switch (sub) {
+      case 'status':
+        io.out('On branch main\nYour branch is up to date with \'origin/main\'.\n');
+        if (repo.dirty) io.out('Changes not staged for commit:\n  (use "git restore <file>..." to discard changes in working directory)\n\tmodified:   grader.py\n\nno changes added to commit');
+        else io.out('nothing to commit, working tree clean');
+        return;
+      case 'log': {
+        const oneline = flags.includes('--oneline');
+        const patch = flags.includes('-p') || flags.includes('--patch');
+        const list: (number | 'stash')[] = COMMITS.map((_, i) => i);
+        if (flags.includes('--all') && repo.stash) list.unshift('stash');
+        const n = Number((flags.find((f) => /^-\d+$/.test(f)) ?? '').slice(1)) || Infinity;
+        list.slice(0, n).forEach((i) => {
+          header(io, i, oneline);
+          if (patch && !oneline) { diffLines(io, i === 'stash' ? STASH.diff : COMMITS[i].diff); io.out(''); }
+        });
+        return;
+      }
+      case 'show': {
+        const target = refs[0] ?? 'HEAD';
+        const [r, path] = target.split(':');
+        const i = rev(r || 'HEAD');
+        if (i === null) return io.err(`fatal: ambiguous argument '${target}': unknown revision or path not in the working tree.`);
+        if (path !== undefined) {
+          const f = i === 'stash' ? (path === STASH.file ? STASH.stashed : fileAt(0, path)) : fileAt(i, path);
+          return f === null ? io.err(`fatal: path '${path}' does not exist in '${r || 'HEAD'}'`) : io.out(f);
+        }
+        header(io, i, false);
+        diffLines(io, i === 'stash' ? STASH.diff : COMMITS[i].diff);
+        return;
+      }
+      case 'diff':
+        if (refs.length) {
+          const i = rev(refs[0]);
+          if (i === null) return io.err(`fatal: ambiguous argument '${refs[0]}': unknown revision or path not in the working tree.`);
+          if (i === 'stash') return diffLines(io, STASH.diff);
+          return COMMITS.slice(0, i).forEach((c) => diffLines(io, c.diff));
+        }
+        if (repo.dirty) diffLines(io, STASH.diff);
+        return;
+      case 'branch':
+        io.out('* main', 'g-add');
+        if (flags.includes('-a') || flags.includes('-r')) io.out('  remotes/origin/HEAD -> origin/main\n  remotes/origin/main');
+        return;
+      case 'remote':
+        return io.out(flags.includes('-v') ? 'origin\tssh://git@grader.internal/autograder.git (fetch)\norigin\tssh://git@grader.internal/autograder.git (push)' : 'origin');
+      case 'reflog':
+        return COMMITS.forEach((c, i) => io.out(`${short(c.hash)}${i === 0 ? ' (HEAD -> main, origin/main)' : ''} HEAD@{${i}}: ${i === COMMITS.length - 1 ? 'commit (initial)' : 'commit'}: ${c.msg}`, i === 0 ? 'g-hash' : ''));
+      case 'restore':
+      case 'checkout': {
+        const file = refs.find((a) => a !== '--');
+        if (!file) return io.err(sub === 'restore' ? 'fatal: you must specify path(s) to restore' : 'Already on \'main\'');
+        if (file === 'main') return io.out('Already on \'main\'\nYour branch is up to date with \'origin/main\'.');
+        if (!(file in repoDir())) return io.err(`error: pathspec '${file}' did not match any file(s) known to git`);
+        if (file === STASH.file && repo.dirty) {
+          repoDir()[STASH.file] = fileAt(0, STASH.file)!;
+          repo.dirty = false;
+          if (sub === 'checkout') io.out('Updated 1 path from the index');
+        }
+        return;
+      }
+      case 'stash': {
+        const op = refs[0] ?? 'push';
+        const gone = () => io.err(op === 'list' ? '' : 'No stash entries found.');
+        if (op === 'list') return repo.stash ? io.out(`stash@{0}: ${STASH.msg}`) : undefined;
+        if (op === 'show') {
+          if (!repo.stash) return gone();
+          return flags.includes('-p') || flags.includes('--patch') ? diffLines(io, STASH.diff) : io.out(STASH.stat);
+        }
+        if (op === 'apply' || op === 'pop') {
+          if (!repo.stash) return gone();
+          if (repo.dirty) return io.err(`error: Your local changes to the following files would be overwritten by merge:\n\t${STASH.file}\nPlease commit your changes or stash them before you merge.\nAborting`);
+          repoDir()[STASH.file] = STASH.stashed;
+          repo.dirty = true;
+          io.out(`On branch main\nChanges not staged for commit:\n\tmodified:   ${STASH.file}\n\nno changes added to commit`);
+          if (op === 'pop') { repo.stash = false; delete ((repoDir()['.git'] as Dir).refs as Dir).stash; io.out(`Dropped refs/stash@{0} (${STASH.hash})`); }
+          return;
+        }
+        if (op === 'drop' || op === 'clear') {
+          if (!repo.stash) return gone();
+          repo.stash = false;
+          delete ((repoDir()['.git'] as Dir).refs as Dir).stash;
+          return op === 'drop' ? io.out(`Dropped refs/stash@{0} (${STASH.hash})`) : undefined;
+        }
+        if (op === 'push' || op === 'save') return io.out('No local changes to save');
+        return io.err(`error: unknown subcommand: ${op}`);
+      }
+      case 'add': case 'commit': case 'push': case 'pull': case 'fetch': case 'reset': case 'rebase': case 'merge':
+        return io.err(sub === 'push' || sub === 'pull' || sub === 'fetch'
+          ? 'ssh: Could not resolve hostname grader.internal: Name or service not known\nfatal: Could not read from remote repository.'
+          : 'error: insufficient permission for adding an object to repository database .git/objects');
+      default:
+        return io.err(`git: '${sub}' is not a git command. See 'git --help'.`);
+    }
+  };
+
+  // ---- Commands. Only the ones in `help` are offered by tab completion. ----
+  const LISTED = ['help', 'ls', 'cd', 'cat', 'pwd', 'whoami', 'open', 'clear'];
+
+  const commands: Record<string, (args: string[], io: IO) => void | Promise<void>> = {
+    help: (_, io) => io.out([
+      'help          this list',
+      'ls [dir]      list files',
+      'cd <dir>      change directory',
+      'cat <file>    print a file',
+      'pwd, whoami   where and who you are',
+      'open <page>   ' + Object.keys(PAGES).join(', '),
+      'clear         clear the screen',
     ].join('\n')),
-    ls: (args) => {
-      const all = args.includes('-a');
-      const target = args.find((a) => a !== '-a');
-      const r = resolve(target);
-      if (!r) return print(`ls: ${target}: No such file or directory`, 'err');
-      if (typeof r.node === 'string') return print(target!);
-      const names = Object.keys(r.node).filter((n) => all || !n.startsWith('.'));
-      print(names.map((n) => (typeof (r.node as Dir)[n] === 'string' ? n : n + '/')).join('  '));
+    ls: (args, io) => {
+      const f = flagsOf(args);
+      const all = f.includes('a'), long = f.includes('l');
+      const targets = operands(args);
+      for (const t of targets.length ? targets : ['']) {
+        const r = resolve(t);
+        if (!r) { io.err(`ls: cannot access '${t}': No such file or directory`); continue; }
+        if (!isDir(r.node)) { io.out(t); continue; }
+        if (targets.length > 1) io.out(`${t}:`);
+        const node = r.node;
+        const names = [...(all ? ['.', '..'] : []), ...Object.keys(node).filter((n) => all || !n.startsWith('.'))].sort((a, b) => a.replace(/^\./, '').localeCompare(b.replace(/^\./, '')));
+        if (!long) { io.out(names.map((n) => (n === '.' || n === '..' || isDir(node[n]) ? n + '/' : n)).join('  ')); continue; }
+        io.out(`total ${names.length * 4}`);
+        for (const n of names) {
+          const child = n === '.' || n === '..' ? {} : node[n];
+          const dir = isDir(child);
+          const size = dir ? 4096 : (child as string).length;
+          io.out(`${dir ? 'drwxr-xr-x' : '-rw-r--r--'} 1 guest guest ${String(size).padStart(5)} Sep 10 01:30 ${n}`);
+        }
+      }
     },
-    cd: (args) => {
+    cd: (args, io) => {
       const r = resolve(args[0] ?? '~');
-      if (!r) return print(`cd: ${args[0]}: No such file or directory`, 'err');
-      if (typeof r.node === 'string') return print(`cd: ${args[0]}: Not a directory`, 'err');
+      if (!r) return io.err(`cd: ${args[0]}: No such file or directory`);
+      if (!isDir(r.node)) return io.err(`cd: ${args[0]}: Not a directory`);
       cwd = r.path;
     },
-    cat: (args) => {
-      if (!args[0]) return print('cat: missing file', 'err');
-      const r = resolve(args[0]);
-      if (!r) return print(`cat: ${args[0]}: No such file or directory`, 'err');
-      if (typeof r.node !== 'string') return print(`cat: ${args[0]}: Is a directory`, 'err');
-      print(r.node);
-    },
-    pwd: () => print(pathStr(cwd)),
-    whoami: () => print('guest'),
-    base64: (args) => {
-      const text = args.filter((a) => a !== '-d' && a !== '--decode').join(' ');
-      if (!args.includes('-d') && !args.includes('--decode')) {
-        return print(btoa(unescape(encodeURIComponent(text))));
+    cat: (args, io) => {
+      if (!args.length) { if (io.stdin !== null) io.out(io.stdin); return; }
+      for (const a of args) {
+        const r = resolve(a);
+        if (!r) io.err(`cat: ${a}: No such file or directory`);
+        else if (isDir(r.node)) io.err(`cat: ${a}: Is a directory`);
+        else io.out(r.node);
       }
-      try { print(decodeURIComponent(escape(atob(text)))); } catch { print('base64: invalid input', 'err'); }
     },
-    open: (args) => {
+    pwd: (_, io) => io.out('/home/guest' + (cwd.length ? '/' + cwd.join('/') : '')),
+    whoami: (_, io) => io.out('guest'),
+    echo: (args, io) => io.out(args.join(' ')),
+    base64: (args, io) => {
+      const decode = args.includes('-d') || args.includes('--decode');
+      const file = args.find((a) => !a.startsWith('-'));
+      let text = io.stdin;
+      if (file) {
+        const r = resolve(file);
+        if (!r || isDir(r.node)) return io.err(`base64: ${file}: No such file or directory`);
+        text = r.node;
+      }
+      if (text === null) return io.err('base64: reading from the keyboard isn\'t supported here; try: echo <text> | base64 -d');
+      if (!decode) return io.out(btoa(unescape(encodeURIComponent(text))));
+      try { io.out(decodeURIComponent(escape(atob(text.replace(/\s+/g, ''))))); } catch { io.err('base64: invalid input'); }
+    },
+    grep: (args, io) => {
+      const f = flagsOf(args);
+      const [pat, ...files] = operands(args);
+      if (!pat) return io.err('usage: grep [-ir] PATTERN [FILE...]');
+      let re: RegExp;
+      try { re = new RegExp(pat, f.includes('i') ? 'i' : ''); } catch { return io.err('grep: invalid pattern'); }
+      const hits: string[] = [];
+      const scan = (text: string, label: string | null) => text.split('\n').forEach((l) => re.test(l) && hits.push(label ? `${label}:${l}` : l));
+      const walk = (node: Dir, prefix: string) => Object.entries(node).forEach(([n, c]) => {
+        if (n === '.git') return;
+        isDir(c) ? walk(c, prefix + n + '/') : scan(c, prefix + n);
+      });
+      if (!files.length) {
+        if (f.includes('r')) { const r = resolve(''); if (r && isDir(r.node)) walk(r.node, ''); }
+        else if (io.stdin !== null) scan(io.stdin, null);
+      }
+      for (const file of files) {
+        const r = resolve(file);
+        if (!r) io.err(`grep: ${file}: No such file or directory`);
+        else if (isDir(r.node)) f.includes('r') ? walk(r.node, file.replace(/\/?$/, '/')) : io.err(`grep: ${file}: Is a directory`);
+        else scan(r.node, files.length > 1 ? file : null);
+      }
+      if (hits.length) io.out(hits.join('\n'));
+    },
+    open: (args, io) => {
       const href = PAGES[args[0]];
-      if (!href) return print(`open: try one of: ${Object.keys(PAGES).join(', ')}`, 'err');
+      if (!href) return io.err(`open: try one of: ${Object.keys(PAGES).join(', ')}`);
       location.href = href;
     },
-    ctf: () => {
-      cwd = ['.ctf'];
-      print(store.get(CTF.storageKey) ? 'You already solved this one. More soon.' : 'Moved you to ~/.ctf. Start with: cat README.txt', 'ok');
-    },
-    submit: async (args) => {
+    git,
+    submit: async (args, io) => {
       const guess = args.join(' ').trim();
-      if (!guess) return print('submit: usage: submit flag{...}', 'err');
-      if (CTF.flags.includes(await sha256(guess))) {
-        store.set(CTF.storageKey, '1');
-        print('Correct. Flag accepted.', 'ok');
+      if (!guess) return io.err('usage: submit <answer>');
+      if (await sha256(guess) === ANSWER_SHA256) {
+        store.set(SOLVED_KEY, '1');
+        io.out('✓ accepted. 1/1 tests passed.', 'ok');
       } else {
-        print('Nope. Keep looking.', 'err');
+        io.err('✗ rejected. 0/1 tests passed.');
       }
     },
-    clear: clearScreen,
-    sudo: () => print('Nice try.', 'err'),
+    history: (_, io) => io.out(history.map((h, i) => `${String(i + 1).padStart(4)}  ${h}`).join('\n')),
+    clear: () => clearScreen(),
+    sudo: (_, io) => io.err('guest is not in the sudoers file. This incident will be reported.'),
   };
+
+  // Split a line into words, honouring simple single and double quotes.
+  function words(s: string) {
+    const out: string[] = [];
+    s.replace(/"([^"]*)"|'([^']*)'|(\S+)/g, (_, a, b, c) => { out.push(a ?? b ?? c); return ''; });
+    return out;
+  }
 
   async function run(line: string) {
     print(`${prompt()} ${line}`, 'cmd');
-    const [name, ...args] = line.trim().split(/\s+/);
-    if (!name) return;
-    const fn = commands[name];
-    if (fn) await fn(args);
-    else print(`${name}: command not found. Type help.`, 'err');
+    const stages = line.split('|').map((p) => p.trim());
+    if (!stages[0]) return;
+    let stdin: string | null = null;
+    for (let k = 0; k < stages.length; k++) {
+      const [name, ...args] = words(stages[k]);
+      if (!name) return print('syntax error near unexpected token `|\'', 'err');
+      const fn = commands[name];
+      if (!fn) return print(`${name}: command not found`, 'err');
+      const last = k === stages.length - 1;
+      if (last) { await fn(args, screenIO(stdin)); return; }
+      const buf: string[] = [];
+      await fn(args, { out: (t) => buf.push(t), err: (t) => print(t, 'err'), stdin });
+      stdin = buf.join('\n');
+    }
   }
 
   function complete() {
     const parts = input.value.split(/\s+/);
     const last = parts[parts.length - 1];
     let pool: string[];
-    if (parts.length === 1) pool = Object.keys(commands);
+    if (parts.length === 1) pool = LISTED;
     else if (parts[0] === 'open') pool = Object.keys(PAGES);
     else {
       const slash = last.lastIndexOf('/');
       const dir = resolve(slash >= 0 ? last.slice(0, slash) || '/' : '');
-      if (!dir || typeof dir.node === 'string') return;
+      if (!dir || !isDir(dir.node)) return;
+      const node = dir.node;
       const base = slash >= 0 ? last.slice(0, slash + 1) : '';
-      pool = Object.keys(dir.node).map((n) => base + n + (typeof (dir.node as Dir)[n] === 'string' ? '' : '/'));
+      pool = Object.keys(node).map((n) => base + n + (isDir(node[n]) ? '/' : ''));
     }
     // Hidden files only complete once you've typed the dot yourself.
     const wantsHidden = (last.split('/').pop() ?? '').startsWith('.');
@@ -240,6 +451,12 @@
   .term-o.err { color: var(--bad); }
   .term-o.ok { color: var(--good); }
   .term-o.dim { color: var(--muted); }
+  .term-o.g-hash { color: #ecc48d; }
+  .term-o.g-add { color: var(--good); }
+  .term-o.g-del { color: var(--bad); }
+  .term-o.g-hunk { color: var(--accent); }
+  .term-o.g-meta { color: var(--fg); font-weight: 600; }
+  :root[data-theme='light'] .term-o.g-hash { color: #a35d00; }
   .term-line { display: flex; gap: .5rem; align-items: baseline; }
   .term-prompt { color: var(--accent); white-space: nowrap; }
   .term-line input { all: unset; flex: 1; min-width: 0; color: var(--fg); caret-color: var(--accent); font-size: 16px; /* 16px stops iOS zooming on focus */ }
