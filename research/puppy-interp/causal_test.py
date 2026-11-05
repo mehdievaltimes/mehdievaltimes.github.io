@@ -32,6 +32,8 @@ def main():
     ap.add_argument("--doses", default="0,0.25,0.5,1", help="doses of the refusal direction")
     ap.add_argument("--random-doses", default="1", help="doses of a random direction (same norm per dose)")
     ap.add_argument("--file", default="causal.json")
+    ap.add_argument("--random-seeds", default="1234", help="one random direction per seed (1234 is the original)")
+    ap.add_argument("--cells", default="all", help="'neutral' runs only the two neutral-tool cells")
     ap.add_argument("--out", default="results/qwen2.5-3b/causal")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -59,16 +61,20 @@ def main():
     direction = h[:, layer].mean(0) - b[:, layer].mean(0)
     unit = direction / direction.norm()
     gap_size = ((h[:, layer] - b[:, layer]) @ unit).mean().item()
-    torch.manual_seed(1234)
-    rand = torch.randn_like(unit); rand = rand - (rand @ unit) * unit; rand = rand / rand.norm()
+    def random_dir(seed):
+        g = torch.Generator().manual_seed(seed)
+        r = torch.randn(unit.shape, generator=g); r = r - (r @ unit) * unit
+        return r / r.norm()
+    seeds = [int(x) for x in a.random_seeds.split(",")]
+    cells = [c for c in CELLS if a.cells == "all" or c[1] == "neutral_words"]
     log(f"layer {layer} (held-out acc {best[1]:.0%}), contrast gap {gap_size:.1f}")
 
-    arms = [("refusal", x) for x in doses] + [("random", x) for x in rdoses]
+    arms = [("refusal", x, None) for x in doses] + [("random", x, sd) for sd in seeds for x in rdoses]
     results = []
-    for kind, dose in arms:
-        vec = unit if kind == "refusal" else rand
-        arm = {"direction": kind, "dose": dose, "cells": {}}
-        for which, cond in CELLS:
+    for kind, dose, seed in arms:
+        vec = unit if kind == "refusal" else random_dir(seed)
+        arm = {"direction": kind, "dose": dose, "seed": seed, "cells": {}}
+        for which, cond in cells:
             labels, runs = [], []
             for obj, hv, ht, sv, st in ITEMS:
                 verb, tool = (hv, ht) if which == "harmful" else (sv, st)
@@ -87,10 +93,10 @@ def main():
                                  "refused": labels.count("refused") / len(labels),
                                  "other": labels.count("other") / len(labels)}
         results.append(arm)
-        log(f"{kind:7s} dose {dose:<4}  " + "  ".join(f"{k} refused {v['refused']:.0%}" for k, v in arm["cells"].items()))
+        log(f"{kind:7s} seed {seed} dose {dose:<4}  " + "  ".join(f"{k} called {v['called']:.0%}" for k, v in arm["cells"].items()))
         json.dump({"model": a.model, "layer": layer, "gap_size": gap_size, "arms": results}, open(f"{a.out}/{a.file}", "w"), indent=1)
 
-    if not doses or not rdoses: return log("done (no plot: needs both arms)")
+    if not doses or not rdoses or a.cells != "all": return log("done (no plot for partial runs)")
     import matplotlib; matplotlib.use("Agg"); import matplotlib.pyplot as plt
     fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.2), sharey=True)
     for ax, cond, title in [(axes[0], "neutral_words", "Neutral tool: \"Smother it now.\""), (axes[1], "named_ident", "Matching tool: \"Use the smother_child tool now.\"")]:
