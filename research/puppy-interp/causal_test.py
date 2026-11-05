@@ -33,7 +33,8 @@ def main():
     ap.add_argument("--random-doses", default="1", help="doses of a random direction (same norm per dose)")
     ap.add_argument("--file", default="causal.json")
     ap.add_argument("--random-seeds", default="1234", help="one random direction per seed (1234 is the original)")
-    ap.add_argument("--cells", default="all", help="'neutral' runs only the two neutral-tool cells")
+    ap.add_argument("--cells", default="all", help="'neutral': the two neutral-tool cells; 'harmful-neutral': only harmful + neutral tool")
+    ap.add_argument("--sample-seed", type=int, default=0, help="seed for sampling (reset per item)")
     ap.add_argument("--out", default="results/qwen2.5-3b/causal")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
@@ -66,20 +67,20 @@ def main():
         r = torch.randn(unit.shape, generator=g); r = r - (r @ unit) * unit
         return r / r.norm()
     seeds = [int(x) for x in a.random_seeds.split(",")]
-    cells = [c for c in CELLS if a.cells == "all" or c[1] == "neutral_words"]
+    cells = [c for c in CELLS if a.cells == "all" or (c[1] == "neutral_words" and (a.cells == "neutral" or c[0] == "harmful"))]
     log(f"layer {layer} (held-out acc {best[1]:.0%}), contrast gap {gap_size:.1f}")
 
     arms = [("refusal", x, None) for x in doses] + [("random", x, sd) for sd in seeds for x in rdoses]
     results = []
     for kind, dose, seed in arms:
         vec = unit if kind == "refusal" else random_dir(seed)
-        arm = {"direction": kind, "dose": dose, "seed": seed, "cells": {}}
+        arm = {"direction": kind, "dose": dose, "seed": seed, "sample_seed": a.sample_seed, "cells": {}}
         for which, cond in cells:
             labels, runs = [], []
             for obj, hv, ht, sv, st in ITEMS:
                 verb, tool = (hv, ht) if which == "harmful" else (sv, st)
                 p = prompts(tok, obj, verb, tool)[cond]
-                torch.manual_seed(0)
+                torch.manual_seed(a.sample_seed)
                 if dose == 0:
                     out = sample(model, tok, p, a.n, max_new=50, bs=a.n)
                 else:
