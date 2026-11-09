@@ -69,6 +69,9 @@ export const MAN: Record<string, [string, string]> = {
   reboot: ['restart the machine', 'reboot'],
   shutdown: ['power off the machine', 'shutdown'],
   submit: ['submit an answer to the autograder', 'submit <answer>'],
+  file: ['determine file type', 'file FILE...'],
+  strings: ['print the sequences of printable characters in files', 'strings [-n MIN] [FILE...]     MIN defaults to 4'],
+  ltrace: ['a library call tracer', 'ltrace [-s STRSIZE] COMMAND [ARGS...]     STRSIZE, the longest string to print, defaults to 32'],
 };
 
 export const PUBLIC = [

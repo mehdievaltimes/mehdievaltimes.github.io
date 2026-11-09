@@ -68,7 +68,7 @@ No comments, no view counts, no likes.
 
 `src/components/Terminal.astro` is a small fake shell. `~/writing` and `~/reading` are built from the content
 collections at build time (coursework stays out, same as `/reading`), so posts can be `cat`ed, grepped and `open`ed.
-Its machine (homes, `/etc`, the repo in `~/.ctf`) is in `src/components/terminal/fs.ts`; the 8-ball, man pages
+Its machine (homes, `/etc`, the checker in `/srv/grader`, the repo in `~/.ctf`) is in `src/components/terminal/fs.ts`; the 8-ball, man pages
 and logo are in `terminal/text.ts`. History and the motd are kept per browser in `localStorage`. `mail mehdi` builds the address only when run.
 
 ## SIGSEGV board (`/sigsegv`)
