@@ -71,6 +71,26 @@ collections at build time (coursework stays out, same as `/reading`), so posts c
 Its machine (homes, `/etc`, the repo in `~/.ctf`) is in `src/components/terminal/fs.ts`; the 8-ball, man pages
 and logo are in `terminal/text.ts`. History and the motd are kept per browser in `localStorage`. `mail mehdi` builds the address only when run.
 
+## CTF (`/ctf`)
+
+Six challenges: the terminal's autograder (git), plus forensics, web, crypto, reversing and ML. Their files
+are in `public/ctf/`; `src/data/ctf.json` holds the SHA-256 of each flag and the sealed-export blob. The page
+checks flags in the browser and keeps progress in `localStorage`. The autograder's hash is the terminal's
+own `ANSWER_SHA256`, so a solve in either place counts in both.
+
+The scripts that made the challenge files contain the flags, so they are deliberately not in this repo. To
+change a flag, regenerate that challenge's file and its hash together.
+
+## Induction-head demo (`/demos`, section 4)
+
+A two-layer, attention-only transformer that runs in the browser (`public/js/induction.js`), with weights in
+`public/models/induction-2l.json`. To retrain it:
+
+```sh
+pip install jax optax numpy
+python scripts/induction/train.py
+```
+
 ## SIGSEGV board (`/sigsegv`)
 
 Unlisted page that lists every pull request on the COMS W4181 course forks (`scripts/fetch-sigsegv.mjs`

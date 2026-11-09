@@ -4,7 +4,7 @@ import Base from '../layouts/Base.astro';
 <Base title="Sandbox" sheep={false}>
   <header class="post-head">
     <h1>The mechanistic sandbox</h1>
-    <p class="meta">runs 100% in your browser via transformers.js · first use downloads a 23&nbsp;MB model, shared by both demos</p>
+    <p class="meta">runs 100% in your browser · demos 2 and 3 download a 23&nbsp;MB model on first use · demo 4 is my own 45k-parameter model</p>
   </header>
 
   <div class="prose">
@@ -41,11 +41,32 @@ import Base from '../layouts/Base.astro';
   </div>
 
   <div class="prose">
-    <h2>4. Canned attention pattern</h2>
-    <p>A hard-coded pattern, illustrative only, for when you don’t want to download a model.</p>
+    <h2>4. Induction heads, live</h2>
+    <p>This is a real transformer running in your browser: two layers of four attention heads, no MLPs, about 45k parameters, computed from its weights as you type. I <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/blob/main/scripts/induction/train.py">trained it</a> on random characters with stretches that repeat. Random characters can’t be predicted, so the only way to do better than chance is to notice the text repeating and copy what came next last time.</p>
+    <p>That takes two heads working together, an <a href="https://transformer-circuits.pub/2022/in-context-learning-and-induction-heads/index.html">induction circuit</a>. A <em>previous-token head</em> in layer 0 tags every position with the character before it. An <em>induction head</em> in layer 1 then looks for an earlier position tagged with the current character, and copies what’s there. The labels below come from measuring each head on a repeated random string when the page loads; nothing is hard-coded.</p>
   </div>
-  <div class="card demo" style="text-align:center">
-    <div id="attention-sandbox" class="tokens"></div>
+  <div class="card demo ih" id="induction">
+    <div class="ih-presets">
+      <button type="button" class="chip" data-preset="random">random, twice</button>
+      <button type="button" class="chip" data-preset="the cat sat on the mat. the cat sat on the mat.">a sentence, twice</button>
+      <button type="button" class="chip" data-preset="mr qwibble and mrs zarkov met at the kalshi office. later, mr qwibble">a name comes back</button>
+    </div>
+    <input type="text" id="ih-input" maxlength="99" autocomplete="off" spellcheck="false" value="vk9 quorx blimp-fizz! vk9 quorx blimp-fizz!" aria-label="Text for the model" />
+    <p class="meta" id="ih-status">Loading the model (230 KB)…</p>
+    <div class="ih-text" id="ih-text" aria-label="Each character, with a bar for how likely the model thought it was"></div>
+    <p class="meta" id="ih-stats" aria-live="polite"></p>
+    <p class="meta" id="ih-query"></p>
+    <div class="ih-split">
+      <div>
+        <div class="ih-heads" id="ih-heads"></div>
+        <p class="meta">Click a head to show it. <em>Knock out</em> removes its output from the residual stream. The model learned four induction heads, so knocking out one barely matters; it takes all four. But it leans on one previous-token head, and knocking out just that one stops the copying. <button type="button" class="linkish" id="ih-reset">restore all</button></p>
+      </div>
+      <figure class="ih-big">
+        <canvas id="ih-big"></canvas>
+        <figcaption class="meta"><span id="ih-big-title"></span> · row = the position looking, column = where it looks</figcaption>
+      </figure>
+    </div>
+    <p class="meta" id="ih-train"></p>
   </div>
 
   <div class="prose">
@@ -54,7 +75,7 @@ import Base from '../layouts/Base.astro';
   </div>
 
   <script is:inline type="module" src="/js/demos.js"></script>
-  <script is:inline src="/js/attention-canned.js"></script>
+  <script is:inline src="/js/induction.js"></script>
 </Base>
 
 <style is:global>
@@ -75,4 +96,27 @@ import Base from '../layouts/Base.astro';
   .matrix-cell:hover { outline: 2px solid var(--fg); position: relative; }
   .matrix-header-col { writing-mode: vertical-rl; transform: rotate(180deg); padding: 6px; font: .75rem var(--mono); text-align: left; white-space: nowrap; }
   .matrix-header-row { padding: 6px; font: .75rem var(--mono); text-align: right; white-space: nowrap; }
+
+  .ih-presets { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .ih:not(.ready) .ih-text, .ih:not(.ready) .ih-split { display: none; }
+  .ih-text { display: flex; flex-wrap: wrap; gap: 2px; margin-top: .4rem; }
+  .ih-ch { all: unset; box-sizing: border-box; width: 1.35rem; height: 3.1rem; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: .25rem 0 .2rem; border-radius: 4px; cursor: pointer; font: .95rem var(--mono); border: 1px solid transparent; }
+  .ih-ch:first-child { width: 2rem; font-size: .7rem; color: var(--muted); }
+  .ih-ch i { display: block; width: .55rem; background: var(--good); border-radius: 2px 2px 0 0; opacity: .85; }
+  .ih-ch.q { border-color: var(--fg); }
+  .ih-split { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1.2rem; align-items: start; margin-top: .6rem; }
+  .ih-heads { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+  .ih-heads + .meta { margin-top: .8rem; }
+  .ih-head { text-align: center; font: .68rem var(--mono); color: var(--muted); }
+  .ih-pick { all: unset; cursor: pointer; display: block; border-radius: 4px; border: 2px solid transparent; line-height: 0; }
+  .ih-pick canvas { border-radius: 2px; max-width: 100%; height: auto !important; }
+  .ih-head.selected .ih-pick { border-color: var(--accent); }
+  .ih-head.off .ih-pick { opacity: .25; }
+  .ih-name { color: var(--fg); margin-top: .2rem; }
+  .ih-kind { color: var(--accent); min-height: 1.2em; }
+  .ih-ko { font-size: .68rem; text-decoration: underline; text-underline-offset: 2px; }
+  .ih-big { margin: 0; }
+  .ih-big canvas { display: block; border-radius: 4px; border: 1px solid var(--faint); }
+  .ih-big figcaption { margin-top: .3rem; max-width: 320px; }
+  @media (max-width: 44rem) { .ih-split { grid-template-columns: 1fr; } }
 </style>
