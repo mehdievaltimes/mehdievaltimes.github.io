@@ -1,0 +1,226 @@
+---
+import Base from '../layouts/Base.astro';
+import ctf from '../data/ctf.json';
+import { ANSWER_SHA256 } from '../components/terminal/fs';
+
+// Only SHA-256 hashes of the flags ship. The files that make the challenges aren't in this repo.
+type Challenge = { id: string; title: string; cat: string; level: string; hash: string; hint: string };
+const challenges: Challenge[] = [
+  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWER_SHA256,
+    hint: 'Deleting a secret in a new commit doesn’t delete it from the old ones. Not everything is in the log, either.' },
+  { id: 'portrait', title: 'Portrait', cat: 'forensics', level: 'easy', hash: ctf.hashes.portrait,
+    hint: 'What you see is the high bits of each color. Look at them one bit at a time.' },
+  { id: 'sealed', title: 'Signed, sealed', cat: 'web', level: 'easy', hash: ctf.hashes.sealed,
+    hint: 'With HS256, anyone holding a token can test guesses for the secret offline, as fast as they can compute an HMAC. The secret is one lowercase English word.' },
+  { id: 'notebook', title: 'Notebook', cat: 'crypto', level: 'medium', hash: ctf.hashes.notebook,
+    hint: 'XOR two ciphertexts and the pad cancels out. Spaces XORed with letters flip their case.' },
+  { id: 'crackme', title: 'Crackme', cat: 'reversing', level: 'medium', hash: ctf.hashes.crackme,
+    hint: 'wasm2wat (from wabt) turns it into text. Every step of the check can be run backwards.' },
+  { id: 'memorized', title: 'Memorized', cat: 'ml', level: 'medium', hash: ctf.hashes.memorized,
+    hint: 'You don’t have to break anything. Write the forward pass from the model card and ask the model what comes after something.' },
+];
+const sealed = ctf.sealed;
+---
+<Base title="CTF" description="Six small capture-the-flag challenges: git, forensics, web, crypto, reversing and ML. Flags are checked in your browser." sheep={false}>
+  <header class="post-head">
+    <h1>Capture the flag</h1>
+    <p class="meta"><span id="ctf-score">0</span>/{challenges.length} solved · flags look like <code>flag&#123;…&#125;</code> · checked in your browser against a SHA-256 hash, nothing is sent anywhere</p>
+  </header>
+
+  <div class="prose">
+    <p>Small challenges I made, one per category, easiest first. Each one is solvable with free tools. If you solve them all, <a href="/" id="ctf-mail">tell me</a> how you did it.</p>
+  </div>
+
+  <ol class="ctf">
+    {challenges.map((c, i) => (
+      <li class="card ctf-item" id={c.id} data-id={c.id} data-hash={c.hash}>
+        <div class="ctf-head">
+          <h2><span class="meta">{String(i + 1).padStart(2, '0')}</span> {c.title}</h2>
+          <span class="tags"><span class="tag">{c.cat}</span><span class="tag">{c.level}</span><span class="tag ctf-done" hidden>solved</span></span>
+        </div>
+
+        <div class="ctf-body">
+          {c.id === 'autograder' && <>
+            <p>The terminal on the <a href="/">homepage</a> belongs to a TA who keeps an autograder in <code>~/.ctf</code>. The README says nothing secret lives in the repo. Find what the grader accepts, and <code>submit</code> it there or here.</p>
+            <p class="meta">There’s a second, harder one in the same machine if you can get root. It has no flag; you’ll know.</p>
+          </>}
+
+          {c.id === 'portrait' && <>
+            <p>The photo on my homepage, but this copy is carrying something. The metadata already told me it isn’t there.</p>
+            <p><img src="/ctf/portrait.png" alt="A copy of the homepage portrait" width="122" height="128" class="ctf-img" /></p>
+            <p class="meta"><a href="/ctf/portrait.png" download>portrait.png</a></p>
+          </>}
+
+          {c.id === 'sealed' && <>
+            <p>A course dashboard signs its sessions with HS256 and encrypts the admin export with the same secret. Here’s the session it gave a guest, and the export.</p>
+            <pre class="ctf-pre"><code>{sealed.token}</code></pre>
+            <p class="meta">admin export · AES-256-GCM · key = PBKDF2-SHA256(secret, salt, {sealed.iterations.toLocaleString('en-US')} iterations)</p>
+            <pre class="ctf-pre"><code>salt {sealed.salt}{'\n'}iv   {sealed.iv}{'\n'}ct   {sealed.ct}</code></pre>
+            <form class="ctf-row" id="sealed-form" data-salt={sealed.salt} data-iv={sealed.iv} data-ct={sealed.ct} data-iter={sealed.iterations}>
+              <input type="text" id="sealed-key" placeholder="the signing secret" autocomplete="off" spellcheck="false" />
+              <button type="submit" class="ctf-btn">Decrypt export</button>
+            </form>
+            <p class="meta" id="sealed-out" aria-live="polite"></p>
+          </>}
+
+          {c.id === 'notebook' && <>
+            <p>Twelve lab-notebook entries, each encrypted with a one-time pad. The same pad, every time. One entry has the flag.</p>
+            <p class="meta"><a href="/ctf/notebook.txt">notebook.txt</a></p>
+          </>}
+
+          {c.id === 'crackme' && <>
+            <p>A flag checker compiled to WebAssembly. It answers yes or no and nothing else. You can run it here, but you’ll have to read it to win.</p>
+            <form class="ctf-row" id="crackme-form">
+              <input type="text" id="crackme-in" placeholder="flag{...}" autocomplete="off" spellcheck="false" />
+              <button type="submit" class="ctf-btn">Check</button>
+            </form>
+            <p class="meta" id="crackme-out" aria-live="polite"></p>
+            <p class="meta"><a href="/ctf/crackme.wasm" download>crackme.wasm</a> · exports <code>input()</code>, a pointer to 64 bytes of memory, and <code>check(n)</code></p>
+          </>}
+
+          {c.id === 'memorized' && <>
+            <p>Someone trained a tiny model on our lab’s group-chat export. Somebody had pasted the flag in that chat. The weights are public.</p>
+            <dl class="ctf-card">
+              <dt>model</dt><dd>character-level next-character MLP</dd>
+              <dt>context</dt><dd>the previous 8 characters, left-padded with <code>\n</code> (every message starts on a new line)</dd>
+              <dt>forward</dt><dd><code>x = concat(emb[c] for c in context)</code> (8 × 16 = 128 floats)<br /><code>h = tanh(x @ W1 + b1)</code><br /><code>logits = h @ W2 + b2</code></dd>
+              <dt>vocab</dt><dd>token <code>i</code> is <code>vocab[i]</code></dd>
+              <dt>weights</dt><dd>float32, little-endian, row-major, base64</dd>
+            </dl>
+            <p class="meta"><a href="/ctf/memorized.json" download>memorized.json</a> · 228 KB</p>
+          </>}
+        </div>
+
+        <details class="ctf-hint"><summary class="meta">hint</summary><p>{c.hint}</p></details>
+
+        <form class="ctf-row ctf-submit">
+          <input type="text" placeholder="flag{...}" autocomplete="off" spellcheck="false" aria-label={`Flag for ${c.title}`} />
+          <button type="submit" class="ctf-btn">Submit</button>
+        </form>
+        <p class="meta ctf-msg" aria-live="polite"></p>
+      </li>
+    ))}
+  </ol>
+
+  <p class="meta reset-line">Progress is saved in this browser only. <button class="linkish" id="ctf-reset">reset</button></p>
+
+  <script>
+    const KEY = 'ctf-solved';
+    const TERM_KEY = 'term-s'; // the homepage terminal's own record of the autograder solve
+    const load = (): Record<string, boolean> => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
+    const save = (s: Record<string, boolean>) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
+    const solved = load();
+    try { if (localStorage.getItem(TERM_KEY) === '1') solved.autograder = true; } catch {}
+
+    const sha256 = async (s: string) =>
+      [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
+    const items = [...document.querySelectorAll<HTMLElement>('.ctf-item')];
+
+    function paint() {
+      let n = 0;
+      for (const li of items) {
+        const done = !!solved[li.dataset.id!];
+        n += +done;
+        li.classList.toggle('solved', done);
+        li.querySelector<HTMLElement>('.ctf-done')!.hidden = !done;
+      }
+      document.getElementById('ctf-score')!.textContent = String(n);
+    }
+
+    for (const li of items) {
+      const form = li.querySelector<HTMLFormElement>('.ctf-submit')!;
+      const msg = li.querySelector<HTMLElement>('.ctf-msg')!;
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const guess = form.querySelector('input')!.value.trim();
+        if (!guess) return;
+        if ((await sha256(guess)) === li.dataset.hash) {
+          solved[li.dataset.id!] = true;
+          save(solved);
+          if (li.dataset.id === 'autograder') try { localStorage.setItem(TERM_KEY, '1'); } catch {}
+          msg.textContent = '✓ correct';
+          paint();
+        } else {
+          msg.textContent = guess.startsWith('flag{') ? '✗ not this one' : '✗ flags look like flag{...}';
+        }
+      });
+    }
+
+    document.getElementById('ctf-reset')!.addEventListener('click', () => {
+      for (const k of Object.keys(solved)) delete solved[k];
+      save(solved);
+      paint();
+    });
+
+    // The address is put together on click, like the terminal's `mail`.
+    document.getElementById('ctf-mail')!.addEventListener('click', (e) => {
+      e.preventDefault();
+      const to = ['mehdi.s', 'columbia.edu'].join('@');
+      const n = Object.values(solved).filter(Boolean).length;
+      location.href = `mailto:${to}?subject=${encodeURIComponent(`CTF: solved ${n}/${items.length}`)}`;
+    });
+
+    // Signed, sealed: decrypt the export with whatever secret you found.
+    const b64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+    const sf = document.getElementById('sealed-form') as HTMLFormElement;
+    sf.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const out = document.getElementById('sealed-out')!;
+      const secret = (document.getElementById('sealed-key') as HTMLInputElement).value;
+      out.textContent = 'deriving key…';
+      try {
+        const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret), 'PBKDF2', false, ['deriveKey']);
+        const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', hash: 'SHA-256', salt: b64(sf.dataset.salt!), iterations: +sf.dataset.iter! },
+          base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+        const pt = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(sf.dataset.iv!) }, key, b64(sf.dataset.ct!));
+        out.textContent = new TextDecoder().decode(pt);
+      } catch {
+        out.textContent = '✗ wrong secret: the export didn’t authenticate';
+      }
+    });
+
+    // Crackme: run the real checker.
+    let wasm: WebAssembly.Exports | null = null;
+    document.getElementById('crackme-form')!.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const out = document.getElementById('crackme-out')!;
+      wasm ??= (await WebAssembly.instantiateStreaming(fetch('/ctf/crackme.wasm'))).instance.exports;
+      const bytes = new TextEncoder().encode((document.getElementById('crackme-in') as HTMLInputElement).value.trim()).slice(0, 64);
+      const mem = new Uint8Array((wasm.memory as WebAssembly.Memory).buffer, (wasm.input as () => number)(), 64);
+      mem.fill(0);
+      mem.set(bytes);
+      out.textContent = (wasm.check as (n: number) => number)(bytes.length) ? '✓ the checker says yes. Submit it below.' : '✗ the checker says no';
+    });
+
+    paint();
+  </script>
+</Base>
+
+<style>
+  .ctf { list-style: none; margin: 2rem 0 0; padding: 0; display: grid; gap: 1rem; }
+  .ctf-item { padding: 1.3rem 1.4rem 1.1rem; }
+  .ctf-item.solved { box-shadow: inset 3px 0 0 var(--good); }
+  .ctf-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  .ctf-head h2 { font-size: 1.25rem; margin: 0; }
+  .ctf-head .tags { margin: 0; }
+  .ctf-done { color: var(--good); border-color: var(--good); }
+  .ctf-body p { margin: .7rem 0 0; color: var(--fg); font-size: 1rem; }
+  .ctf-body p.meta { color: var(--muted); font-size: .8rem; }
+  .ctf-body code { font: .85em var(--mono); background: var(--bg); padding: .1em .35em; border-radius: 4px; }
+  .ctf-pre { margin: .7rem 0 0; padding: .8rem .9rem; background: var(--bg); border-radius: 8px; overflow-x: auto; font: .78rem/1.5 var(--mono); white-space: pre-wrap; word-break: break-all; }
+  .ctf-pre code { background: none; padding: 0; }
+  .ctf-img { border-radius: 8px; display: block; }
+  .ctf-card { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .35rem .8rem; margin: .8rem 0 0; font-size: .92rem; }
+  .ctf-card dt { font: .78rem var(--mono); color: var(--muted); padding-top: .15rem; }
+  .ctf-card dd { margin: 0; }
+  .ctf-hint { margin-top: .8rem; }
+  .ctf-hint summary { cursor: pointer; }
+  .ctf-hint p { margin: .4rem 0 0; font-size: .95rem; color: var(--muted); }
+  .ctf-row { display: flex; gap: .5rem; margin-top: .8rem; }
+  .ctf-row input { flex: 1; min-width: 0; font-family: var(--mono); font-size: .92rem; }
+  .ctf-btn { font: 500 .9rem var(--sans); padding: 0 1rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); cursor: pointer; white-space: nowrap; }
+  .ctf-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .ctf-msg { margin: .45rem 0 0; min-height: 1em; }
+  .reset-line { margin-top: 1.5rem; }
+  @media (max-width: 36rem) { .ctf-card { grid-template-columns: 1fr; gap: .1rem; } .ctf-card dd { margin-bottom: .5rem; } }
+</style>

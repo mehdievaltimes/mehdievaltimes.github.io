@@ -11,6 +11,7 @@ const nav = [
   // writing and reading are hidden from the nav; their pages still exist at /writing and /reading.
   ['/demos', 'sandbox'],
   ['/puppy-bench', 'puppy bench'],
+  ['/ctf', 'ctf'],
 ];
 const current = (href: string) =>
   href === '/writing' ? path === href || path.startsWith('/posts') : path === href || path.startsWith(`${href}/`);

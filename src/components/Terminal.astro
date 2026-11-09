@@ -48,7 +48,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
-  const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
+  const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos', ctf: '/ctf' };
   const SOLVED_KEY = 'term-s', HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
 
   const section = document.getElementById('term')!;
