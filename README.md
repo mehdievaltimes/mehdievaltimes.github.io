@@ -89,7 +89,8 @@ through its agent CLI, `book.mjs` holds the rules (which markets, what a forecas
 `trade.mjs` runs a round. The ledger is `src/data/kalshi-paper.json`; the page is built from it.
 
 ```sh
-npm run trade -- --models claude-opus-5-5,gpt-6-sol,grok-4.7-medium,random   # settle, then a new round
+npm run trade:round                                                           # settle, then a round: Claude Sonnet + the coin flip
+npm run trade -- --models claude-opus-5-5,gpt-6-sol,grok-4.7-medium,random   # the same with other traders
 npm run trade -- --settle                                                     # only settle and re-mark
 npm run trade:test                                                            # the book's unit tests
 ```

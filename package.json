@@ -11,6 +11,7 @@
     "og": "node scripts/og.mjs",
     "veil": "node scripts/veil.mjs",
     "trade": "node scripts/kalshi/trade.mjs",
+    "trade:round": "node scripts/kalshi/trade.mjs --models claude-sonnet-5-5,random",
     "trade:test": "node --test scripts/kalshi/book.test.mjs"
   },
   "dependencies": {
