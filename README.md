@@ -71,6 +71,15 @@ collections at build time (coursework stays out, same as `/reading`), so posts c
 Its machine (homes, `/etc`, the checker in `/srv/grader`, the repo in `~/.ctf`) is in `src/components/terminal/fs.ts`; the 8-ball, man pages
 and logo are in `terminal/text.ts`. History and the motd are kept per browser in `localStorage`. `mail mehdi` builds the address only when run.
 
+## Hidden pages
+
+A page in `src/pages/` that passes `noindex` to `Base` (like `/sigsegv` and `/wafer-thin-mint`) is published at
+its URL but nothing points to it: no nav link, kept out of the sitemap automatically, and not named in `robots.txt`
+(the `noindex` tag already keeps it out of search results). Don't link to it from a listed page.
+
+The sitemap is at `/pages-index.xml`, not the default `/sitemap-index.xml`, and `robots.txt` doesn't mention it.
+To have Google use it, submit that URL in Search Console.
+
 ## SIGSEGV board (`/sigsegv`)
 
 Unlisted page that lists every pull request on the COMS W4181 course forks (`scripts/fetch-sigsegv.mjs`
