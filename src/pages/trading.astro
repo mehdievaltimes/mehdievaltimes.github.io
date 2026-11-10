@@ -11,7 +11,7 @@ type Trader = { id: string; provider: string; model: string; cash: number; forec
 type Quote = { yesBid: number; yesAsk: number; noBid: number; noAsk: number; at: string };
 type Market = { ticker: string; series: string; category: string; title: string; sub: string; rules: string; closeTime: string; addedAt: string; result: 'yes' | 'no' | 'void' | null; settledAt?: string; last: Quote };
 
-const VIA: Record<string, string> = { claude: 'Claude Code', codex: 'Codex CLI', cursor: 'Cursor', random: 'control' };
+const VIA: Record<string, string> = { claude: 'Claude Code', codex: 'Codex CLI', cursor: 'Cursor', random: 'control', house: 'our own model' };
 const markets = Object.fromEntries(Object.entries(ledger.markets as Record<string, Market>).map(([k, m]) => [k, { ...m, title: m.title.replaceAll('**', '') }]));
 const start = ledger.config.bankroll;
 
@@ -32,7 +32,7 @@ const traders = (Object.values(ledger.traders) as Trader[]).map((t) => {
   const y = (f: Forecast) => (f.result === 'yes' ? 1 : 0);
   return {
     ...t, equity, pnl: equity - start,
-    name: t.provider === 'random' ? 'coin flip' : t.model,
+    name: t.provider === 'random' ? 'coin flip' : t.provider === 'house' ? 'house model' : t.model,
     open: trades.length - closed.length, trades: trades.length,
     won: closed.filter((f) => (f.pnl ?? 0) > 0).length, lost: closed.filter((f) => f.result !== 'void' && (f.pnl ?? 0) <= 0).length,
     realized: closed.reduce((s, f) => s + (f.pnl ?? 0), 0),

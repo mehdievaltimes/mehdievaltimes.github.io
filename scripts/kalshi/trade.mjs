@@ -7,6 +7,7 @@
 //   per market, routed like puppy bench: claude-* -> Claude Code, *grok*/*gemini* -> Cursor, the
 //   rest -> Codex; prefix with claude/, codex/ or cursor/ to force a route), then book.mjs decides
 //   what that forecast buys at the live ask, fee included. `random` is the control: a coin flip.
+//   `house` is our own model (house.mjs): the market's price, corrected; no CLI and no news.
 //   Every run first settles whatever has resolved. The ledger is src/data/kalshi-paper.json.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -14,6 +15,9 @@ import { fileURLToPath } from 'node:url';
 import { openMarkets, quotes, series } from './kalshi.mjs';
 import { parseSpec, traderId, forecast } from './agents.mjs';
 import { CONFIG, tradable, select, decide, decideCoin, settle, equity, newTrader } from './book.mjs';
+import { houseForecast } from './house.mjs';
+
+const usesCli = (t) => t.provider !== 'random' && t.provider !== 'house';
 
 const OUT = join(dirname(fileURLToPath(import.meta.url)), '../../src/data/kalshi-paper.json');
 const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > -1 ? process.argv[i + 1] : dflt; };
@@ -50,7 +54,7 @@ if (!settleOnly) {
 
   // 3. Ask every model about every market.
   const traders = specs.map((s) => (ledger.traders[traderId(s)] ??= newTrader({ id: traderId(s), ...s }, now)));
-  const jobs = picked.flatMap((m) => traders.filter((t) => t.provider !== 'random').map((t) => [t, m]));
+  const jobs = picked.flatMap((m) => traders.filter(usesCli).map((t) => [t, m]));
   const answers = new Map();
   let next = 0;
   await Promise.all(Array.from({ length: CONCURRENCY }, async () => {
@@ -64,7 +68,7 @@ if (!settleOnly) {
 
   // 4. Trade on the forecasts at fresh prices, everyone against the same quote.
   const fresh = picked.length ? await quotes(picked.map((m) => m.ticker)) : {};
-  const dead = new Set(traders.filter((t) => t.provider !== 'random' && picked.length && picked.every((m) => answers.get(`${t.id}|${m.ticker}`)?.error)).map((t) => t.id));
+  const dead = new Set(traders.filter((t) => usesCli(t) && picked.length && picked.every((m) => answers.get(`${t.id}|${m.ticker}`)?.error)).map((t) => t.id));
   for (const id of dead) console.warn(`${id}: every forecast errored (login? quota?), nothing recorded for it this round`);
   for (const m of picked) {
     const q = fresh[m.ticker] ?? m;
@@ -82,7 +86,7 @@ if (!settleOnly) {
       if (t.provider === 'random') {
         d = decideCoin({ quote: q, cash: t.cash, mult });
       } else {
-        const f = answers.get(`${t.id}|${m.ticker}`);
+        const f = t.provider === 'house' ? houseForecast({ ...q, category: m.category, closeTime: m.closeTime }) : answers.get(`${t.id}|${m.ticker}`);
         if (f.error) { t.forecasts.push({ ...rec, error: f.error }); continue; }
         Object.assign(rec, { p: f.p, confidence: f.confidence, reasoning: f.reasoning });
         d = decide({ p: f.p, quote: q, equity: equity(t, ledger.markets), cash: t.cash, mult });

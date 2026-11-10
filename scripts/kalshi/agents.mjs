@@ -6,10 +6,11 @@ import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-export const PROVIDERS = ['claude', 'codex', 'cursor', 'random'];
+export const PROVIDERS = ['claude', 'codex', 'cursor', 'random', 'house'];
 export function parseSpec(s) {
   const [p, rest] = s.split('/');
   if (s === 'random') return { provider: 'random', model: 'coin-flip' };
+  if (s === 'house') return { provider: 'house', model: 'price-v1' };
   if (rest && PROVIDERS.includes(p)) return { provider: p, model: rest };
   return { provider: s.startsWith('claude-') ? 'claude' : s.includes('grok') || s.includes('gemini') ? 'cursor' : 'codex', model: s };
 }
