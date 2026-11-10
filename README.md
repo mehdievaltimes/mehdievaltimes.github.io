@@ -81,6 +81,23 @@ own `ANSWER_SHA256`, so a solve in either place counts in both.
 The scripts that made the challenge files contain the flags, so they are deliberately not in this repo. To
 change a flag, regenerate that challenge's file and its hash together.
 
+## Paper trading (`/trading`)
+
+AI models trade real [Kalshi](https://kalshi.com) markets with fake money. The harness is `scripts/kalshi/`:
+`kalshi.mjs` reads Kalshi's public market data (no account or key), `agents.mjs` asks a model for a probability
+through its agent CLI, `book.mjs` holds the rules (which markets, what a forecast buys, fees, settling) and
+`trade.mjs` runs a round. The ledger is `src/data/kalshi-paper.json`; the page is built from it.
+
+```sh
+npm run trade -- --models claude-opus-5-5,gpt-6-sol,grok-4.7-medium,random   # settle, then a new round
+npm run trade -- --settle                                                     # only settle and re-mark
+npm run trade:test                                                            # the book's unit tests
+```
+
+Models route like puppy bench (`claude-*` to Claude Code, `*grok*`/`*gemini*` to Cursor, the rest to Codex), and
+`random` is the coin-flip control. Run it about once a day, then commit the ledger. Nothing in the harness can
+place a real order: it only ever sends GET requests.
+
 ## Induction-head demo (`/demos`, section 4)
 
 A two-layer, attention-only transformer that runs in the browser (`public/js/induction.js`), with weights in

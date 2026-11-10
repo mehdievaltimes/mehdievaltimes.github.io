@@ -1,0 +1,1338 @@
+{
+ "started": "2026-11-10T07:42:47.525Z",
+ "config": {
+  "bankroll": 1000,
+  "minEdge": 0.05,
+  "kelly": 0.25,
+  "maxStake": 50,
+  "feeRate": 0.07,
+  "coinStake": 25
+ },
+ "series": {
+  "KXNFLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NFL Game"
+  },
+  "KXNBAGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NBA Game"
+  },
+  "KXUFCFIGHT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "UFC Fight"
+  },
+  "KXUEFANLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "UEFA Nations League Game"
+  },
+  "KXNCAAFGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football Game"
+  },
+  "KXNCAAFSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football Spread"
+  },
+  "KXNFLSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Spread"
+  },
+  "KXBTCD": {
+   "category": "Crypto",
+   "feeMultiplier": 1,
+   "title": "Bitcoin price Above/below"
+  },
+  "KXTESTMATCH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's Test Cricket Match"
+  },
+  "KXNCAAMBSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's College Basketball Spread"
+  },
+  "KXUCLWGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Champions League Women's Game"
+  },
+  "KXLOLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "League of Legends Game"
+  },
+  "KXNCAAMBGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's College Basketball Game"
+  },
+  "KXNCAAFTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football Total Points"
+  },
+  "KXRT": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "Rotten Tomatoes Scores"
+  },
+  "KXNBASPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NBA Spread"
+  },
+  "KXNHLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NHL Game"
+  },
+  "KXCS2GAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Counter-Strike 2 Game"
+  },
+  "KXNFLTD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Touchdowns"
+  },
+  "KXHEGSETHOUT": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Hegseth out by...?"
+  },
+  "KXAAAGASW": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "US gas price up"
+  },
+  "KXTRUTHSOCIAL": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Number of Trump Truth Social posts this week?"
+  },
+  "KXNCAAMBTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's College Basketball Total Points"
+  },
+  "KXNFLTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Total Points"
+  },
+  "KXNATGASW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "Natural Gas Weekly"
+  },
+  "KXNBATOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NBA Total"
+  },
+  "KXLLM1": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "Year-end top LLM"
+  },
+  "KXVOTEHEGSETHIMPEACH": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Will the House vote on impeaching Pete Hegseth?"
+  },
+  "KXDIESELW": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "diesel price week"
+  },
+  "KXBTC": {
+   "category": "Crypto",
+   "feeMultiplier": 1,
+   "title": "Bitcoin range"
+  },
+  "KXHORMUZWEEKLY": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Traffic through the Strait of Hormuz"
+  },
+  "KXLOLSCORE": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "LOL Score"
+  },
+  "KXCONCACAFNLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "CONCACAF Nations League Game"
+  },
+  "KXUCLWTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Point Total"
+  },
+  "KXCOLLECTIONSALE": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "art collection sales"
+  },
+  "KXINTLFRIENDLYGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "International Friendly Game"
+  },
+  "KXTRUMPACT": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Will Trump do anything today?"
+  },
+  "KXUEFANLTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Point Total"
+  },
+  "KXTRUMPSAY": {
+   "category": "Mentions",
+   "feeMultiplier": 1,
+   "title": "What will trump say"
+  },
+  "KXEFLL1GAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "EFL League One Game"
+  },
+  "KXRAINWKND": {
+   "category": "Climate and Weather",
+   "feeMultiplier": 1,
+   "title": "Where will it rain this weekend?"
+  },
+  "KXUCLWBTTS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "BTTS"
+  },
+  "KXNFLFIRSTTD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football First Touchdown"
+  },
+  "KXETHD": {
+   "category": "Crypto",
+   "feeMultiplier": 1,
+   "title": "Ethereum price Above/below"
+  },
+  "KXNFL1HTEAMTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Half Team Total"
+  },
+  "KXUEFANLSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXAFCONGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "AFCON Game Winner"
+  },
+  "KXLIGAMXGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga MX Game"
+  },
+  "KXAPRPOTUS": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "President RCP approval rating this week"
+  },
+  "KXNBAPTS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NBA Player Points"
+  },
+  "KXEFLTROPHYTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "EFL Trophy Total"
+  },
+  "KXCOPADELREYTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Copa del Rey Total"
+  },
+  "KXALBUMEQUIV": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "How many album equivalent will album sell"
+  },
+  "KXGOLDW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "Gold Weekly price "
+  },
+  "KXWTIW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "WTI oil weekly range"
+  },
+  "KXTSAW": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "TSA check-ins this week"
+  },
+  "KXT20MATCH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's T20 Cricket Match"
+  },
+  "KXHORMUZMAX": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Maximum traffic through the Strait of Hormuz?"
+  },
+  "KXLOLTOTALMAPS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "League of Legends Total Games"
+  },
+  "KXGPT": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "ChatGPT Release Date"
+  }
+ },
+ "markets": {
+  "KXRAINWKND-26NOV14-PVD": {
+   "ticker": "KXRAINWKND-26NOV14-PVD",
+   "eventTicker": "KXRAINWKND-26NOV14",
+   "series": "KXRAINWKND",
+   "category": "Climate and Weather",
+   "title": "Will it rain in Providence between Nov 14 and Nov 15, 2026?",
+   "sub": "Providence",
+   "rules": "If the total precipitation at CLIPVD in Providence on any day within November 14, 2026 through November 15, 2026 is strictly greater than 0 inches, then the market resolves to Yes. Not all weather data is the same. While checking a source like AccuWeather or Google Weather may help guide your decision, the official and final value used to determine this market as reported by the Weather Company.\n\nReading weather data\nData for CLIPVD can be found at https://weather.com/kalshi.\n“Trace” amounts (T) and missing daily precipitation values are counted as 0 inches.",
+   "closeTime": "2026-11-16T05:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.48,
+    "yesAsk": 0.5,
+    "noBid": 0.5,
+    "noAsk": 0.52,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXNATGASW-26NOV1317-T3.599": {
+   "ticker": "KXNATGASW-26NOV1317-T3.599",
+   "eventTicker": "KXNATGASW-26NOV1317",
+   "series": "KXNATGASW",
+   "category": "Commodities",
+   "title": "Will the natural gas close price be above 3.599 USD/MMBtu on November 13, 2026 at 5:00 PM EST?",
+   "sub": "Above $3.599",
+   "rules": "If the close price of the 1-minute candlestick for natural gas on November 13, 2026 at 5:00 PM EST is above 3.599 USD/MMBtu, then the market resolves to Yes. The settlement value is rounded to the nearest 3 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified ti",
+   "closeTime": "2026-11-13T22:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.47,
+    "yesAsk": 0.5,
+    "noBid": 0.5,
+    "noAsk": 0.53,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXBTCD-26NOV1317-T74999.99": {
+   "ticker": "KXBTCD-26NOV1317-T74999.99",
+   "eventTicker": "KXBTCD-26NOV1317",
+   "series": "KXBTCD",
+   "category": "Crypto",
+   "title": "Bitcoin price on Nov 13, 2026?",
+   "sub": "$75,000 or above",
+   "rules": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EST is above 74999.99 at 5 PM EST on Nov 13, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+   "closeTime": "2026-11-13T22:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.48,
+    "yesAsk": 0.49,
+    "noBid": 0.51,
+    "noAsk": 0.52,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXAAAGASW-26NOV16-3.8400": {
+   "ticker": "KXAAAGASW-26NOV16-3.8400",
+   "eventTicker": "KXAAAGASW-26NOV16",
+   "series": "KXAAAGASW",
+   "category": "Economics",
+   "title": "Will average **gas prices** be above $3.8400?",
+   "sub": "Above 3.8400",
+   "rules": "If average regular gas prices for United States are strictly greater than $3.8400 on Nov 16, 2026 according to AAA, then the market resolves to Yes.",
+   "closeTime": "2026-11-16T04:59:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.4,
+    "yesAsk": 0.41,
+    "noBid": 0.59,
+    "noAsk": 0.6,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXRT-EBE-40": {
+   "ticker": "KXRT-EBE-40",
+   "eventTicker": "KXRT-EBE",
+   "series": "KXRT",
+   "category": "Entertainment",
+   "title": "Ebenezer Rotten Tomatoes score?",
+   "sub": "Above 40",
+   "rules": "If Ebenezer has a Tomatometer score of above 40 on Nov 16, 2026 at 10:00 AM ET, then the market resolves to Yes. The \"Fresh!\" and \"Certified Fresh!\" subtitles are meant for illustrative purposes only. The Tomatometer score must be above the strike value to resolve as YES (for example, a score of 75 would resolve \"Above 75\" as No.) The market will be determined the Monday after wide release at 10:00 AM ET.\n\nThis market and these products have not been endorsed by Rotten Tomatoes. Any references to Rotten Tomatoes or any associated marks are descriptive only and do not indicate an endorsement of",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.57,
+    "yesAsk": 0.58,
+    "noBid": 0.42,
+    "noAsk": 0.43,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXTRUMPSAY-26NOV16-MELA": {
+   "ticker": "KXTRUMPSAY-26NOV16-MELA",
+   "eventTicker": "KXTRUMPSAY-26NOV16",
+   "series": "KXTRUMPSAY",
+   "category": "Mentions",
+   "title": "Will Trump say \"Melania\" before Nov 16, 2026?",
+   "sub": "Melania",
+   "rules": "If Melania, or a plural or possessive form of Melania, is stated by Donald Trump after November 9, 2026 at 8:30am ET and before Nov 16, 2026 at 12:00am ET, then the market resolves to Yes. Payout criteria\nThe word or phrase must be stated by President Donald Trump in public statements, direct quotes published by Source Agencies, or written public statements on his personal social media accounts (Twitter/Truth Social).\nThe exact phrase/word, or a plural or possessive form of the phrase/word, must be used.\nFor phrases with slashes like \"Doge/Dogecoin,\" either word satisfies the criterion.\n\nDoesn",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.47,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.53,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXHEGSETHOUT-26APR-26NOV16": {
+   "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+   "eventTicker": "KXHEGSETHOUT-26APR",
+   "series": "KXHEGSETHOUT",
+   "category": "Politics",
+   "title": "Will Pete Hegseth be out as Secretary of Defense before Nov 16, 2026?",
+   "sub": "Before Nov 16, 2026",
+   "rules": "If Pete Hegseth leaves as Secretary of Defense before Nov 16, 2026, then the market resolves to Yes. Pete Hegseth must have an actual departure date and vacate the role within the time period.\n\nIf the person leaves the role due to death (i.e., if the person dies while holding the role), all contracts on the person may resolve to the last fair price as determined in the sole discretion of the Exchange. Temporary leaves of absence, suspensions, or recusals do not constitute leaving, resigning from, or retiring from the role unless the individual formally and permanently ceases to hold the positi",
+   "closeTime": "2026-11-16T04:59:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.07,
+    "yesAsk": 0.08,
+    "noBid": 0.92,
+    "noAsk": 0.93,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXLLM1-26NOV16-GOOG": {
+   "ticker": "KXLLM1-26NOV16-GOOG",
+   "eventTicker": "KXLLM1-26NOV16",
+   "series": "KXLLM1",
+   "category": "Science and Technology",
+   "title": "Best AI this week",
+   "sub": "Gemini",
+   "rules": "If Google has the top-ranked LLM on Nov 16, 2026, then the market resolves to Yes. If two models are tied under Rank (UB), then the model with the highest Arena Score will win. If two models are still tied after that, then the model with the most votes will win. If two models are still tied after that, the model that was released earlier will win. Important information: When checking the source for this market, check the 'Remove Style Control' toggle.",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.78,
+    "yesAsk": 0.83,
+    "noBid": 0.17,
+    "noAsk": 0.22,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXGOLDW-26NOV1317-T4128.99": {
+   "ticker": "KXGOLDW-26NOV1317-T4128.99",
+   "eventTicker": "KXGOLDW-26NOV1317",
+   "series": "KXGOLDW",
+   "category": "Commodities",
+   "title": "Will the gold close price be above 4128.99 USD/t.oz on November 13, 2026 at 5:00 PM EST?",
+   "sub": "Above $4128.99",
+   "rules": "If the close price of the 1-minute candlestick for gold on November 13, 2026 at 5:00 PM EST is above 4128.99 USD/t.oz, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified time, th",
+   "closeTime": "2026-11-13T22:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.44,
+    "yesAsk": 0.47,
+    "noBid": 0.53,
+    "noAsk": 0.56,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXUFCFIGHT-26NOV14GANHOK-HOK": {
+   "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+   "eventTicker": "KXUFCFIGHT-26NOV14GANHOK",
+   "series": "KXUFCFIGHT",
+   "category": "Sports",
+   "title": "Josh Hokit wins",
+   "sub": "Josh Hokit",
+   "rules": "If Josh Hokit  wins the Ciryl Gane vs Josh Hokit professional MMA fight originally scheduled for Nov 14, 2026, then the market resolves to Yes. If the fight ends in a draw/no contest, both markets will resolve to $0.50. Note that any revisions after Expiration will not be considered. Therefore, if a fighter is disqualified, removed, or the official result of the fight is reversed or changed in any way after the Contract expires, that will not impact resolution. If the fight is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve b",
+   "closeTime": "2026-11-17T03:30:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.35,
+    "yesAsk": 0.36,
+    "noBid": 0.64,
+    "noAsk": 0.65,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXUEFANLGAME-26NOV12TURBEL-BEL": {
+   "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+   "eventTicker": "KXUEFANLGAME-26NOV12TURBEL",
+   "series": "KXUEFANLGAME",
+   "category": "Sports",
+   "title": "Belgium wins",
+   "sub": "Belgium",
+   "rules": "If Belgium wins the Turkiye vs Belgium professional UEFA Nations League soccer game originally scheduled for Nov 12, 2026 after 90 minutes plus stoppage time (does not include extra time or penalties), then the market resolves to Yes. The following market refers to the Turkiye vs Belgium professional UEFA Nations League soccer game originally scheduled for Nov 12, 2026 after 90 minutes plus stoppage time (does not include extra time or penalties). If the game ends in a tie, the market called \"Tie\" resolves to Yes. If the game is cancelled or rescheduled to over 48 hours away, the market will r",
+   "closeTime": "2026-11-14T17:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.52,
+    "yesAsk": 0.53,
+    "noBid": 0.47,
+    "noAsk": 0.48,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  },
+  "KXNBAGAME-26NOV10OKCPOR-OKC": {
+   "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+   "eventTicker": "KXNBAGAME-26NOV10OKCPOR",
+   "series": "KXNBAGAME",
+   "category": "Sports",
+   "title": "Oklahoma City wins",
+   "sub": "Oklahoma City",
+   "rules": "If Oklahoma City wins the Oklahoma City vs Portland Pro Basketball game originally scheduled for Nov 10, 2026, then the market resolves to Yes. If the game is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is cancelled or not started within 48 hours of its originally scheduled start, all markets will resolve to a fair price.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and br",
+   "closeTime": "2026-11-13T04:00:00Z",
+   "addedAt": "2026-11-10T07:42:47.525Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.54,
+    "yesAsk": 0.55,
+    "noBid": 0.45,
+    "noAsk": 0.46,
+    "at": "2026-11-10T07:42:47.525Z"
+   }
+  }
+ },
+ "traders": {
+  "claude--claude-fable-5-2": {
+   "id": "claude--claude-fable-5-2",
+   "provider": "claude",
+   "model": "claude-fable-5-2",
+   "cash": 996.09,
+   "startedAt": "2026-11-10T07:42:47.525Z",
+   "forecasts": [
+    {
+     "ticker": "KXRAINWKND-26NOV14-PVD",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "p": 0.47,
+     "confidence": "low",
+     "reasoning": "Current forecasts give Saturday a 30-40% chance of showers (one source says partly sunny); Sunday is unclear. Over two days, measurable rain is roughly a coin flip, close to the market price. Trace amounts count as zero.",
+     "pass": "edge -0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNATGASW-26NOV1317-T3.599",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.5,
+     "p": 0.47,
+     "confidence": "low",
+     "reasoning": "December futures trade near $3.22, far below the strike, yet the market sits near 48%, suggesting the underlying is a different contract (likely January) trading near $3.60. I could not confirm this, so I defer to the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T74999.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "p": 0.47,
+     "confidence": "low",
+     "reasoning": "BTC is trading around $74.5k–$75.3k, right at the strike, with three days left and CPI reaction unknown. Roughly a coin flip; slight downward lean from ETF outflows and the pullback from $81k. No reason to deviate from market.",
+     "pass": "edge -0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8400",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.41,
+     "p": 0.47,
+     "confidence": "low",
+     "reasoning": "AAA was $4.0093 on Nov 9, falling about 2¢/day. Resolving NO needs a 17¢ drop in 7 days, slightly faster than the recent pace (16¢ last week). Crude under $90 supports further declines; outcome is near a coin flip, slightly above market.",
+     "pass": "edge 4.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRT-EBE-40",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.57,
+     "yesAsk": 0.58,
+     "p": 0.52,
+     "confidence": "low",
+     "reasoning": "No reviews yet; embargo lifts Nov 12, a day before release, which signals low studio confidence. Early social reactions are divided (\"fine I guess\", standard take), though Ti West is critic-friendly. Likely lands 35-55%, so near a coin flip.",
+     "pass": "edge 3.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-MELA",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.54,
+     "p": 0.66,
+     "confidence": "low",
+     "reasoning": "Trump said \"Melania\" often at October rallies, and a full week including Veterans Day gives many chances. But I found no confirmed mention since Nov 9, he often says \"First Lady\" instead, and the market sits near 50%.",
+     "trade": {
+      "side": "yes",
+      "contracts": 7,
+      "price": 0.54,
+      "fee": 0.13,
+      "cost": 3.78,
+      "edge": 0.1
+     }
+    },
+    {
+     "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.08,
+     "p": 0.06,
+     "confidence": "medium",
+     "reasoning": "Massie's impeachment push is live after GOP midterm losses, but House impeachment alone doesn't remove him. Trump publicly stood by Hegseth Monday and Hegseth is defiant. Only six days remain; a sudden firing or resignation is possible but unlikely.",
+     "pass": "edge 0.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-GOOG",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.78,
+     "yesAsk": 0.83,
+     "p": 0.81,
+     "confidence": "medium",
+     "reasoning": "Most recent snapshots show Google's Gemini 4 Carbon and Argon holding #1 and #2 on Arena text without style control, roughly 10-20 points ahead of Claude. Six days remain; main risk is a new Anthropic/OpenAI release or conflicting leaderboard data.",
+     "pass": "edge -3.0¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXGOLDW-26NOV1317-T4128.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.44,
+     "yesAsk": 0.47,
+     "p": 0.46,
+     "confidence": "low",
+     "reasoning": "Spot gold traded about $4,110–4,130 on Nov 10, slightly below the 4128.99 strike. Three-day volatility is roughly $90 with US CPI data pending, so this is near a coin flip, tilted slightly to NO. Consistent with the market price.",
+     "pass": "edge -2.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.35,
+     "yesAsk": 0.36,
+     "p": 0.33,
+     "confidence": "medium",
+     "reasoning": "Sportsbooks list Gane around -265 and Hokit +215, implying roughly 30-31% for Hokit after removing vig. Kalshi sits at 35-36%, possibly reflecting recent movement toward Hokit. I shade slightly below the market.",
+     "pass": "edge 0.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.52,
+     "yesAsk": 0.53,
+     "p": 0.52,
+     "confidence": "medium",
+     "reasoning": "Belgium were heavy 1.48 favourites at home in October and reportedly won 3-0 (unverified); Turkey are winless and hit by injuries. No November odds found, so I see no specific reason to move from the market price for the away fixture.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.54,
+     "yesAsk": 0.55,
+     "p": 0.55,
+     "confidence": "medium",
+     "reasoning": "Sportsbooks have OKC as a small road favorite (about -1.5, -125 moneyline) with Jalen Williams, Holmgren and Wallace out; Portland is missing Morant and Sharpe. Vig-free implied probability is roughly 54-55%, matching the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-11-10T07:42:47.525Z",
+     "equity": 999.38,
+     "cash": 996.09
+    }
+   ]
+  },
+  "claude--claude-opus-5-5": {
+   "id": "claude--claude-opus-5-5",
+   "provider": "claude",
+   "model": "claude-opus-5-5",
+   "cash": 946.27,
+   "startedAt": "2026-11-10T07:42:47.525Z",
+   "forecasts": [
+    {
+     "ticker": "KXRAINWKND-26NOV14-PVD",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "p": 0.43,
+     "confidence": "low",
+     "reasoning": "Two-day November base rate is about 50%. The freshest forecast puts rain on Friday the 13th, with Saturday partly sunny and Sunday mostly dry. Saturday showers elsewhere look like trace amounts, which count as zero. Lingering Friday rain could still reach early Saturday, so only a slight lean to NO.",
+     "pass": "edge 3.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNATGASW-26NOV1317-T3.599",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.5,
+     "p": 0.1,
+     "confidence": "medium",
+     "reasoning": "Gas is around $3.22–3.24 after the Nov 9 short squeeze. Closing above $3.599 needs about 11% more in four trading days, roughly 1.2 standard deviations at winter volatility, so about 10%. The ~48¢ market price looks mispriced unless I'm missing a very recent move.",
+     "trade": {
+      "side": "no",
+      "contracts": 91,
+      "price": 0.53,
+      "fee": 1.59,
+      "cost": 48.23,
+      "edge": 0.35
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T74999.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "p": 0.47,
+     "confidence": "medium",
+     "reasoning": "BTC is trading about $74.1k–$75.0k, right at the $75k threshold, with three days left and a slight recent downtrend. That makes it close to a coin flip, slightly below 50%, which matches the market.",
+     "pass": "edge -0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8400",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.41,
+     "p": 0.38,
+     "confidence": "medium",
+     "reasoning": "AAA $4.009 on 11/9, falling ~2.2c/day; need >3.84 after 7 days (~17c drop). Crude fell 22% from peak, lagged passthrough supports continued declines, landing near ~3.83-3.86. Iran rebound risk keeps it near coin-flip.",
+     "pass": "edge 0.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRT-EBE-40",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.57,
+     "yesAsk": 0.58,
+     "p": 0.53,
+     "confidence": "low",
+     "reasoning": "Early reactions are mixed, and those usually run more positive than full reviews. Reviews only come out the day before release, a bad sign. Ti West's films usually review well and Depp's performance is widely praised, so above 40 is roughly a coin flip, slightly below the market.",
+     "pass": "edge 2.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-MELA",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.54,
+     "p": 0.68,
+     "confidence": "medium",
+     "reasoning": "Melania is very much in the news: the ceasefire she helped broker, the LSU scholarships, and a docuseries debuting Nov 20. That gives Trump several reasons to name her over about six days, though he often says 'my wife' or 'First Lady' instead.",
+     "trade": {
+      "side": "yes",
+      "contracts": 7,
+      "price": 0.54,
+      "fee": 0.13,
+      "cost": 3.78,
+      "edge": 0.12
+     }
+    },
+    {
+     "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.08,
+     "p": 0.04,
+     "confidence": "medium",
+     "reasoning": "Six days left, Hegseth still active (briefing Nov 10), Trump publicly backs him. The reported DeSantis plan involves lame-duck confirmation and a January handover, so any departure likely comes after Nov 16. Impeachment can't finish in time. Small tail risk of an abrupt firing or resignation.",
+     "pass": "edge 2.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-GOOG",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.78,
+     "yesAsk": 0.83,
+     "p": 0.8,
+     "confidence": "medium",
+     "reasoning": "Several sources say Gemini 4 Carbon leads LMArena text as of early November, with Gemini 4 Argon second. With six days left, the main risks are a surprise rival release or the no-style-control view ranking differently. This matches the market.",
+     "pass": "edge -3.2¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXGOLDW-26NOV1317-T4128.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.44,
+     "yesAsk": 0.47,
+     "p": 0.47,
+     "confidence": "medium",
+     "reasoning": "Spot gold is about $4,115–4,128, just below the $4,129 line. Three days of roughly 1.5% daily moves dwarf that gap, and this week's CPI data could swing it either way. Close to a coin flip, slightly under, in line with the market.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.35,
+     "yesAsk": 0.36,
+     "p": 0.33,
+     "confidence": "medium",
+     "reasoning": "Sportsbooks have Hokit around +215 to +225, about 31% after removing the margin. Kalshi has ranged roughly 28–34%. The 35.5¢ price looks slightly high, so I shade a bit below it.",
+     "pass": "edge 0.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.52,
+     "yesAsk": 0.53,
+     "p": 0.51,
+     "confidence": "low",
+     "reasoning": "Belgium beat a winless Türkiye 3-0 in October and was about a 65-70% favourite at home. With Türkiye at home, a regulation-time Belgium win looks near 50%. The market's 52-53¢ seems roughly fair; I shade it down slightly for draw risk.",
+     "pass": "edge -0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.54,
+     "yesAsk": 0.55,
+     "p": 0.55,
+     "confidence": "medium",
+     "reasoning": "Betting lines have OKC as a 1.5-point road favourite (about -125), which implies roughly 55%. The Thunder are missing Holmgren, J. Williams and Wallace, and Portland is without Sharpe and Morant. The market price matches consensus, so there is no reason to deviate.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-11-10T07:42:47.525Z",
+     "equity": 995.06,
+     "cash": 946.27
+    }
+   ]
+  },
+  "claude--claude-sonnet-5-5": {
+   "id": "claude--claude-sonnet-5-5",
+   "provider": "claude",
+   "model": "claude-sonnet-5-5",
+   "cash": 896.3,
+   "startedAt": "2026-11-10T07:42:47.525Z",
+   "forecasts": [
+    {
+     "ticker": "KXRAINWKND-26NOV14-PVD",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "p": 0.5,
+     "confidence": "low",
+     "reasoning": "No usable forecast found for Nov 14–15. Mid-November climatology gives roughly a 50% chance of measurable rain on at least one of two days in Providence, in line with the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNATGASW-26NOV1317-T3.599",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.5,
+     "p": 0.3,
+     "confidence": "low",
+     "reasoning": "Search results suggest December futures near $3.0–3.2, well below 3.599, but they are undated or mixed with older articles. The market price near 48% suggests the actual price is close to the threshold, so I blended the two.",
+     "trade": {
+      "side": "no",
+      "contracts": 91,
+      "price": 0.53,
+      "fee": 1.59,
+      "cost": 48.23,
+      "edge": 0.15
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T74999.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "p": 0.44,
+     "confidence": "low",
+     "reasoning": "BTC was about $74.2-74.5k on Nov 9, so it needs a gain of about 1% within roughly 3 days. A volatility estimate gives about 40%, and I adjusted slightly toward the 47-48¢ market price.",
+     "pass": "edge 2.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8400",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.41,
+     "p": 0.3,
+     "confidence": "medium",
+     "reasoning": "AAA average was $4.009 on Nov 9, falling about 16 cents a week. It needs roughly 17 more cents by Nov 16 to reach $3.84 or below. The decline is likely slowing, so a finish just above $3.84 looks somewhat more likely.",
+     "trade": {
+      "side": "no",
+      "contracts": 81,
+      "price": 0.6,
+      "fee": 1.37,
+      "cost": 48.6,
+      "edge": 0.08
+     }
+    },
+    {
+     "ticker": "KXRT-EBE-40",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.57,
+     "yesAsk": 0.58,
+     "p": 0.55,
+     "confidence": "low",
+     "reasoning": "No Tomatometer score exists yet. First reactions are mixed, and a Kalshi snapshot showed 45% for above 40, though it may be stale. The market price is 57–58%, and Ti West films usually score reasonably well with critics.",
+     "pass": "edge 0.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-MELA",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.54,
+     "p": 0.62,
+     "confidence": "low",
+     "reasoning": "Trump mentions Melania frequently in speeches, remarks and posts, and a full week with several public events makes at least one mention likely. The market price looks slightly low, but I didn't search, so this rests on base rates.",
+     "trade": {
+      "side": "yes",
+      "contracts": 7,
+      "price": 0.54,
+      "fee": 0.13,
+      "cost": 3.78,
+      "edge": 0.06
+     }
+    },
+    {
+     "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.08,
+     "p": 0.06,
+     "confidence": "medium",
+     "reasoning": "Replacement talk after midterm losses, but Trump publicly backed Hegseth on Nov 4-5. The market needs an actual departure within six days, and an announcement would likely come with a later exit date.",
+     "pass": "edge 0.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-GOOG",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.78,
+     "yesAsk": 0.83,
+     "p": 0.8,
+     "confidence": "medium",
+     "reasoning": "Search results show Gemini 4 Argon (High) ranked first on the LMArena text board in October 2026. Polymarket gave it about 77% to lead on Nov 2. I couldn't check the live board, and Anthropic could overtake it, so I stayed near the market price.",
+     "pass": "edge -3.2¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXGOLDW-26NOV1317-T4128.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.44,
+     "yesAsk": 0.47,
+     "p": 0.47,
+     "confidence": "low",
+     "reasoning": "Spot gold was about $4,115–4,128 on Nov 10, essentially at the $4,128.99 strike with three days to go. That makes it close to a coin flip, slightly below 50% because spot sits just under the strike.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.35,
+     "yesAsk": 0.36,
+     "p": 0.31,
+     "confidence": "medium",
+     "reasoning": "Sportsbooks have Gane around -265 to -280, which implies about 29–30% for Hokit after removing the margin. The market at 35–36¢ looks slightly high given the favorite-longshot bias.",
+     "pass": "edge 2.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.52,
+     "yesAsk": 0.53,
+     "p": 0.52,
+     "confidence": "low",
+     "reasoning": "Belgium won 3-0 at home against Turkey on 2 October, and Turkey have lost both home Nations League games I found. The return game is in Turkey and draws don't count, so the market price of about 52% looks about right.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.54,
+     "yesAsk": 0.55,
+     "p": 0.56,
+     "confidence": "low",
+     "reasoning": "OKC is the stronger team but plays on the road at a 5-1 Portland team. Both sides have injuries and I found no betting lines, so I stayed close to the market price.",
+     "pass": "edge -0.7¢ is under the 5¢ minimum"
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-11-10T07:42:47.525Z",
+     "equity": 992.88,
+     "cash": 896.3
+    }
+   ]
+  },
+  "claude--claude-haiku-5-5": {
+   "id": "claude--claude-haiku-5-5",
+   "provider": "claude",
+   "model": "claude-haiku-5-5",
+   "cash": 956.12,
+   "startedAt": "2026-11-10T07:42:47.525Z",
+   "forecasts": [
+    {
+     "ticker": "KXRAINWKND-26NOV14-PVD",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "p": 0.5,
+     "confidence": "low",
+     "reasoning": "No specific forecast found for Nov 14–15. Climatology gives ~11 rain days in November, roughly 50–55% chance of measurable rain over two days, trimmed slightly because trace amounts count as zero. Matches market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNATGASW-26NOV1317-T3.599",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.5,
+     "p": 0.38,
+     "confidence": "low",
+     "reasoning": "Latest found prices (~$3.0–3.4 for Dec futures, Nov 9–10) sit below the 3.599 threshold; a ~6–20% rise over three days is plausible but not likely. Market at 48% suggests a higher reference price, so I shade down modestly.",
+     "trade": {
+      "side": "no",
+      "contracts": 73,
+      "price": 0.53,
+      "fee": 1.28,
+      "cost": 38.69,
+      "edge": 0.07
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T74999.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "p": 0.45,
+     "confidence": "medium",
+     "reasoning": "BTC ~$74.6k on Nov 10, just under the $75k threshold with about three days left. Roughly coin-flip given volatility; recent downtrend and below-50-week-MA tilt slightly to NO.",
+     "pass": "edge 1.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8400",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.41,
+     "p": 0.38,
+     "confidence": "medium",
+     "reasoning": "AAA regular avg was $4.0093 on Nov 9, falling ~12-16¢/week. Need ~17¢ drop by Nov 16 to fall to $3.84; continued trend lands near $3.85-3.90, so it's close, with geopolitical risk to oil cutting the decline short.",
+     "pass": "edge 0.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRT-EBE-40",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.57,
+     "yesAsk": 0.58,
+     "p": 0.6,
+     "confidence": "low",
+     "reasoning": "Ebenezer opens Nov 13 and no reviews or embargo date were found yet. Positive test-screening buzz and a Ti West horror-tinged take support a score above 40, but critics may punish Depp's comeback. Close to the 57-58¢ market price, with a slight lean up.",
+     "pass": "edge 0.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-MELA",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.54,
+     "p": 0.66,
+     "confidence": "medium",
+     "reasoning": "Trump refers to Melania often in long speeches and rallies, and the midterm campaign schedule keeps him speaking publicly. Six days is a short window, and I couldn't confirm his schedule, so I'm above the 47-54¢ market midpoint but not near certainty.",
+     "trade": {
+      "side": "yes",
+      "contracts": 7,
+      "price": 0.54,
+      "fee": 0.13,
+      "cost": 3.78,
+      "edge": 0.1
+     }
+    },
+    {
+     "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.08,
+     "p": 0.05,
+     "confidence": "medium",
+     "reasoning": "Reports say Trump privately weighed replacing Hegseth after the midterms and asked allies for successor names, which raises risk. But he publicly says he intends to keep him, the window is only 5 days, and any replacement timing seems more likely in December or January. Current 7-8% price looks slightly high.",
+     "pass": "edge 1.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-GOOG",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.78,
+     "yesAsk": 0.83,
+     "p": 0.78,
+     "confidence": "medium",
+     "reasoning": "Most sources from late Oct to early Nov 2026 put a Gemini 4 model (Carbon or Argon) at #1 on the Text Arena, with style control off. However, one Nov 7 snapshot has Claude Opus 5 within about 1 point, and sources disagree. Six days remain. The 78-83¢ price is consistent with this, so I stay close to it.",
+     "pass": "edge -1.2¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXGOLDW-26NOV1317-T4128.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.44,
+     "yesAsk": 0.47,
+     "p": 0.46,
+     "confidence": "medium",
+     "reasoning": "Spot gold on Nov 10 was about $4,110–4,127, just under the $4,128.99 threshold, with roughly three days to close. That leaves the outcome near a coin flip, slightly leaning NO, consistent with the market midpoint.",
+     "pass": "edge -2.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.35,
+     "yesAsk": 0.36,
+     "p": 0.32,
+     "confidence": "medium",
+     "reasoning": "Sportsbook lines (about +215 to +225 for Hokit) and Kalshi snapshots (Gane 68–72%) imply Hokit around 28–32%. The 35–36¢ market price looks slightly high. Draws are negligible.",
+     "pass": "edge 1.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.52,
+     "yesAsk": 0.53,
+     "p": 0.53,
+     "confidence": "medium",
+     "reasoning": "Belgium beat Turkey 3-0 away in October, Turkey is winless in the group, and Belgium is in form. Turkey's home advantage and the non-counting draw keep this near the market's 52-53% price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.54,
+     "yesAsk": 0.55,
+     "p": 0.55,
+     "confidence": "low",
+     "reasoning": "No result yet. Game is at Portland; the Thunder are road favorites by market price, with Sharpe, Topic, and Sorber out. I stay close to the 54.5¢ market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-11-10T07:42:47.525Z",
+     "equity": 995.91,
+     "cash": 956.12
+    }
+   ]
+  },
+  "random--coin-flip": {
+   "id": "random--coin-flip",
+   "provider": "random",
+   "model": "coin-flip",
+   "cash": 799.4,
+   "startedAt": "2026-11-10T07:42:47.525Z",
+   "forecasts": [
+    {
+     "ticker": "KXRAINWKND-26NOV14-PVD",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "trade": {
+      "side": "yes",
+      "contracts": 50,
+      "price": 0.5,
+      "fee": 0.88,
+      "cost": 25
+     }
+    },
+    {
+     "ticker": "KXNATGASW-26NOV1317-T3.599",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.5,
+     "trade": {
+      "side": "yes",
+      "contracts": 13,
+      "price": 0.5,
+      "fee": 0.23,
+      "cost": 6.5
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T74999.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "trade": {
+      "side": "no",
+      "contracts": 48,
+      "price": 0.52,
+      "fee": 0.84,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8400",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.41,
+     "trade": {
+      "side": "yes",
+      "contracts": 8,
+      "price": 0.41,
+      "fee": 0.14,
+      "cost": 3.28
+     }
+    },
+    {
+     "ticker": "KXRT-EBE-40",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.57,
+     "yesAsk": 0.58,
+     "pass": "position would be under one contract"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-MELA",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.47,
+     "yesAsk": 0.54,
+     "trade": {
+      "side": "no",
+      "contracts": 6,
+      "price": 0.53,
+      "fee": 0.11,
+      "cost": 3.18
+     }
+    },
+    {
+     "ticker": "KXHEGSETHOUT-26APR-26NOV16",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.08,
+     "trade": {
+      "side": "no",
+      "contracts": 26,
+      "price": 0.93,
+      "fee": 0.12,
+      "cost": 24.18
+     }
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-GOOG",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.78,
+     "yesAsk": 0.83,
+     "trade": {
+      "side": "no",
+      "contracts": 38,
+      "price": 0.22,
+      "fee": 0.46,
+      "cost": 8.36
+     }
+    },
+    {
+     "ticker": "KXGOLDW-26NOV1317-T4128.99",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.44,
+     "yesAsk": 0.47,
+     "trade": {
+      "side": "no",
+      "contracts": 44,
+      "price": 0.56,
+      "fee": 0.76,
+      "cost": 24.64
+     }
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.35,
+     "yesAsk": 0.36,
+     "trade": {
+      "side": "no",
+      "contracts": 38,
+      "price": 0.65,
+      "fee": 0.61,
+      "cost": 24.7
+     }
+    },
+    {
+     "ticker": "KXUEFANLGAME-26NOV12TURBEL-BEL",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.52,
+     "yesAsk": 0.53,
+     "trade": {
+      "side": "no",
+      "contracts": 52,
+      "price": 0.48,
+      "fee": 0.91,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
+     "at": "2026-11-10T07:42:47.525Z",
+     "yesBid": 0.54,
+     "yesAsk": 0.55,
+     "trade": {
+      "side": "no",
+      "contracts": 54,
+      "price": 0.46,
+      "fee": 0.94,
+      "cost": 24.84
+     }
+    }
+   ],
+   "history": [
+    {
+     "at": "2026-11-10T07:42:47.525Z",
+     "equity": 986.71,
+     "cash": 799.4
+    }
+   ]
+  }
+ },
+ "rounds": [
+  {
+   "at": "2026-11-10T07:42:47.525Z",
+   "markets": [
+    "KXRAINWKND-26NOV14-PVD",
+    "KXNATGASW-26NOV1317-T3.599",
+    "KXBTCD-26NOV1317-T74999.99",
+    "KXAAAGASW-26NOV16-3.8400",
+    "KXRT-EBE-40",
+    "KXTRUMPSAY-26NOV16-MELA",
+    "KXHEGSETHOUT-26APR-26NOV16",
+    "KXLLM1-26NOV16-GOOG",
+    "KXGOLDW-26NOV1317-T4128.99",
+    "KXUFCFIGHT-26NOV14GANHOK-HOK",
+    "KXUEFANLGAME-26NOV12TURBEL-BEL",
+    "KXNBAGAME-26NOV10OKCPOR-OKC"
+   ],
+   "traders": [
+    "claude--claude-fable-5-2",
+    "claude--claude-opus-5-5",
+    "claude--claude-sonnet-5-5",
+    "claude--claude-haiku-5-5",
+    "random--coin-flip"
+   ]
+  }
+ ],
+ "updated": "2026-11-10T07:42:47.525Z"
+}
