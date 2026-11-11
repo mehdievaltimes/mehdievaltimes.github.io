@@ -111,6 +111,12 @@ were already accurate (5¢ contracts paid out 5.5% of the time, 95¢ ones 95.9%)
 5¢ edge after fees on the held-out period, and it forecast no better than the raw price. A coin-flip taker lost
 6 to 9% of its stakes to the spread and fees. So `house` is not in the standard round.
 
+**Caveat, found Nov 11: treat those numbers as provisional.** That sample kept only markets whose final
+lifetime volume was 200 or more, and final volume depends on how a market resolved (a longshot that comes
+alive gets traded heavily). A thin-market run chosen the same way showed a 17 to 20% return that was purely
+this artifact. `backfill.py` now records what was known at each snapshot (open interest, the past day's
+volume) so tests can select on that instead; a rerun that selects nothing by final volume is in progress.
+
 ## Induction-head demo (`/demos`, section 4)
 
 A two-layer, attention-only transformer that runs in the browser (`public/js/induction.js`), with weights in
