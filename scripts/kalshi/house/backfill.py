@@ -97,7 +97,7 @@ def settled(series, start, end, max_pages, lo, hi):
 
 
 def candles(tickers, start, end):
-    """ticker -> [(end_ts, bid, ask)], splitting the batch when the API refuses it."""
+    """ticker -> [(end_ts, bid, ask, volume that hour, open interest)], splitting the batch when the API refuses it."""
     d = get(f"/markets/candlesticks?market_tickers={','.join(tickers)}&start_ts={start}&end_ts={end}&period_interval=60")
     if d is None:
         if len(tickers) == 1:
@@ -109,8 +109,8 @@ def candles(tickers, start, end):
         rows = []
         for c in m.get("candlesticks", []):
             b, a = c.get("yes_bid", {}).get("close_dollars"), c.get("yes_ask", {}).get("close_dollars")
-            if b is not None and a is not None:
-                rows.append((c["end_period_ts"], float(b), float(a)))
+            quoted = b is not None and a is not None
+            rows.append((c["end_period_ts"], float(b) if quoted else None, float(a) if quoted else None, num(c.get("volume_fp")), num(c.get("open_interest_fp"))))
         out[m["market_ticker"]] = sorted(rows)
     return out
 
@@ -163,23 +163,26 @@ def main():
     rows, done = 0, 0
     with gzip.open(out, "wt", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["ticker", "event", "series", "category", "open_ts", "close_ts", "volume", "result", "hours", "bid", "ask"])
+        # `volume` is the market's final lifetime volume, which nobody knew at the snapshot: fine for
+        # description, never for choosing which markets to test on. `oi` and `vol24` are point-in-time.
+        w.writerow(["ticker", "event", "series", "category", "open_ts", "close_ts", "volume", "result", "hours", "bid", "ask", "oi", "vol24"])
         for hour, ms in sorted(groups.items()):
-            for i in range(0, len(ms), 100):
-                chunk = ms[i : i + 100]
-                got = candles([m["ticker"] for m in chunk], (hour - max(HORIZONS) - 2) * 3600, (hour - min(HORIZONS) + 1) * 3600)
+            for i in range(0, len(ms), 80):
+                chunk = ms[i : i + 80]
+                got = candles([m["ticker"] for m in chunk], (hour - max(HORIZONS) - 26) * 3600, (hour - min(HORIZONS) + 1) * 3600)
                 for m in chunk:
                     cs = got.get(m["ticker"], [])
                     for h in HORIZONS:
                         target = m["close"] - h * 3600
                         if target < m["open"] + 3600:
                             continue  # the market wasn't open yet
-                        before = [c for c in cs if c[0] <= target]
+                        before = [c for c in cs if c[0] <= target and c[1] is not None]
                         if not before or target - before[-1][0] > 3 * 3600:
                             continue  # no quote near that time
-                        _, bid, ask = before[-1]
+                        _, bid, ask, _, oi = before[-1]
+                        vol24 = sum(c[3] for c in cs if target - 24 * 3600 < c[0] <= target)
                         if bid > 0 and ask < 1 and ask - bid <= args.max_spread + 1e-9:
-                            w.writerow([m["ticker"], m["event"], m["series"], m["category"], m["open"], m["close"], m["volume"], m["result"], h, bid, ask])
+                            w.writerow([m["ticker"], m["event"], m["series"], m["category"], m["open"], m["close"], m["volume"], m["result"], h, bid, ask, round(oi), round(vol24)])
                             rows += 1
                 done += len(chunk)
             if done % 2000 < 100:
