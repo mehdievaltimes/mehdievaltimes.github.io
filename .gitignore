@@ -3,5 +3,5 @@ dist
 .astro
 .DS_Store
 .claude
-data/
+/data/
 __pycache__/
