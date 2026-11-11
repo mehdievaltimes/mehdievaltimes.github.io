@@ -308,6 +308,306 @@
    "category": "Science and Technology",
    "feeMultiplier": 1,
    "title": "ChatGPT Release Date"
+  },
+  "KXNFLTEAMTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Team Total Points"
+  },
+  "KXEUROCUPGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "EuroCup Basketball Game"
+  },
+  "KXART": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "what will the price of art be?"
+  },
+  "KXTRUMPUFC": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Trump attend another UFC event this year"
+  },
+  "KXHORMUZPEAK": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Peak traffic through the Strait of Hormuz?"
+  },
+  "KXNFLOT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Overtime"
+  },
+  "KXNFLRECYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Receiving Yards"
+  },
+  "KXCONCACAFNLSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXWT20MATCH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Women's T20 Match"
+  },
+  "KXNFLPASSYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Passing Yards"
+  },
+  "KXGOOGSHARE": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "Google AI Market Share"
+  },
+  "KXFRAPLWGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "French Women's Première Ligue Game"
+  },
+  "KXBABELMANDEBWEEKLY": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Traffic through the Bab el-Mandeb Strait"
+  },
+  "KXPANAMAWEEKLY": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Traffic through the Panama Canal"
+  },
+  "KXBRASILEIROBGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Brasileiro Serie B Game"
+  },
+  "KXAPCALLAKSEN": {
+   "category": "Elections",
+   "feeMultiplier": 1,
+   "title": "When will AP call the Alaska U.S. Senate election?"
+  },
+  "KXNFLRSHYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Rushing Yards"
+  },
+  "KXDIMAYORGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga DIMAYOR Game"
+  },
+  "KXBRENTW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "Brent Oil"
+  },
+  "KXEFLTROPHYGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "EFL Trophy Game"
+  },
+  "KXCOPADELREYGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Copa Del Rey Game"
+  },
+  "KXNFLREC": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Player Receptions"
+  },
+  "KXUCLWSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXAAAGASWNJ": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "New Jersey gas price this week"
+  },
+  "KXLIGAEXPGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga Expansion Game"
+  },
+  "KXNFLWINMARGIN": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Win Margin"
+  },
+  "KXAFCONBTTS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "BTTS"
+  },
+  "KXNFL1HSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Half Spread"
+  },
+  "KXSSHIELDMATCH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Sheffield Shield Match"
+  },
+  "KXNCAAF1HSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football 1st Half Spread"
+  },
+  "KXANTHSHARE": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "Anthropic Market Share"
+  },
+  "KXCONCACAFNLTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Point Total"
+  },
+  "KXNFL1Q": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Quarter Winner"
+  },
+  "KXOPENSHARE": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "OpenAI Market Share"
+  },
+  "KXNFLRSHATT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Rushing Attempts"
+  },
+  "KXUEFANLSCORE": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Correct Score"
+  },
+  "KXODIMATCH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Men's ODI Cricket Match"
+  },
+  "KXUEFANLBTTS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "BTTS"
+  },
+  "KXDEEPSHARE": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "DeepSeek market share"
+  },
+  "KXLOLMAP": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "League of Legends Game Winner"
+  },
+  "KXNCAAFTEAMTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football Team Total Points"
+  },
+  "KXNFLTDPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Touchdowns Protected"
+  },
+  "KXEWSLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "England Women's Super League Game"
+  },
+  "KXNCAAWBGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Women's College Basketball Game"
+  },
+  "KXTRUMPNOMNUM": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "How many nominations will Trump send to the Senate?"
+  },
+  "KXTRUMPENDORSEMENTS": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "How many people will Trump endorse this week?"
+  },
+  "KXBURNHAMMENTION": {
+   "category": "Mentions",
+   "feeMultiplier": 1,
+   "title": "Andy Burnham mention"
+  },
+  "KXNFL1QSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Quarter Spread"
+  },
+  "KXAFCONSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXNFL1HTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st  Half Total Points"
+  },
+  "KXAPCALLMSSEN": {
+   "category": "Elections",
+   "feeMultiplier": 1,
+   "title": "When will AP call the Mississippi U.S. Senate election?"
+  },
+  "KXLIGAEXPSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXSILVERW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "Silver Weekly Price"
+  },
+  "KXATPFINALSQUAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Will Player Qualify for ATP Finals?"
+  },
+  "KXINTLFRIENDLYTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "International Friendly Total"
+  },
+  "KXAPCALLNC03": {
+   "category": "Elections",
+   "feeMultiplier": 1,
+   "title": "When will AP call the North Carolina 3rd District U.S. House election?"
+  },
+  "KXUSLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "USL Championship Game"
+  },
+  "KXNHLSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NHL Spread"
+  },
+  "KXJ2LEAGUEGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Japan J2 League Game"
+  },
+  "KXTRUMPGOLFD": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Will Trump golf?"
   }
  },
  "markets": {
@@ -323,11 +623,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.48,
-    "yesAsk": 0.5,
-    "noBid": 0.5,
-    "noAsk": 0.52,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.44,
+    "yesAsk": 0.45,
+    "noBid": 0.55,
+    "noAsk": 0.56,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXNATGASW-26NOV1317-T3.599": {
@@ -342,11 +642,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.47,
-    "yesAsk": 0.5,
-    "noBid": 0.5,
-    "noAsk": 0.53,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.53,
+    "yesAsk": 0.56,
+    "noBid": 0.44,
+    "noAsk": 0.47,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXBTCD-26NOV1317-T74999.99": {
@@ -361,11 +661,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.48,
-    "yesAsk": 0.49,
-    "noBid": 0.51,
-    "noAsk": 0.52,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.3,
+    "yesAsk": 0.31,
+    "noBid": 0.69,
+    "noAsk": 0.7,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXAAAGASW-26NOV16-3.8400": {
@@ -380,11 +680,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.4,
-    "yesAsk": 0.41,
-    "noBid": 0.59,
-    "noAsk": 0.6,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.08,
+    "yesAsk": 0.09,
+    "noBid": 0.91,
+    "noAsk": 0.92,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXRT-EBE-40": {
@@ -399,11 +699,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.57,
-    "yesAsk": 0.58,
-    "noBid": 0.42,
-    "noAsk": 0.43,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.38,
+    "yesAsk": 0.42,
+    "noBid": 0.58,
+    "noAsk": 0.62,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXTRUMPSAY-26NOV16-MELA": {
@@ -418,11 +718,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.47,
-    "yesAsk": 0.54,
-    "noBid": 0.46,
-    "noAsk": 0.53,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.54,
+    "yesAsk": 0.64,
+    "noBid": 0.36,
+    "noAsk": 0.46,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXHEGSETHOUT-26APR-26NOV16": {
@@ -437,11 +737,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.07,
-    "yesAsk": 0.08,
-    "noBid": 0.92,
-    "noAsk": 0.93,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.01,
+    "yesAsk": 0.02,
+    "noBid": 0.98,
+    "noAsk": 0.99,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXLLM1-26NOV16-GOOG": {
@@ -456,11 +756,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.78,
-    "yesAsk": 0.83,
-    "noBid": 0.17,
-    "noAsk": 0.22,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.87,
+    "yesAsk": 0.92,
+    "noBid": 0.08,
+    "noAsk": 0.13,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXGOLDW-26NOV1317-T4128.99": {
@@ -475,11 +775,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.44,
-    "yesAsk": 0.47,
-    "noBid": 0.53,
-    "noAsk": 0.56,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.11,
+    "yesAsk": 0.14,
+    "noBid": 0.86,
+    "noAsk": 0.89,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXUFCFIGHT-26NOV14GANHOK-HOK": {
@@ -498,7 +798,7 @@
     "yesAsk": 0.36,
     "noBid": 0.64,
     "noAsk": 0.65,
-    "at": "2026-11-10T07:42:47.525Z"
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXUEFANLGAME-26NOV12TURBEL-BEL": {
@@ -513,11 +813,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.52,
-    "yesAsk": 0.53,
-    "noBid": 0.47,
-    "noAsk": 0.48,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.54,
+    "yesAsk": 0.55,
+    "noBid": 0.45,
+    "noAsk": 0.46,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   },
   "KXNBAGAME-26NOV10OKCPOR-OKC": {
@@ -532,11 +832,239 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.54,
-    "yesAsk": 0.55,
-    "noBid": 0.45,
-    "noAsk": 0.46,
-    "at": "2026-11-10T07:42:47.525Z"
+    "yesBid": 0.53,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.47,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXRAINWKND-26NOV14-SGF": {
+   "ticker": "KXRAINWKND-26NOV14-SGF",
+   "eventTicker": "KXRAINWKND-26NOV14",
+   "series": "KXRAINWKND",
+   "category": "Climate and Weather",
+   "title": "Will it rain in Springfield between Nov 14 and Nov 15, 2026?",
+   "sub": "Springfield",
+   "rules": "If the total precipitation at CLISGF in Springfield on any day within November 14, 2026 through November 15, 2026 is strictly greater than 0 inches, then the market resolves to Yes. Not all weather data is the same. While checking a source like AccuWeather or Google Weather may help guide your decision, the official and final value used to determine this market as reported by the Weather Company.\n\nReading weather data\nData for CLISGF can be found at https://weather.com/kalshi.\n“Trace” amounts (T) and missing daily precipitation values are counted as 0 inches.",
+   "closeTime": "2026-11-16T06:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.48,
+    "yesAsk": 0.5,
+    "noBid": 0.5,
+    "noAsk": 0.52,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXBRENTW-26NOV1317-T88.99": {
+   "ticker": "KXBRENTW-26NOV1317-T88.99",
+   "eventTicker": "KXBRENTW-26NOV1317",
+   "series": "KXBRENTW",
+   "category": "Commodities",
+   "title": "Will the brent crude oil close price be above 88.99 USD/Bbl on November 13, 2026 at 5:00 PM EST?",
+   "sub": "Above $88.99",
+   "rules": "If the close price of the 1-minute candlestick for brent crude oil on November 13, 2026 at 5:00 PM EST is above 88.99 USD/Bbl, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified ",
+   "closeTime": "2026-11-13T22:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.56,
+    "yesAsk": 0.59,
+    "noBid": 0.41,
+    "noAsk": 0.44,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXBTCD-26NOV1317-T73499.99": {
+   "ticker": "KXBTCD-26NOV1317-T73499.99",
+   "eventTicker": "KXBTCD-26NOV1317",
+   "series": "KXBTCD",
+   "category": "Crypto",
+   "title": "Bitcoin price on Nov 13, 2026?",
+   "sub": "$73,500 or above",
+   "rules": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EST is above 73499.99 at 5 PM EST on Nov 13, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+   "closeTime": "2026-11-13T22:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.53,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.47,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXAAAGASW-26NOV16-3.8000": {
+   "ticker": "KXAAAGASW-26NOV16-3.8000",
+   "eventTicker": "KXAAAGASW-26NOV16",
+   "series": "KXAAAGASW",
+   "category": "Economics",
+   "title": "Will average **gas prices** be above $3.8000?",
+   "sub": "Above 3.8000",
+   "rules": "If average regular gas prices for United States are strictly greater than $3.8000 on Nov 16, 2026 according to AAA, then the market resolves to Yes.",
+   "closeTime": "2026-11-16T04:59:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.61,
+    "yesAsk": 0.62,
+    "noBid": 0.38,
+    "noAsk": 0.39,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXAPCALLAKSEN-26NOV04-NOV181200A": {
+   "ticker": "KXAPCALLAKSEN-26NOV04-NOV181200A",
+   "eventTicker": "KXAPCALLAKSEN-26NOV04",
+   "series": "KXAPCALLAKSEN",
+   "category": "Elections",
+   "title": "Will AP call the 2026 Alaska U.S. Senate election before 12:00 AM ET on Nov 18, 2026?",
+   "sub": "Before Nov 18",
+   "rules": "If the Associated Press makes its first definitive call of a winner for the 2026 Alaska U.S. Senate election before 12:00 AM ET on Nov 18, 2026, then the market resolves to Yes. The call must be an explicit declaration that a candidate, party, or option has won, will win, or equivalent clear language indicating AP has determined the winner. The phrase \"projected to win\" alone is insufficient; it must be AP's clear election call. The call must appear on one of AP's primary platforms (main website, television broadcast, or official social media if that is its primary medium) and not be prefaced ",
+   "closeTime": "2026-11-18T05:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.55,
+    "yesAsk": 0.63,
+    "noBid": 0.37,
+    "noAsk": 0.45,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXRT-EBE-35": {
+   "ticker": "KXRT-EBE-35",
+   "eventTicker": "KXRT-EBE",
+   "series": "KXRT",
+   "category": "Entertainment",
+   "title": "Ebenezer Rotten Tomatoes score?",
+   "sub": "Above 35",
+   "rules": "If Ebenezer has a Tomatometer score of above 35 on Nov 16, 2026 at 10:00 AM ET, then the market resolves to Yes. The \"Fresh!\" and \"Certified Fresh!\" subtitles are meant for illustrative purposes only. The Tomatometer score must be above the strike value to resolve as YES (for example, a score of 75 would resolve \"Above 75\" as No.) The market will be determined the Monday after wide release at 10:00 AM ET.\n\nThis market and these products have not been endorsed by Rotten Tomatoes. Any references to Rotten Tomatoes or any associated marks are descriptive only and do not indicate an endorsement of",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.55,
+    "yesAsk": 0.57,
+    "noBid": 0.43,
+    "noAsk": 0.45,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXTRUMPSAY-26NOV16-FILI": {
+   "ticker": "KXTRUMPSAY-26NOV16-FILI",
+   "eventTicker": "KXTRUMPSAY-26NOV16",
+   "series": "KXTRUMPSAY",
+   "category": "Mentions",
+   "title": "Will Trump say \"Filibuster\" before Nov 16, 2026?",
+   "sub": "Filibuster",
+   "rules": "If Filibuster, or a plural or possessive form of Filibuster, is stated by Donald Trump after November 9, 2026 at 8:30am ET and before Nov 16, 2026 at 12:00am ET, then the market resolves to Yes. Payout criteria\nThe word or phrase must be stated by President Donald Trump in public statements, direct quotes published by Source Agencies, or written public statements on his personal social media accounts (Twitter/Truth Social).\nThe exact phrase/word, or a plural or possessive form of the phrase/word, must be used.\nFor phrases with slashes like \"Doge/Dogecoin,\" either word satisfies the criterion.\n",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.4,
+    "yesAsk": 0.44,
+    "noBid": 0.56,
+    "noAsk": 0.6,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXTRUMPUFC-26NOV-DJT": {
+   "ticker": "KXTRUMPUFC-26NOV-DJT",
+   "eventTicker": "KXTRUMPUFC-26NOV",
+   "series": "KXTRUMPUFC",
+   "category": "Politics",
+   "title": "Will Donald Trump attend UFC 334?",
+   "sub": "Yes",
+   "rules": "If Donald Trump attends UFC 334, then the market resolves to Yes. Attendance is confirmed if the person is reported present at the event by any Source Agency, including social media posts by the person themselves. Brief appearances or partial attendance count as attendance. Kalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Ultimate Fighting Championship (UFC) or TKO Group Holdings. All trademarks, logos, and brand names are the property of their respective owners.",
+   "closeTime": "2026-11-15T15:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.06,
+    "yesAsk": 0.07,
+    "noBid": 0.93,
+    "noAsk": 0.94,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXLLM1-26NOV16-ANTH": {
+   "ticker": "KXLLM1-26NOV16-ANTH",
+   "eventTicker": "KXLLM1-26NOV16",
+   "series": "KXLLM1",
+   "category": "Science and Technology",
+   "title": "Best AI this week",
+   "sub": "Claude",
+   "rules": "If Anthropic has the top-ranked LLM on Nov 16, 2026, then the market resolves to Yes. If two models are tied under Rank (UB), then the model with the highest Arena Score will win. If two models are still tied after that, then the model with the most votes will win. If two models are still tied after that, the model that was released earlier will win. Important information: When checking the source for this market, check the 'Remove Style Control' toggle.",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.07,
+    "yesAsk": 0.11,
+    "noBid": 0.89,
+    "noAsk": 0.93,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXNFLTOTAL-26NOV15MINGB-42": {
+   "ticker": "KXNFLTOTAL-26NOV15MINGB-42",
+   "eventTicker": "KXNFLTOTAL-26NOV15MINGB",
+   "series": "KXNFLTOTAL",
+   "category": "Sports",
+   "title": "Full Game: over 41.5 points scored?",
+   "sub": "Over 41.5 points",
+   "rules": "If Minnesota and Green Bay collectively score more than 41.5 points in the Minnesota vs Green Bay Pro Football game originally scheduled for Nov 15, 2026, then the market resolves to Yes. Kalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+   "closeTime": "2026-11-17T18:00:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.51,
+    "yesAsk": 0.52,
+    "noBid": 0.48,
+    "noAsk": 0.49,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXNFLGAME-26NOV12WASNYG-NYG": {
+   "ticker": "KXNFLGAME-26NOV12WASNYG-NYG",
+   "eventTicker": "KXNFLGAME-26NOV12WASNYG",
+   "series": "KXNFLGAME",
+   "category": "Sports",
+   "title": "New York G wins",
+   "sub": "New York G",
+   "rules": "If New York G wins the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026, then the market resolves to Yes. The following market refers to the team who wins the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026. If the game ends in a tie, the market will resolve to $0.50 for each team. If the game is postponed but begins within 48 hours from its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is not started within 48 hours, the market will resolve to a fair pric",
+   "closeTime": "2026-11-15T01:15:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.56,
+    "yesAsk": 0.57,
+    "noBid": 0.43,
+    "noAsk": 0.44,
+    "at": "2026-11-11T00:37:34.764Z"
+   }
+  },
+  "KXNFLSPREAD-26NOV12WASNYG-NYG3": {
+   "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
+   "eventTicker": "KXNFLSPREAD-26NOV12WASNYG",
+   "series": "KXNFLSPREAD",
+   "category": "Sports",
+   "title": "New York G wins by over 2.5 points?",
+   "sub": "New York G wins by over 2.5 points",
+   "rules": "If New York G wins by more than 2.5 points in the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026, then the market resolves to Yes. Kalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
+   "closeTime": "2026-11-15T01:15:00Z",
+   "addedAt": "2026-11-11T00:37:34.764Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.49,
+    "yesAsk": 0.5,
+    "noBid": 0.5,
+    "noAsk": 0.51,
+    "at": "2026-11-11T00:37:34.764Z"
    }
   }
  },
@@ -680,6 +1208,11 @@
     {
      "at": "2026-11-10T07:42:47.525Z",
      "equity": 999.38,
+     "cash": 996.09
+    },
+    {
+     "at": "2026-11-11T00:37:34.764Z",
+     "equity": 999.87,
      "cash": 996.09
     }
    ]
@@ -831,6 +1364,11 @@
      "at": "2026-11-10T07:42:47.525Z",
      "equity": 995.06,
      "cash": 946.27
+    },
+    {
+     "at": "2026-11-11T00:37:34.764Z",
+     "equity": 990.09,
+     "cash": 946.27
     }
    ]
   },
@@ -838,7 +1376,7 @@
    "id": "claude--claude-sonnet-5-5",
    "provider": "claude",
    "model": "claude-sonnet-5-5",
-   "cash": 896.3,
+   "cash": 885.55,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -981,6 +1519,133 @@
      "confidence": "low",
      "reasoning": "OKC is the stronger team but plays on the road at a 5-1 Portland team. Both sides have injuries and I found no betting lines, so I stayed close to the market price.",
      "pass": "edge -0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRAINWKND-26NOV14-SGF",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "p": 0.35,
+     "confidence": "low",
+     "reasoning": "KY3 forecast from Nov 10 has Saturday Nov 14 dry and only isolated to scattered showers possible Sunday Nov 15. The November base rate for two days is about 40%, so the market's 51% looks a bit high.",
+     "trade": {
+      "side": "no",
+      "contracts": 20,
+      "price": 0.52,
+      "fee": 0.35,
+      "cost": 10.4,
+      "edge": 0.11
+     }
+    },
+    {
+     "ticker": "KXBRENTW-26NOV1317-T88.99",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.56,
+     "yesAsk": 0.59,
+     "p": 0.62,
+     "confidence": "low",
+     "reasoning": "Brent settled around $91.5 on Nov 10, about 2.5% above the $88.99 threshold. The trend is down on Iran peace hopes, and volatility is high. I couldn't find a Nov 11 price. The market price of about 57% looks slightly low.",
+     "pass": "edge 1.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T73499.99",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.53,
+     "yesAsk": 0.54,
+     "p": 0.53,
+     "confidence": "low",
+     "reasoning": "The latest price I found is about $76k on Nov 6, in a downtrend. The market price implies bitcoin is near the $73.5k strike, so I'm staying close to the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8000",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.61,
+     "yesAsk": 0.62,
+     "p": 0.66,
+     "confidence": "medium",
+     "reasoning": "AAA average was about $3.98 on Nov 10 and falling roughly 1.5–2 cents a day, which projects to about $3.86–3.90 by Nov 16. That is above $3.80 but the margin is thin, and the daily readings are unverified.",
+     "pass": "edge 2.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAPCALLAKSEN-26NOV04-NOV181200A",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.55,
+     "yesAsk": 0.63,
+     "p": 0.6,
+     "confidence": "low",
+     "reasoning": "Peltola leads by about 2.5k first-choice votes (48.6% vs 47.5%) with many absentee ballots left. AP called the 2022 race before ranked-choice tabulation, but she is under 50% and litigation could delay a call past Nov 17.",
+     "pass": "edge -4.6¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRT-EBE-35",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.55,
+     "yesAsk": 0.57,
+     "p": 0.57,
+     "confidence": "low",
+     "reasoning": "No reviews or score were found for Ti West's Paramount film *Ebenezer* (opens Nov 13, 2026). West's past films were mostly well reviewed, but studio horror can split critics. I stayed close to the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-FILI",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.44,
+     "p": 0.4,
+     "confidence": "low",
+     "reasoning": "Trump mentions the filibuster often, including in 2025 and March 2026. I found no evidence it is a live issue in the Nov 9–16, 2026 window, and the window is short, so I stayed near the market price.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTRUMPUFC-26NOV-DJT",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.06,
+     "yesAsk": 0.07,
+     "p": 0.05,
+     "confidence": "medium",
+     "reasoning": "UFC 334 is Nov 14 at MSG in New York. Trump attended UFC 309 there in 2024, but I found no reports or Dana White hints that he plans to attend this one. The market price of 6–7¢ is close to my estimate.",
+     "pass": "edge 0.6¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-ANTH",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.11,
+     "p": 0.06,
+     "confidence": "medium",
+     "reasoning": "Secondhand reports from late October 2026 show Google's Gemini 4 at the top of the LMArena text leaderboard (about 1524–1528). Claude's top score was 1508 in August. Claude would need to overtake Gemini within a week, which is unlikely. I couldn't open the live leaderboard to check.",
+     "pass": "edge 0.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNFLTOTAL-26NOV15MINGB-42",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.51,
+     "yesAsk": 0.52,
+     "p": 0.54,
+     "confidence": "low",
+     "reasoning": "The market price near 51–52¢ implies a true total around 41.5. One unverified source showed a 45.5 total, which suggests a modest lean to the over, so I shaded slightly above the market.",
+     "pass": "edge 0.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNFLGAME-26NOV12WASNYG-NYG",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.56,
+     "yesAsk": 0.57,
+     "p": 0.56,
+     "confidence": "low",
+     "reasoning": "No game-specific information found in search; relying on the market price of 56–57¢ for the Giants, shaded slightly lower.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.5,
+     "p": 0.49,
+     "confidence": "low",
+     "reasoning": "No current line was found for the Nov 12 game. The market price of about 50% implies a line near Giants -2.5, and I have no specific reason to move away from it.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
     }
    ],
    "history": [
@@ -988,6 +1653,11 @@
      "at": "2026-11-10T07:42:47.525Z",
      "equity": 992.88,
      "cash": 896.3
+    },
+    {
+     "at": "2026-11-11T00:37:34.764Z",
+     "equity": 1013.08,
+     "cash": 885.55
     }
    ]
   },
@@ -1138,6 +1808,11 @@
      "at": "2026-11-10T07:42:47.525Z",
      "equity": 995.91,
      "cash": 956.12
+    },
+    {
+     "at": "2026-11-11T00:37:34.764Z",
+     "equity": 992.02,
+     "cash": 956.12
     }
    ]
   },
@@ -1145,7 +1820,7 @@
    "id": "random--coin-flip",
    "provider": "random",
    "model": "coin-flip",
-   "cash": 799.4,
+   "cash": 565.93,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -1297,6 +1972,162 @@
       "fee": 0.94,
       "cost": 24.84
      }
+    },
+    {
+     "ticker": "KXRAINWKND-26NOV14-SGF",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.5,
+     "trade": {
+      "side": "yes",
+      "contracts": 5,
+      "price": 0.5,
+      "fee": 0.09,
+      "cost": 2.5
+     }
+    },
+    {
+     "ticker": "KXBRENTW-26NOV1317-T88.99",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.56,
+     "yesAsk": 0.59,
+     "trade": {
+      "side": "no",
+      "contracts": 56,
+      "price": 0.44,
+      "fee": 0.97,
+      "cost": 24.64
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV1317-T73499.99",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.53,
+     "yesAsk": 0.54,
+     "trade": {
+      "side": "yes",
+      "contracts": 46,
+      "price": 0.54,
+      "fee": 0.8,
+      "cost": 24.84
+     }
+    },
+    {
+     "ticker": "KXAAAGASW-26NOV16-3.8000",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.61,
+     "yesAsk": 0.62,
+     "trade": {
+      "side": "yes",
+      "contracts": 40,
+      "price": 0.62,
+      "fee": 0.66,
+      "cost": 24.8
+     }
+    },
+    {
+     "ticker": "KXAPCALLAKSEN-26NOV04-NOV181200A",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.55,
+     "yesAsk": 0.63,
+     "trade": {
+      "side": "no",
+      "contracts": 4,
+      "price": 0.45,
+      "fee": 0.07,
+      "cost": 1.8
+     }
+    },
+    {
+     "ticker": "KXRT-EBE-35",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.55,
+     "yesAsk": 0.57,
+     "trade": {
+      "side": "no",
+      "contracts": 2,
+      "price": 0.45,
+      "fee": 0.04,
+      "cost": 0.9
+     }
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-FILI",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.4,
+     "yesAsk": 0.44,
+     "trade": {
+      "side": "yes",
+      "contracts": 56,
+      "price": 0.44,
+      "fee": 0.97,
+      "cost": 24.64
+     }
+    },
+    {
+     "ticker": "KXTRUMPUFC-26NOV-DJT",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.06,
+     "yesAsk": 0.07,
+     "trade": {
+      "side": "no",
+      "contracts": 26,
+      "price": 0.94,
+      "fee": 0.11,
+      "cost": 24.44
+     }
+    },
+    {
+     "ticker": "KXLLM1-26NOV16-ANTH",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.11,
+     "trade": {
+      "side": "no",
+      "contracts": 26,
+      "price": 0.93,
+      "fee": 0.12,
+      "cost": 24.18
+     }
+    },
+    {
+     "ticker": "KXNFLTOTAL-26NOV15MINGB-42",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.51,
+     "yesAsk": 0.52,
+     "trade": {
+      "side": "yes",
+      "contracts": 48,
+      "price": 0.52,
+      "fee": 0.84,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXNFLGAME-26NOV12WASNYG-NYG",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.56,
+     "yesAsk": 0.57,
+     "trade": {
+      "side": "yes",
+      "contracts": 43,
+      "price": 0.57,
+      "fee": 0.74,
+      "cost": 24.51
+     }
+    },
+    {
+     "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
+     "at": "2026-11-11T00:37:34.764Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.5,
+     "trade": {
+      "side": "no",
+      "contracts": 49,
+      "price": 0.51,
+      "fee": 0.86,
+      "cost": 24.99
+     }
     }
    ],
    "history": [
@@ -1304,6 +2135,11 @@
      "at": "2026-11-10T07:42:47.525Z",
      "equity": 986.71,
      "cash": 799.4
+    },
+    {
+     "at": "2026-11-11T00:37:34.764Z",
+     "equity": 988.92,
+     "cash": 565.93
     }
    ]
   }
@@ -1332,7 +2168,28 @@
     "claude--claude-haiku-5-5",
     "random--coin-flip"
    ]
+  },
+  {
+   "at": "2026-11-11T00:37:34.764Z",
+   "markets": [
+    "KXRAINWKND-26NOV14-SGF",
+    "KXBRENTW-26NOV1317-T88.99",
+    "KXBTCD-26NOV1317-T73499.99",
+    "KXAAAGASW-26NOV16-3.8000",
+    "KXAPCALLAKSEN-26NOV04-NOV181200A",
+    "KXRT-EBE-35",
+    "KXTRUMPSAY-26NOV16-FILI",
+    "KXTRUMPUFC-26NOV-DJT",
+    "KXLLM1-26NOV16-ANTH",
+    "KXNFLTOTAL-26NOV15MINGB-42",
+    "KXNFLGAME-26NOV12WASNYG-NYG",
+    "KXNFLSPREAD-26NOV12WASNYG-NYG3"
+   ],
+   "traders": [
+    "claude--claude-sonnet-5-5",
+    "random--coin-flip"
+   ]
   }
  ],
- "updated": "2026-11-10T07:42:47.525Z"
+ "updated": "2026-11-11T00:37:34.764Z"
 }
