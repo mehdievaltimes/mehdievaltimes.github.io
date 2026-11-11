@@ -26,7 +26,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[3]
 HORIZONS = (6, 24, 72)
-CFG = dict(min_edge=0.05, kelly=0.25, max_stake=50.0, fee=0.07, bankroll=1000.0)
+CFG = dict(min_edge=0.05, kelly=0.25, max_stake=50.0, fee=0.07, bankroll=1000.0, max_spread=0.08)
 
 logit = lambda p: np.log(p / (1 - p))
 sigmoid = lambda z: 1 / (1 + np.exp(-z))
@@ -107,7 +107,7 @@ def by_event(events, values):
 def trade(d, p, rand=None):
     """Profit per row under book.mjs's rules (fee multiplier 1, no size limit). rand -> the coin flip."""
     pc = np.clip(p, 0.02, 0.98)
-    ok = (d["bid"] > 0) & (d["ask"] < 1) & (d["ask"] - d["bid"] <= 0.08) & (d["ask"] >= 0.06) & (d["ask"] <= 0.94)
+    ok = (d["bid"] > 0) & (d["ask"] < 1) & (d["ask"] - d["bid"] <= CFG["max_spread"] + 1e-9) & (d["ask"] >= 0.06) & (d["ask"] <= 0.94)
     price_y, price_n = d["ask"], 1 - d["bid"]
     unit = lambda pr: pr + CFG["fee"] * pr * (1 - pr)
     edge_y, edge_n = pc - unit(price_y), (1 - pc) - unit(price_n)
@@ -136,7 +136,9 @@ def main():
     ap.add_argument("--out", default=str(ROOT / "scripts" / "kalshi" / "house-model.json"))
     ap.add_argument("--train-share", type=float, default=0.6, help="share of the time span used for fitting")
     ap.add_argument("--min-group", type=int, default=1500, help="a category needs this many rows to get its own terms")
+    ap.add_argument("--max-spread", type=float, default=CFG["max_spread"], help="widest bid-ask gap the simulated trader will cross")
     args = ap.parse_args()
+    CFG["max_spread"] = args.max_spread
 
     d, n_markets = load(args.data, args.min_group)
     groups = sorted(set(d["group"]) - {"Other"})
