@@ -102,20 +102,22 @@ place a real order: it only ever sends GET requests.
 ### Our own model (`scripts/kalshi/house/`)
 
 `backfill.py` builds a training set from Kalshi's public history (settled markets since the live-data cutoff,
-with the bid/ask each had 6, 24 and 72 hours before it closed; about an hour, written to the git-ignored
-`data/kalshi/`). `train.py` fits a small correction to the price on the older closes, tests it on the later
-ones, and writes `scripts/kalshi/house-model.json`, which `--models house` trades on.
+with the bid/ask, open interest and past day's volume each had 6, 24 and 72 hours before it closed; about
+90 minutes, written to the git-ignored `data/kalshi/`). `train.py` fits a small correction to the price on the
+older closes, tests it on the later ones, and writes `scripts/kalshi/house-model.json`, which `--models house`
+trades on.
 
-First attempt, Nov 2026 (73k rows, 34k markets, Sep 12 to Nov 9): **it did not pass**. Prices in liquid markets
-were already accurate (5¢ contracts paid out 5.5% of the time, 95¢ ones 95.9%), the correction never found a
-5¢ edge after fees on the held-out period, and it forecast no better than the raw price. A coin-flip taker lost
-6 to 9% of its stakes to the spread and fees. So `house` is not in the standard round.
+Result, Nov 2026 (69k rows, 29k markets, 183 series, closes Sep 12 to Nov 10): **it did not pass**. Prices were
+already accurate at every horizon (24 hours out, contracts near 15¢ paid out 13.4% of the time, near 57¢
+56.7%, near 95¢ 95.6%). On the held-out period the correction never found a 5¢ edge after fees, so it made no
+trades, and it forecast no better than the raw price. The same holds for markets that were thin at the time
+(`--max-oi 200`: open interest under 200 at the snapshot). A coin-flip taker lost 7 to 13% of its stakes to
+the spread and fees. So `house` is not in the standard round.
 
-**Caveat, found Nov 11: treat those numbers as provisional.** That sample kept only markets whose final
-lifetime volume was 200 or more, and final volume depends on how a market resolved (a longshot that comes
-alive gets traded heavily). A thin-market run chosen the same way showed a 17 to 20% return that was purely
-this artifact. `backfill.py` now records what was known at each snapshot (open interest, the past day's
-volume) so tests can select on that instead; a rerun that selects nothing by final volume is in progress.
+A mistake worth remembering: the first two runs chose markets by their final lifetime volume. That depends on
+how a market resolved (a longshot that comes alive gets traded heavily), so it leaks the outcome. Choosing
+"thin" markets that way produced a 17 to 20% simulated return that was purely this artifact. The scripts no
+longer offer that selection; thinness is measured by what was known at the snapshot.
 
 ## Induction-head demo (`/demos`, section 4)
 

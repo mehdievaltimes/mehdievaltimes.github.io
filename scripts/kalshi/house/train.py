@@ -12,6 +12,7 @@ against the raw price) and as a trader under the same rules as scripts/kalshi/bo
     pip install numpy
     python scripts/kalshi/house/backfill.py     # the data
     python scripts/kalshi/house/train.py        # prints the report, writes scripts/kalshi/house-model.json
+    python scripts/kalshi/house/train.py --max-oi 200 --out /tmp/thin.json   # markets that were thin at the time
 """
 import argparse
 import csv
@@ -32,8 +33,10 @@ logit = lambda p: np.log(p / (1 - p))
 sigmoid = lambda z: 1 / (1 + np.exp(-z))
 
 
-def load(path, min_group):
+def load(path, min_group, max_oi=None):
     rows = list(csv.DictReader(gzip.open(path, "rt")))
+    if max_oi is not None:  # thin at the time of the snapshot; never filter on `volume`, see backfill.py
+        rows = [r for r in rows if int(r["oi"]) < max_oi]
     n_by_cat = Counter(r["category"] for r in rows)
     group = lambda c: c if n_by_cat[c] >= min_group else "Other"
     d = {
@@ -137,10 +140,11 @@ def main():
     ap.add_argument("--train-share", type=float, default=0.6, help="share of the time span used for fitting")
     ap.add_argument("--min-group", type=int, default=1500, help="a category needs this many rows to get its own terms")
     ap.add_argument("--max-spread", type=float, default=CFG["max_spread"], help="widest bid-ask gap the simulated trader will cross")
+    ap.add_argument("--max-oi", type=int, default=None, help="only snapshots whose open interest at the time was under this (a thin-market test)")
     args = ap.parse_args()
     CFG["max_spread"] = args.max_spread
 
-    d, n_markets = load(args.data, args.min_group)
+    d, n_markets = load(args.data, args.min_group, args.max_oi)
     groups = sorted(set(d["group"]) - {"Other"})
     t0, t1 = d["close"].min(), d["close"].max()
     split = t0 + args.train_share * (t1 - t0)
