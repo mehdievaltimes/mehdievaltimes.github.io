@@ -1,13 +1,16 @@
 ---
 import Base from '../layouts/Base.astro';
 import ctf from '../data/ctf.json';
-import { ANSWERS_SHA256 } from '../components/terminal/fs';
+import { ANSWERS_SHA256, BAIT } from '../components/terminal/fs';
 
 // Only SHA-256 hashes of the flags ship. The files that make the challenges aren't in this repo.
-type Challenge = { id: string; title: string; cat: string; level: string; hash: string; hint: string };
+// `terminal` is the challenge's number in the homepage terminal's ANSWERS_SHA256, counting from 1: a solve there counts here too.
+type Challenge = { id: string; title: string; cat: string; level: string; hash: string; hint: string; terminal?: number; bait?: string };
 const challenges: Challenge[] = [
-  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWERS_SHA256[0],
+  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWERS_SHA256[0], terminal: 1,
     hint: 'Deleting a secret in a new commit doesn’t delete it from the old ones. Not everything is in the log, either.' },
+  { id: 'answer-key', title: 'Answer key', cat: 'reversing', level: 'easy', hash: ANSWERS_SHA256[1], terminal: 2, bait: BAIT,
+    hint: 'Whatever strings finds in it is bait. To compare your answer with the key, the checker needs the key in plain text at that moment. ltrace shows a program’s library calls, arguments and all.' },
   { id: 'portrait', title: 'Portrait', cat: 'forensics', level: 'easy', hash: ctf.hashes.portrait,
     hint: 'What you see is the high bits of each color. Look at them one bit at a time.' },
   { id: 'sealed', title: 'Signed, sealed', cat: 'web', level: 'easy', hash: ctf.hashes.sealed,
@@ -21,19 +24,19 @@ const challenges: Challenge[] = [
 ];
 const sealed = ctf.sealed;
 ---
-<Base title="CTF" description="Six small capture-the-flag challenges: git, forensics, web, crypto, reversing and ML. Flags are checked in your browser." sheep={false}>
+<Base title="CTF" description="Seven small capture-the-flag challenges: git, reversing, forensics, web, crypto and ML. Flags are checked in your browser." sheep={false}>
   <header class="post-head">
     <h1>Capture the flag</h1>
     <p class="meta"><span id="ctf-score">0</span>/{challenges.length} solved · flags look like <code>flag&#123;…&#125;</code> · checked in your browser against a SHA-256 hash, nothing is sent anywhere</p>
   </header>
 
   <div class="prose">
-    <p>Small challenges I made, one per category, easiest first. Each one is solvable with free tools. If you solve them all, <a href="/" id="ctf-mail">tell me</a> how you did it.</p>
+    <p>Small challenges I made, easiest first. Each one is solvable with free tools. If you solve them all, <a href="/" id="ctf-mail">tell me</a> how you did it.</p>
   </div>
 
   <ol class="ctf">
     {challenges.map((c, i) => (
-      <li class="card ctf-item" id={c.id} data-id={c.id} data-hash={c.hash}>
+      <li class="card ctf-item" id={c.id} data-id={c.id} data-hash={c.hash} data-terminal={c.terminal} data-bait={c.bait}>
         <div class="ctf-head">
           <h2><span class="meta">{String(i + 1).padStart(2, '0')}</span> {c.title}</h2>
           <span class="tags"><span class="tag">{c.cat}</span><span class="tag">{c.level}</span><span class="tag ctf-done" hidden>solved</span></span>
@@ -43,6 +46,10 @@ const sealed = ctf.sealed;
           {c.id === 'autograder' && <>
             <p>The terminal on the <a href="/">homepage</a> belongs to a TA who keeps an autograder in <code>~/.ctf</code>. The README says nothing secret lives in the repo. Find what the grader accepts, and <code>submit</code> it there or here.</p>
             <p class="meta">There’s a second, harder one in the same machine if you can get root. It has no flag; you’ll know.</p>
+          </>}
+
+          {c.id === 'answer-key' && <>
+            <p>The same TA gives students a compiled checker, so they can test an answer before they <code>submit</code> it. It’s on the same machine, next to the grader. The key is compiled in, and the TA made sure <code>strings</code> won’t find it.</p>
           </>}
 
           {c.id === 'portrait' && <>
@@ -111,7 +118,8 @@ const sealed = ctf.sealed;
     const load = (): Record<string, boolean> => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
     const save = (s: Record<string, boolean>) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
     const solved = load();
-    if (solvedAnswers().includes('1')) solved.autograder = true; // solved in the homepage terminal
+    // Solved in the homepage terminal counts here.
+    for (const li of document.querySelectorAll<HTMLElement>('.ctf-item[data-terminal]')) if (solvedAnswers().includes(li.dataset.terminal!)) solved[li.dataset.id!] = true;
 
     const sha256 = async (s: string) =>
       [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -138,9 +146,11 @@ const sealed = ctf.sealed;
         if ((await sha256(guess)) === li.dataset.hash) {
           solved[li.dataset.id!] = true;
           save(solved);
-          if (li.dataset.id === 'autograder') markSolved(1);
+          if (li.dataset.terminal) markSolved(Number(li.dataset.terminal));
           msg.textContent = '✓ correct';
           paint();
+        } else if (guess === li.dataset.bait) {
+          msg.textContent = '✗ nice try: that one’s a decoy';
         } else {
           msg.textContent = guess.startsWith('flag{') ? '✗ not this one' : '✗ flags look like flag{...}';
         }
