@@ -29,6 +29,11 @@ import Base from '../layouts/Base.astro';
       <label class="meta"><input type="checkbox" id="sg-examples" /> pigz (example)</label>
     </form>
 
+    <details class="sg-unused" id="sg-unused" hidden>
+      <summary class="meta"></summary>
+      <p id="sg-unused-list"></p>
+    </details>
+
     <p class="meta" id="sg-count"></p>
     <div id="sg-list"></div>
   </div>
@@ -115,13 +120,27 @@ import Base from '../layouts/Base.astro';
     }
 
     // The earliest PR on each project is the one that claimed it; later ones are on an already-used project.
+    // From round 2 on, a project the course list marks as used in an earlier round has no claim left.
     function claimers() {
       const first = new Map();
       for (const p of state.prs) {
+        // A closed PR whose round the list doesn't count as used was withdrawn or invalid: it claimed nothing.
+        if (p.state === 'closed' && !(state.projects[p.repo]?.used ?? []).includes(p.round)) continue;
         const f = first.get(p.repo);
         if (!f || p.created < f.created) first.set(p.repo, p);
       }
+      for (const [repo, p] of first) {
+        if ((state.projects[repo]?.used ?? []).some((r) => r < (p.round ?? Infinity))) first.delete(repo);
+      }
       return first;
+    }
+
+    // Still fresh: not marked used on the course list, and no open or merged PR on the board.
+    function unused() {
+      const taken = new Set(state.prs.filter((p) => p.state !== 'closed').map((p) => p.repo));
+      return Object.entries(state.projects)
+        .filter(([repo, proj]) => !(proj.used ?? []).length && !taken.has(repo) && !EXAMPLES.has(repo))
+        .sort((a, b) => a[0].localeCompare(b[0], undefined, { sensitivity: 'base' }));
     }
 
     function card(p, first) {
@@ -135,7 +154,7 @@ import Base from '../layouts/Base.astro';
           h('a', { class: 'sg-name', href: url(p), target: '_blank', rel: 'noopener' }, proj?.name ?? p.repo),
           h('span', { class: 'sg-uni' }, p.uni ? `${p.uni}-Round${p.round}` : p.title),
           !open(p) && h('span', { class: 'sg-tag' }, p.state),
-          first.get(p.repo) === p && h('span', { class: 'sg-tag used', title: 'earliest PR on this project' }, 'project used'),
+          first.get(p.repo) === p && h('span', { class: 'sg-tag used', title: 'first PR on a fresh project' }, 'project used'),
           p.live && h('span', { class: 'sg-tag new' }, 'new'),
           p.stale && h('span', { class: 'sg-tag' }, 'changed since snapshot'),
         ),
@@ -195,6 +214,11 @@ import Base from '../layouts/Base.astro';
       $('sg-count').textContent = `${rows.length} of ${state.prs.length} pull requests`;
       const first = claimers();
       $('sg-list').replaceChildren(...rows.map((p) => card(p, first)));
+      const free = unused();
+      $('sg-unused').hidden = !free.length;
+      $('sg-unused').querySelector('summary').textContent = `${free.length} of ${Object.keys(state.projects).length} programs not used yet`;
+      $('sg-unused-list').replaceChildren(...free.map(([repo, proj]) =>
+        h('a', { href: `https://github.com/${OWNER}/${repo}`, target: '_blank', rel: 'noopener', title: `${proj.name} · ${proj.kept ?? '?'} tests${proj.checked ? ' · TA checked' : ''}` }, repo, proj.checked && ' ✓')));
       status();
     }
 
@@ -247,6 +271,11 @@ import Base from '../layouts/Base.astro';
   #sg-me { flex: 0 1 11rem; }
   .sg-bar select { font: .85rem var(--sans); padding: .5rem .6rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); }
   .sg-bar label { display: flex; gap: .35rem; align-items: center; }
+  .sg-unused { margin-bottom: .8rem; }
+  .sg-unused summary { cursor: pointer; }
+  #sg-unused-list { display: flex; flex-wrap: wrap; gap: .25rem .8rem; margin: .5rem 0 0; font: .78rem var(--mono); }
+  #sg-unused-list a { color: var(--muted); text-decoration: none; }
+  #sg-unused-list a:hover { color: var(--accent); }
   #sg-list { display: grid; gap: .6rem; margin-top: .8rem; }
   .sg-pr { background: var(--card); border-radius: 10px; padding: .8rem 1rem; border-left: 3px solid transparent; }
   .sg-pr.is-looking { border-left-color: var(--accent); }

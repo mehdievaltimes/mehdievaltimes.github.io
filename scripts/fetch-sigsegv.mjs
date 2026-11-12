@@ -30,7 +30,8 @@ async function projects() {
   for (const line of (await res.text()).split('\n')) {
     const c = line.split('|').slice(1, -1).map((s) => s.trim());
     const m = c.length === 6 && c[0].match(/^\[([^\]]+)\]\(https:\/\/github\.com\/[^/]+\/([^/)]+)/);
-    if (m) out[m[2]] = { name: m[1], kept: Number(c[3].replace(/,/g, '')) || null, checked: c[5].includes('✅') };
+    // c[4] is "Used in round": the rounds that already had a valid PR ("—" for none), so no fresh-project bonus.
+    if (m) out[m[2]] = { name: m[1], kept: Number(c[3].replace(/,/g, '')) || null, used: (c[4].match(/\d+/g) ?? []).map(Number), checked: c[5].includes('✅') };
   }
   return out;
 }
