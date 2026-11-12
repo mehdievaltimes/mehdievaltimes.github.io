@@ -183,6 +183,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   function lookup(arg = ''): R | FsErr {
     let parts: string[];
     let rest = arg;
+    // The parser has already expanded ~ in commands; this is for tab completion and cd's default.
     const tilde = arg.match(/^~(guest|admin)?(?=\/|$)/);
     if (tilde) { parts = homeOf((tilde[1] as User) ?? user); rest = arg.slice(tilde[0].length); }
     else parts = arg.startsWith('/') ? [] : [...cwd];
@@ -1182,6 +1183,12 @@ These are common Git commands:
         endWord();
         if (line.startsWith('<<<', i)) { words.push(HERE); i += 2; } else words.push(FROM);
         continue;
+      }
+      if (c === '~' && !inWord) {
+        // Tilde expansion, done here like bash does it: as whoever typed the line. So `sudo vim ~/notes.txt`
+        // hands vim guest's notes.txt, not a ~ that vim would then expand as admin.
+        const m = line.slice(i).match(/^~(guest|admin)?(?=$|[\s/|;&<])/);
+        if (m) { w += abs(homeOf((m[1] as User | undefined) ?? user)); inWord = true; i += m[0].length - 1; continue; }
       }
       w += c;
       inWord = true;
