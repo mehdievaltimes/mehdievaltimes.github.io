@@ -4,7 +4,7 @@
 // from the content collections, so the terminal can browse the site.
 import fs from 'node:fs';
 import { getCollection } from 'astro:content';
-import { getEntries } from '../lib';
+import { getEntries, plain } from '../lib';
 
 const posts = await getEntries();
 // Same rule as /reading: coursework only shows in `npm run dev`.
@@ -13,7 +13,8 @@ const raw = (path: string | undefined, fallback = '') => {
   try { return path ? fs.readFileSync(path, 'utf8').trim() : fallback; } catch { return fallback; }
 };
 const data = {
-  writing: Object.fromEntries(posts.map((e) => [`${e.id}.md`, raw(e.filePath, e.body ?? '')])),
+  // A post's inline chart is markup; in the shell it becomes one line pointing at the page.
+  writing: Object.fromEntries(posts.map((e) => [`${e.id}.md`, plain(raw(e.filePath, e.body ?? ''), '[chart: `open` this post to see it]\n')])),
   reading: Object.fromEntries(reading.map((e) => [`${e.id}.yml`, raw(e.filePath)])),
   readingItems: reading.reduce((n, e) => n + e.data.items.length, 0),
 };
@@ -48,7 +49,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
-  const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos' };
+  const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos', ctf: '/ctf', trading: '/trading' };
   const SOLVED_KEY = 'term-s', HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
 
   const section = document.getElementById('term')!;

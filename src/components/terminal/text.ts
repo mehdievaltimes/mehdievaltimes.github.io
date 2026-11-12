@@ -55,7 +55,7 @@ export const MAN: Record<string, [string, string]> = {
   'nvidia-smi': ['what the GPU is busy with', 'nvidia-smi'],
   top: ['what is running', 'top'],
   man: ['read a manual page', 'man COMMAND\nman -k .     list every page'],
-  open: ['open a page of this site', 'open home | puppy-bench | sandbox\nopen writing/FILE.md     open a post'],
+  open: ['open a page of this site', 'open home | puppy-bench | sandbox | ctf | trading\nopen writing/FILE.md     open a post'],
   lucky: ["I'm feeling lucky: ask the magic 8-ball", 'lucky [QUESTION]\n8ball [QUESTION]'],
   clear: ['clear the screen', 'clear     (or Ctrl+L)'],
   exit: ['leave the shell', 'exit'],

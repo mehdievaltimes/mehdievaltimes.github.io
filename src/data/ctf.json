@@ -1,0 +1,16 @@
+{
+  "sealed": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJndWVzdCIsInJvbGUiOiJndWVzdCIsImlhdCI6MTc5NDIxMTIwMH0.eEoiSaBwymthl5HR01BB3kT51EKkCEzozBa0dEPxVZo",
+    "salt": "8ej/yWhf7urS/Y9Chv8poA==",
+    "iv": "6qK1HmA2F/RBoac8",
+    "ct": "QfKPvHo31t54nCjI5OCIdAMkz9lPwdvI6uJwtb3qOLGTbCGj+98JUxekjatj8k84PcGLcL/a5ZT9tdPhk6FWjo520JT30aeUrY82CFw=",
+    "iterations": 200000
+  },
+  "hashes": {
+    "notebook": "8b0160ff1fd1c306e746b3243eab627347573c8ded583cc12e324935ed0ee714",
+    "sealed": "498e7cef4bdb97c8a8452a8e9345bdc4908d6b702287ce3f18ffac1ae25c01a4",
+    "portrait": "afcaf1df928a22bee9c6c736b487ef42690103815a28e94f2461bcd209bc0b02",
+    "crackme": "3b7491df7e64ac7db6d210640f7e98b8b8039a067c91e9863416ba089d7add50",
+    "memorized": "4ce39c0773045b9e6c8f1d362e4ef5555b48a1683ebd48e6118d74dc837937c8"
+  }
+}

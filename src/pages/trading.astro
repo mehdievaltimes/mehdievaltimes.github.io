@@ -1,0 +1,188 @@
+---
+import Base from '../layouts/Base.astro';
+import ledger from '../data/kalshi-paper.json';
+
+type Trade = { side: 'yes' | 'no'; contracts: number; price: number; fee: number; cost: number; edge?: number };
+type Forecast = {
+  ticker: string; at: string; yesBid: number; yesAsk: number; p?: number; confidence?: string; reasoning?: string;
+  trade?: Trade; pass?: string; error?: string; result?: 'yes' | 'no' | 'void'; payout?: number; pnl?: number;
+};
+type Trader = { id: string; provider: string; model: string; cash: number; forecasts: Forecast[]; history: { at: string; equity: number; cash: number }[] };
+type Quote = { yesBid: number; yesAsk: number; noBid: number; noAsk: number; at: string };
+type Market = { ticker: string; series: string; category: string; title: string; sub: string; rules: string; closeTime: string; addedAt: string; result: 'yes' | 'no' | 'void' | null; settledAt?: string; last: Quote };
+
+const VIA: Record<string, string> = { claude: 'Claude Code', codex: 'Codex CLI', cursor: 'Cursor', random: 'control', house: 'our own model' };
+const markets = Object.fromEntries(Object.entries(ledger.markets as Record<string, Market>).map(([k, m]) => [k, { ...m, title: m.title.replaceAll('**', '') }]));
+const start = ledger.config.bankroll;
+
+const usd = (x: number) => `$${Math.abs(x).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+const whole = (x: number) => `$${x.toLocaleString('en-US')}`;
+const signed = (x: number) => `${x < 0 ? '−' : '+'}${usd(x)}`;
+const cents = (x: number) => `${Math.round(x * 100)}¢`;
+const pct = (x: number) => `${Math.round(x * 100)}%`;
+const day = (iso: string) => new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const mean = (xs: number[]) => xs.reduce((a, b) => a + b, 0) / xs.length;
+
+const traders = (Object.values(ledger.traders) as Trader[]).map((t) => {
+  const equity = t.history.at(-1)?.equity ?? t.cash;
+  const trades = t.forecasts.filter((f) => f.trade);
+  const closed = trades.filter((f) => f.result);
+  // Scored only where the model gave a number and the market resolved yes or no.
+  const scored = t.forecasts.filter((f) => f.p != null && (f.result === 'yes' || f.result === 'no'));
+  const y = (f: Forecast) => (f.result === 'yes' ? 1 : 0);
+  return {
+    ...t, equity, pnl: equity - start,
+    name: t.provider === 'random' ? 'coin flip' : t.provider === 'house' ? 'house model' : t.model,
+    open: trades.length - closed.length, trades: trades.length,
+    won: closed.filter((f) => (f.pnl ?? 0) > 0).length, lost: closed.filter((f) => f.result !== 'void' && (f.pnl ?? 0) <= 0).length,
+    realized: closed.reduce((s, f) => s + (f.pnl ?? 0), 0),
+    passes: t.forecasts.filter((f) => f.pass).length, errors: t.forecasts.filter((f) => f.error).length,
+    brier: scored.length ? mean(scored.map((f) => (f.p! - y(f)) ** 2)) : null,
+    marketBrier: scored.length ? mean(scored.map((f) => ((f.yesBid + f.yesAsk) / 2 - y(f)) ** 2)) : null,
+    scored: scored.length,
+  };
+}).sort((a, b) => b.equity - a.equity);
+
+const rows = (ticker: string) => traders.flatMap((t) => t.forecasts.filter((f) => f.ticker === ticker).map((f) => ({ t, f })));
+const all = Object.values(markets).filter((m) => rows(m.ticker).length);
+const open = all.filter((m) => !m.result).sort((a, b) => a.closeTime.localeCompare(b.closeTime));
+const settled = all.filter((m) => m.result).sort((a, b) => (b.settledAt ?? '').localeCompare(a.settledAt ?? ''));
+const anyScored = traders.some((t) => t.scored > 0);
+const leader = traders.find((t) => t.provider !== 'random');
+const description = `AI models trade real Kalshi markets with $${start.toLocaleString('en-US')} of fake money each.` +
+  (leader ? ` ${leader.name} leads at ${usd(leader.equity)}.` : '');
+
+const action = (f: Forecast) => {
+  if (f.error) return 'no forecast (the run errored)';
+  if (f.pass) return `passed: ${f.pass}`;
+  const t = f.trade!;
+  return `bought ${t.contracts} ${t.side.toUpperCase()} at ${cents(t.price)} · ${usd(t.cost)} + ${usd(t.fee)} fee`;
+};
+---
+<Base title="Paper trading" description={description} sheep={false}>
+  <header class="post-head">
+    <h1>Paper trading</h1>
+    <p class="meta">real Kalshi markets · fake money · {whole(start)} each · {ledger.rounds.length} round{ledger.rounds.length === 1 ? '' : 's'} · updated {day(ledger.updated)}</p>
+  </header>
+
+  <div class="prose">
+    <p>Each model below is a trader with {whole(start)} of play money. Every round, each one gets the same open <a href="https://kalshi.com">Kalshi</a> markets and gives a probability for each. A fixed rule then decides what that forecast buys at the real asking price, fee included. No real money is involved and nothing here places an order.</p>
+    <p>The <strong>coin flip</strong> is the control. It buys a random side every time, so it shows what the spread and the fees cost a trader who knows nothing.</p>
+  </div>
+
+  <table class="pt-table">
+    <thead><tr><th>trader</th><th>value</th><th>profit</th><th>cash</th><th>open</th><th>won–lost</th>{anyScored && <th title="Mean squared error of the forecasts; lower is better">Brier (market)</th>}</tr></thead>
+    <tbody>
+      {traders.map((t) => (
+        <tr>
+          <td>{t.name} <span class="via">{VIA[t.provider]}</span></td>
+          <td>{usd(t.equity)}</td>
+          <td class={t.pnl > 0.005 ? 'up' : t.pnl < -0.005 ? 'down' : ''}>{signed(t.pnl)}</td>
+          <td>{usd(t.cash)}</td>
+          <td>{t.open}</td>
+          <td>{t.won}–{t.lost}</td>
+          {anyScored && <td>{t.brier == null ? '—' : <>{t.brier.toFixed(3)} <span class="meta">({t.marketBrier!.toFixed(3)}, n={t.scored})</span></>}</td>}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="meta pt-note">Value is cash plus what the open positions would sell for right now, so a new position starts slightly down: it was bought at the ask and is valued at the bid.{!anyScored && ' No market has resolved yet; forecast scores appear here once some do.'}</p>
+
+  {open.length > 0 && <h2 class="pt-h">Open markets</h2>}
+  {open.map((m) => (
+    <section class="card pt-market" id={m.ticker}>
+      <div class="pt-head">
+        <h3>{m.title}{m.sub && !m.title.includes(m.sub) && <span class="pt-sub"> {m.sub}</span>}</h3>
+        <span class="tags"><span class="tag">{m.category}</span><span class="tag">closes {day(m.closeTime)}</span></span>
+      </div>
+      <p class="meta">YES now {cents(m.last.yesBid)}/{cents(m.last.yesAsk)} · {m.ticker}</p>
+      <ul class="pt-rows">
+        {rows(m.ticker).map(({ t, f }) => (
+          <li>
+            <span class="pt-who">{t.name}</span>
+            <span class="pt-p">{f.p != null ? pct(f.p) : '—'}</span>
+            <span class={`pt-act ${f.trade ? 'traded' : ''}`}>{action(f)}</span>
+            {f.reasoning && <span class="pt-why">{f.reasoning}</span>}
+          </li>
+        ))}
+      </ul>
+      <p class="meta">When they were asked, YES was {cents(rows(m.ticker)[0].f.yesBid)}/{cents(rows(m.ticker)[0].f.yesAsk)}.</p>
+    </section>
+  ))}
+
+  {settled.length > 0 && (
+    <details class="pt-settled" open={open.length === 0}>
+      <summary><h2 class="pt-h">Resolved markets</h2> <span class="meta">{settled.length}</span></summary>
+      {settled.map((m) => (
+        <section class="card pt-market" id={m.ticker}>
+          <div class="pt-head">
+            <h3>{m.title}{m.sub && !m.title.includes(m.sub) && <span class="pt-sub"> {m.sub}</span>}</h3>
+            <span class="tags"><span class="tag">{m.category}</span><span class={`tag res-${m.result}`}>{m.result === 'void' ? 'voided' : `resolved ${m.result!.toUpperCase()}`}</span></span>
+          </div>
+          <ul class="pt-rows">
+            {rows(m.ticker).map(({ t, f }) => (
+              <li>
+                <span class="pt-who">{t.name}</span>
+                <span class="pt-p">{f.p != null ? pct(f.p) : '—'}</span>
+                <span class={`pt-act ${f.trade ? 'traded' : ''}`}>{action(f)}{f.trade && f.pnl != null && <> → {f.result === 'void' ? 'refunded' : <b class={f.pnl > 0 ? 'up' : 'down'}>{signed(f.pnl)}</b>}</>}</span>
+                {f.reasoning && <span class="pt-why">{f.reasoning}</span>}
+              </li>
+            ))}
+          </ul>
+          <p class="meta">When they were asked, YES was {cents(rows(m.ticker)[0].f.yesBid)}/{cents(rows(m.ticker)[0].f.yesAsk)}.</p>
+        </section>
+      ))}
+    </details>
+  )}
+
+  <div class="prose pt-method">
+    <h2>Rules</h2>
+    <ul>
+      <li><strong>Markets.</strong> Each round takes open markets that close within about a week and have a real two-sided price between 6¢ and 94¢. One market per event, two per series, sports held to a quarter of the round.</li>
+      <li><strong>Forecasts.</strong> One fresh run of the vendor’s own agent CLI per market, with web search where the CLI has it. The model sees the rules and the current price and returns a probability. It never sees its portfolio and cannot trade.</li>
+      <li><strong>Trades.</strong> Buy only when the forecast beats the asking price plus the fee by {ledger.config.minEdge * 100}¢ a contract. Size is a quarter of the Kelly stake, capped at {whole(ledger.config.maxStake)} a market and at what is actually on offer. Positions are held until the market resolves.</li>
+      <li><strong>Fees.</strong> Kalshi’s taker fee, 7% × price × (1 − price) per contract, rounded up to the cent, with each series’ own multiplier.</li>
+      <li><strong>What this leaves out.</strong> Fills assume the displayed ask was really available, the traders never sell early, and a few dozen markets say little about skill. Treat the table as a running experiment.</li>
+    </ul>
+    <p>Code: <a href="https://github.com/mehdievaltimes/mehdievaltimes.github.io/tree/main/scripts/kalshi">scripts/kalshi</a>. Not affiliated with Kalshi. Not financial advice.</p>
+  </div>
+</Base>
+
+<style>
+  @media (min-width: 64rem) { :global(main:has(.pt-table)) { max-width: 50rem; } }
+  .pt-table { width: 100%; border-collapse: collapse; font-size: .95rem; margin-top: 1.75rem; font-variant-numeric: tabular-nums; }
+  .pt-table th { font: .75rem var(--mono); color: var(--muted); text-align: right; font-weight: 400; }
+  .pt-table th, .pt-table td { padding: .5rem 0 .5rem .9rem; border-bottom: 1px solid var(--faint); white-space: nowrap; text-align: right; }
+  .pt-table th:first-child, .pt-table td:first-child { text-align: left; padding-left: 0; font-family: var(--mono); font-size: .85rem; white-space: normal; }
+  .via { font: .7rem var(--mono); color: var(--muted); white-space: nowrap; }
+  .up { color: var(--good); }
+  .down { color: var(--bad); }
+  .pt-note { margin: .7rem 0 0; }
+  .pt-h { font: 600 1rem var(--sans); letter-spacing: 0; margin: 2.75rem 0 .9rem; display: inline-block; }
+  .pt-market { margin-bottom: .9rem; padding: 1.1rem 1.25rem; }
+  .pt-head { display: flex; justify-content: space-between; align-items: baseline; gap: .8rem; flex-wrap: wrap; }
+  .pt-head h3 { font-size: 1.12rem; margin: 0; line-height: 1.35; }
+  .pt-sub { color: var(--muted); font-size: .9em; }
+  .pt-head .tags { margin: 0; }
+  .pt-market > .meta { margin: .45rem 0 0; }
+  .res-yes, .res-no { color: var(--fg); border-color: var(--muted); }
+  .pt-rows { list-style: none; margin: .8rem 0 0; padding: 0; }
+  .pt-rows li { display: grid; grid-template-columns: 8.5rem 3rem minmax(0, 1fr); gap: .1rem .8rem; padding: .55rem 0; border-top: 1px solid var(--faint); font-size: .9rem; align-items: baseline; }
+  .pt-who { font: .8rem var(--mono); overflow-wrap: anywhere; grid-row: span 2; }
+  .pt-p { font: 500 .9rem var(--mono); text-align: right; grid-row: span 2; }
+  .pt-act { color: var(--muted); }
+  .pt-act.traded { color: var(--fg); }
+  .pt-why { grid-column: 3; color: var(--muted); font-size: .86rem; line-height: 1.45; }
+  .pt-settled { margin-top: 1rem; }
+  .pt-settled > summary { cursor: pointer; list-style: none; display: flex; gap: .6rem; align-items: baseline; }
+  .pt-settled > summary::-webkit-details-marker { display: none; }
+  .pt-settled > summary::after { content: '▸'; color: var(--muted); font-size: .8rem; }
+  .pt-settled[open] > summary::after { content: '▾'; }
+  .pt-method { margin-top: 3rem; }
+  @media (max-width: 40rem) {
+    .pt-table th:nth-child(4), .pt-table td:nth-child(4), .pt-table th:nth-child(7), .pt-table td:nth-child(7) { display: none; }
+    .pt-rows li { grid-template-columns: minmax(0, 1fr) 3rem; }
+    .pt-who, .pt-p { grid-row: auto; }
+    .pt-act, .pt-why { grid-column: 1 / -1; }
+  }
+</style>

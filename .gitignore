@@ -3,4 +3,6 @@ dist
 .astro
 .DS_Store
 .claude
+/data/
+__pycache__/
 .env
