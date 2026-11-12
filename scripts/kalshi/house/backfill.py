@@ -119,7 +119,9 @@ def main():
     ap.add_argument("--per-series", type=int, default=150, help="markets sampled per series per half of the window")
     ap.add_argument("--open-pages", type=int, default=25)
     ap.add_argument("--max-spread", type=float, default=0.30, help="widest bid-ask gap a snapshot may have, in dollars")
+    ap.add_argument("--skip-category", default="", help="comma-separated categories to leave out, e.g. Sports")
     args = ap.parse_args()
+    skip = {c.strip() for c in args.skip_category.split(",") if c.strip()}
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     rng = random.Random(0)
@@ -141,6 +143,8 @@ def main():
         if s not in cats:
             d = get(f"/series/{s}")
             cats[s] = (d or {}).get("series", {}).get("category") or "Other"
+        if cats[s] in skip:
+            continue
         got = 0
         for a, b in ((cutoff, mid), (mid, end)):
             ms = settled(s, a, b, 3)
