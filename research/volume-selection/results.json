@@ -1,0 +1,908 @@
+{
+ "hours": 24,
+ "min_price": 0.0,
+ "Kalshi": {
+  "by_rule": {
+   "all categories": [
+    {
+     "rule": "all, nothing chosen",
+     "n": 24156,
+     "events": 12017,
+     "slope": 1.059,
+     "best_pull": 1.022,
+     "best_pull_ci": [
+      1.009,
+      1.036
+     ],
+     "hedged_minus_price": 0.00424,
+     "hedged_ci": [
+      0.00377,
+      0.00472
+     ]
+    },
+    {
+     "rule": "final volume >= 1,000 contracts",
+     "n": 20771,
+     "events": 10727,
+     "slope": 0.997,
+     "best_pull": 0.988,
+     "best_pull_ci": [
+      0.972,
+      1.004
+     ],
+     "hedged_minus_price": 0.00282,
+     "hedged_ci": [
+      0.00227,
+      0.00336
+     ]
+    },
+    {
+     "rule": "final volume >= 5,000 contracts",
+     "n": 15705,
+     "events": 8546,
+     "slope": 0.895,
+     "best_pull": 0.929,
+     "best_pull_ci": [
+      0.908,
+      0.951
+     ],
+     "hedged_minus_price": 0.00085,
+     "hedged_ci": [
+      0.00024,
+      0.00149
+     ]
+    },
+    {
+     "rule": "final volume >= 20,000 contracts",
+     "n": 9868,
+     "events": 5734,
+     "slope": 0.799,
+     "best_pull": 0.863,
+     "best_pull_ci": [
+      0.833,
+      0.896
+     ],
+     "hedged_minus_price": -0.00093,
+     "hedged_ci": [
+      -0.0017,
+      -0.00011
+     ]
+    },
+    {
+     "rule": "final volume >= 100,000 contracts",
+     "n": 4472,
+     "events": 2698,
+     "slope": 0.718,
+     "best_pull": 0.783,
+     "best_pull_ci": [
+      0.725,
+      0.84
+     ],
+     "hedged_minus_price": -0.00246,
+     "hedged_ci": [
+      -0.00363,
+      -0.00125
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 200",
+     "n": 7820,
+     "events": 4643,
+     "slope": 1.075,
+     "best_pull": 1.022,
+     "best_pull_ci": [
+      1.0,
+      1.044
+     ],
+     "hedged_minus_price": 0.00429,
+     "hedged_ci": [
+      0.00352,
+      0.00507
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 1,000",
+     "n": 4787,
+     "events": 2870,
+     "slope": 1.095,
+     "best_pull": 1.032,
+     "best_pull_ci": [
+      1.003,
+      1.06
+     ],
+     "hedged_minus_price": 0.00486,
+     "hedged_ci": [
+      0.0038,
+      0.00595
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 5,000",
+     "n": 2069,
+     "events": 1284,
+     "slope": 1.01,
+     "best_pull": 0.995,
+     "best_pull_ci": [
+      0.948,
+      1.044
+     ],
+     "hedged_minus_price": 0.00331,
+     "hedged_ci": [
+      0.00164,
+      0.00496
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 500",
+     "n": 4427,
+     "events": 2749,
+     "slope": 1.109,
+     "best_pull": 1.037,
+     "best_pull_ci": [
+      1.007,
+      1.066
+     ],
+     "hedged_minus_price": 0.00471,
+     "hedged_ci": [
+      0.00368,
+      0.00573
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 5,000",
+     "n": 1404,
+     "events": 919,
+     "slope": 1.011,
+     "best_pull": 0.999,
+     "best_pull_ci": [
+      0.931,
+      1.063
+     ],
+     "hedged_minus_price": 0.00309,
+     "hedged_ci": [
+      0.00094,
+      0.00513
+     ]
+    }
+   ],
+   "sports": [
+    {
+     "rule": "all, nothing chosen",
+     "n": 22646,
+     "events": 11636,
+     "slope": 1.043,
+     "best_pull": 1.018,
+     "best_pull_ci": [
+      1.003,
+      1.032
+     ],
+     "hedged_minus_price": 0.00386,
+     "hedged_ci": [
+      0.00337,
+      0.00433
+     ]
+    },
+    {
+     "rule": "final volume >= 1,000 contracts",
+     "n": 19363,
+     "events": 10369,
+     "slope": 0.974,
+     "best_pull": 0.978,
+     "best_pull_ci": [
+      0.958,
+      0.996
+     ],
+     "hedged_minus_price": 0.00231,
+     "hedged_ci": [
+      0.00171,
+      0.00285
+     ]
+    },
+    {
+     "rule": "final volume >= 5,000 contracts",
+     "n": 14741,
+     "events": 8300,
+     "slope": 0.868,
+     "best_pull": 0.911,
+     "best_pull_ci": [
+      0.887,
+      0.934
+     ],
+     "hedged_minus_price": 0.0003,
+     "hedged_ci": [
+      -0.00036,
+      0.00091
+     ]
+    },
+    {
+     "rule": "final volume >= 20,000 contracts",
+     "n": 9445,
+     "events": 5596,
+     "slope": 0.773,
+     "best_pull": 0.843,
+     "best_pull_ci": [
+      0.807,
+      0.879
+     ],
+     "hedged_minus_price": -0.00135,
+     "hedged_ci": [
+      -0.0022,
+      -0.0005
+     ]
+    },
+    {
+     "rule": "final volume >= 100,000 contracts",
+     "n": 4414,
+     "events": 2662,
+     "slope": 0.704,
+     "best_pull": 0.771,
+     "best_pull_ci": [
+      0.712,
+      0.826
+     ],
+     "hedged_minus_price": -0.00263,
+     "hedged_ci": [
+      -0.00385,
+      -0.0015
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 200",
+     "n": 6448,
+     "events": 4281,
+     "slope": 1.038,
+     "best_pull": 1.01,
+     "best_pull_ci": [
+      0.982,
+      1.039
+     ],
+     "hedged_minus_price": 0.00321,
+     "hedged_ci": [
+      0.0024,
+      0.00407
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 1,000",
+     "n": 3722,
+     "events": 2568,
+     "slope": 1.036,
+     "best_pull": 1.016,
+     "best_pull_ci": [
+      0.976,
+      1.059
+     ],
+     "hedged_minus_price": 0.00326,
+     "hedged_ci": [
+      0.00213,
+      0.00455
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 5,000",
+     "n": 1627,
+     "events": 1131,
+     "slope": 0.978,
+     "best_pull": 0.983,
+     "best_pull_ci": [
+      0.917,
+      1.061
+     ],
+     "hedged_minus_price": 0.00216,
+     "hedged_ci": [
+      0.00045,
+      0.00418
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 500",
+     "n": 3576,
+     "events": 2493,
+     "slope": 1.077,
+     "best_pull": 1.03,
+     "best_pull_ci": [
+      0.986,
+      1.076
+     ],
+     "hedged_minus_price": 0.00351,
+     "hedged_ci": [
+      0.00231,
+      0.00479
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 5,000",
+     "n": 1146,
+     "events": 815,
+     "slope": 0.957,
+     "best_pull": 0.973,
+     "best_pull_ci": [
+      0.86,
+      1.076
+     ],
+     "hedged_minus_price": 0.00173,
+     "hedged_ci": [
+      -0.00093,
+      0.0041
+     ]
+    }
+   ],
+   "everything except sports": [
+    {
+     "rule": "all, nothing chosen",
+     "n": 1510,
+     "events": 381,
+     "slope": 1.256,
+     "best_pull": 1.057,
+     "best_pull_ci": [
+      1.034,
+      1.08
+     ],
+     "hedged_minus_price": 0.00997,
+     "hedged_ci": [
+      0.00844,
+      0.01148
+     ]
+    },
+    {
+     "rule": "final volume >= 1,000 contracts",
+     "n": 1408,
+     "events": 358,
+     "slope": 1.249,
+     "best_pull": 1.054,
+     "best_pull_ci": [
+      1.029,
+      1.075
+     ],
+     "hedged_minus_price": 0.00989,
+     "hedged_ci": [
+      0.0083,
+      0.01129
+     ]
+    },
+    {
+     "rule": "final volume >= 5,000 contracts",
+     "n": 964,
+     "events": 246,
+     "slope": 1.19,
+     "best_pull": 1.04,
+     "best_pull_ci": [
+      1.014,
+      1.065
+     ],
+     "hedged_minus_price": 0.00918,
+     "hedged_ci": [
+      0.00744,
+      0.01086
+     ]
+    },
+    {
+     "rule": "final volume >= 20,000 contracts",
+     "n": 423,
+     "events": 138,
+     "slope": 1.139,
+     "best_pull": 1.027,
+     "best_pull_ci": [
+      0.972,
+      1.072
+     ],
+     "hedged_minus_price": 0.00833,
+     "hedged_ci": [
+      0.00477,
+      0.01123
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 200",
+     "n": 1372,
+     "events": 362,
+     "slope": 1.209,
+     "best_pull": 1.046,
+     "best_pull_ci": [
+      1.02,
+      1.069
+     ],
+     "hedged_minus_price": 0.00938,
+     "hedged_ci": [
+      0.00769,
+      0.0109
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 1,000",
+     "n": 1065,
+     "events": 302,
+     "slope": 1.266,
+     "best_pull": 1.056,
+     "best_pull_ci": [
+      1.032,
+      1.079
+     ],
+     "hedged_minus_price": 0.01045,
+     "hedged_ci": [
+      0.00884,
+      0.01203
+     ]
+    },
+    {
+     "rule": "open interest at the time >= 5,000",
+     "n": 442,
+     "events": 153,
+     "slope": 1.094,
+     "best_pull": 1.011,
+     "best_pull_ci": [
+      0.967,
+      1.052
+     ],
+     "hedged_minus_price": 0.00757,
+     "hedged_ci": [
+      0.00456,
+      0.01029
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 500",
+     "n": 851,
+     "events": 256,
+     "slope": 1.215,
+     "best_pull": 1.048,
+     "best_pull_ci": [
+      1.022,
+      1.072
+     ],
+     "hedged_minus_price": 0.00971,
+     "hedged_ci": [
+      0.00794,
+      0.01138
+     ]
+    },
+    {
+     "rule": "volume in the prior 24h >= 5,000",
+     "n": 258,
+     "events": 104,
+     "slope": 1.167,
+     "best_pull": 1.04,
+     "best_pull_ci": [
+      0.991,
+      1.088
+     ],
+     "hedged_minus_price": 0.00914,
+     "hedged_ci": [
+      0.00594,
+      0.01238
+     ]
+    }
+   ]
+  },
+  "leak_test": [
+   {
+    "group": "all categories",
+    "n": 24156,
+    "events": 12017,
+    "final_volume": -0.3552,
+    "final_volume_ci": [
+     -0.4065,
+     -0.3084
+    ],
+    "liquidity_then": 0.1384,
+    "liquidity_then_ci": [
+     0.1119,
+     0.1662
+    ],
+    "verdict": "final volume leaks the outcome"
+   },
+   {
+    "group": "sports",
+    "n": 22646,
+    "events": 11636,
+    "final_volume": -0.3681,
+    "final_volume_ci": [
+     -0.4229,
+     -0.316
+    ],
+    "liquidity_then": 0.1489,
+    "liquidity_then_ci": [
+     0.117,
+     0.1804
+    ],
+    "verdict": "final volume leaks the outcome"
+   },
+   {
+    "group": "everything except sports",
+    "n": 1510,
+    "events": 381,
+    "final_volume": -0.0528,
+    "final_volume_ci": [
+     -0.3248,
+     0.2557
+    ],
+    "liquidity_then": -0.0658,
+    "liquidity_then_ci": [
+     -0.3529,
+     0.1057
+    ],
+    "verdict": "no leak detected"
+   }
+  ]
+ },
+ "Polymarket": {
+  "by_rule": {
+   "all categories": [
+    {
+     "rule": "random sample, price was live",
+     "n": 9271,
+     "events": 6401,
+     "slope": 0.997,
+     "best_pull": 1.185,
+     "best_pull_ci": [
+      1.173,
+      1.201
+     ],
+     "hedged_minus_price": 0.01166,
+     "hedged_ci": [
+      0.01118,
+      0.01222
+     ]
+    },
+    {
+     "rule": "final volume >= $1,000 (random sample)",
+     "n": 1471,
+     "events": 1344,
+     "slope": 1.019,
+     "best_pull": 1.005,
+     "best_pull_ci": [
+      0.969,
+      1.041
+     ],
+     "hedged_minus_price": 0.00533,
+     "hedged_ci": [
+      0.00341,
+      0.00711
+     ]
+    },
+    {
+     "rule": "final volume >= $10,000 (random sample)",
+     "n": 384,
+     "events": 369,
+     "slope": 1.192,
+     "best_pull": 1.04,
+     "best_pull_ci": [
+      0.965,
+      1.111
+     ],
+     "hedged_minus_price": 0.00583,
+     "hedged_ci": [
+      0.00272,
+      0.00886
+     ]
+    },
+    {
+     "rule": "final volume >= $100,000",
+     "n": 1889,
+     "events": 887,
+     "slope": 0.975,
+     "best_pull": 0.968,
+     "best_pull_ci": [
+      0.926,
+      1.01
+     ],
+     "hedged_minus_price": 0.00288,
+     "hedged_ci": [
+      0.00108,
+      0.0048
+     ]
+    },
+    {
+     "rule": "final volume >= $500,000",
+     "n": 432,
+     "events": 245,
+     "slope": 0.846,
+     "best_pull": 0.92,
+     "best_pull_ci": [
+      0.8,
+      1.014
+     ],
+     "hedged_minus_price": 0.00084,
+     "hedged_ci": [
+      -0.00382,
+      0.00488
+     ]
+    },
+    {
+     "rule": "final volume >= $1,000,000",
+     "n": 206,
+     "events": 117,
+     "slope": 0.839,
+     "best_pull": 0.935,
+     "best_pull_ci": [
+      0.77,
+      1.079
+     ],
+     "hedged_minus_price": 0.00148,
+     "hedged_ci": [
+      -0.00495,
+      0.00721
+     ]
+    },
+    {
+     "rule": "price moved in >= 24 of the prior 168 hours",
+     "n": 3698,
+     "events": 2751,
+     "slope": 1.012,
+     "best_pull": 1.131,
+     "best_pull_ci": [
+      1.11,
+      1.149
+     ],
+     "hedged_minus_price": 0.01158,
+     "hedged_ci": [
+      0.01064,
+      0.01245
+     ]
+    },
+    {
+     "rule": "price moved in >= 72 of the prior 168 hours",
+     "n": 554,
+     "events": 499,
+     "slope": 1.273,
+     "best_pull": 1.093,
+     "best_pull_ci": [
+      1.054,
+      1.13
+     ],
+     "hedged_minus_price": 0.01162,
+     "hedged_ci": [
+      0.00925,
+      0.01371
+     ]
+    }
+   ],
+   "sports": [
+    {
+     "rule": "random sample, price was live",
+     "n": 7696,
+     "events": 5067,
+     "slope": 0.869,
+     "best_pull": 1.212,
+     "best_pull_ci": [
+      1.194,
+      1.231
+     ],
+     "hedged_minus_price": 0.01173,
+     "hedged_ci": [
+      0.01111,
+      0.01234
+     ]
+    },
+    {
+     "rule": "final volume >= $1,000 (random sample)",
+     "n": 762,
+     "events": 708,
+     "slope": 0.834,
+     "best_pull": 0.955,
+     "best_pull_ci": [
+      0.883,
+      1.03
+     ],
+     "hedged_minus_price": 0.00217,
+     "hedged_ci": [
+      -0.00064,
+      0.00509
+     ]
+    },
+    {
+     "rule": "final volume >= $10,000 (random sample)",
+     "n": 216,
+     "events": 209,
+     "slope": 1.189,
+     "best_pull": 1.116,
+     "best_pull_ci": [
+      0.966,
+      1.258
+     ],
+     "hedged_minus_price": 0.00606,
+     "hedged_ci": [
+      0.00163,
+      0.00997
+     ]
+    },
+    {
+     "rule": "final volume >= $100,000",
+     "n": 1152,
+     "events": 667,
+     "slope": 1.04,
+     "best_pull": 0.957,
+     "best_pull_ci": [
+      0.872,
+      1.03
+     ],
+     "hedged_minus_price": 0.00158,
+     "hedged_ci": [
+      -0.00071,
+      0.0037
+     ]
+    },
+    {
+     "rule": "final volume >= $500,000",
+     "n": 297,
+     "events": 186,
+     "slope": 0.953,
+     "best_pull": 0.942,
+     "best_pull_ci": [
+      0.763,
+      1.064
+     ],
+     "hedged_minus_price": 0.00142,
+     "hedged_ci": [
+      -0.00382,
+      0.00603
+     ]
+    },
+    {
+     "rule": "price moved in >= 24 of the prior 168 hours",
+     "n": 3187,
+     "events": 2297,
+     "slope": 0.832,
+     "best_pull": 1.146,
+     "best_pull_ci": [
+      1.125,
+      1.166
+     ],
+     "hedged_minus_price": 0.01189,
+     "hedged_ci": [
+      0.01086,
+      0.01278
+     ]
+    },
+    {
+     "rule": "price moved in >= 72 of the prior 168 hours",
+     "n": 292,
+     "events": 258,
+     "slope": 0.995,
+     "best_pull": 1.135,
+     "best_pull_ci": [
+      1.073,
+      1.186
+     ],
+     "hedged_minus_price": 0.01295,
+     "hedged_ci": [
+      0.00974,
+      0.01564
+     ]
+    }
+   ],
+   "everything except sports": [
+    {
+     "rule": "random sample, price was live",
+     "n": 1575,
+     "events": 1334,
+     "slope": 1.448,
+     "best_pull": 1.099,
+     "best_pull_ci": [
+      1.079,
+      1.121
+     ],
+     "hedged_minus_price": 0.01135,
+     "hedged_ci": [
+      0.01017,
+      0.01243
+     ]
+    },
+    {
+     "rule": "final volume >= $1,000 (random sample)",
+     "n": 709,
+     "events": 636,
+     "slope": 1.28,
+     "best_pull": 1.039,
+     "best_pull_ci": [
+      1.006,
+      1.068
+     ],
+     "hedged_minus_price": 0.00874,
+     "hedged_ci": [
+      0.0067,
+      0.01045
+     ]
+    },
+    {
+     "rule": "final volume >= $100,000",
+     "n": 737,
+     "events": 220,
+     "slope": 0.919,
+     "best_pull": 0.975,
+     "best_pull_ci": [
+      0.934,
+      1.017
+     ],
+     "hedged_minus_price": 0.00491,
+     "hedged_ci": [
+      0.00216,
+      0.00762
+     ]
+    },
+    {
+     "rule": "price moved in >= 24 of the prior 168 hours",
+     "n": 511,
+     "events": 454,
+     "slope": 1.371,
+     "best_pull": 1.057,
+     "best_pull_ci": [
+      1.02,
+      1.086
+     ],
+     "hedged_minus_price": 0.00968,
+     "hedged_ci": [
+      0.00743,
+      0.01158
+     ]
+    },
+    {
+     "rule": "price moved in >= 72 of the prior 168 hours",
+     "n": 262,
+     "events": 241,
+     "slope": 1.326,
+     "best_pull": 1.054,
+     "best_pull_ci": [
+      1.003,
+      1.097
+     ],
+     "hedged_minus_price": 0.01014,
+     "hedged_ci": [
+      0.00685,
+      0.01294
+     ]
+    }
+   ]
+  },
+  "leak_test": [
+   {
+    "group": "all categories",
+    "n": 11098,
+    "events": 7165,
+    "final_volume": 0.0097,
+    "final_volume_ci": [
+     -0.029,
+     0.0415
+    ],
+    "liquidity_then": -0.0691,
+    "liquidity_then_ci": [
+     -0.2241,
+     0.073
+    ],
+    "verdict": "no leak detected"
+   },
+   {
+    "group": "sports",
+    "n": 8814,
+    "events": 5664,
+    "final_volume": 0.0253,
+    "final_volume_ci": [
+     -0.0161,
+     0.0674
+    ],
+    "liquidity_then": -0.1696,
+    "liquidity_then_ci": [
+     -0.3886,
+     0.0257
+    ],
+    "verdict": "no leak detected"
+   },
+   {
+    "group": "everything except sports",
+    "n": 2284,
+    "events": 1501,
+    "final_volume": -0.2347,
+    "final_volume_ci": [
+     -0.3419,
+     -0.1268
+    ],
+    "liquidity_then": 0.0445,
+    "liquidity_then_ci": [
+     -0.447,
+     0.3118
+    ],
+    "verdict": "final volume leaks the outcome"
+   }
+  ]
+ }
+}

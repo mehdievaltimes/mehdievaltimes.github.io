@@ -14,7 +14,7 @@ Two samples, flagged per row so each analysis uses the right one:
 of the 168 hourly prices before the snapshot differed from the hour before: a measure of
 activity that was known at the time. (Polymarket's API does not give volume as of a past time.)
 
-    python research/volume-selection/polymarket.py     # about two hours; writes data/polymarket/history.csv.gz
+    python research/volume-selection/polymarket.py     # about 30 minutes; writes data/polymarket/history.csv.gz
 
 Standard library only. The output is bulk exchange data and stays out of git (/data/ is ignored).
 """
