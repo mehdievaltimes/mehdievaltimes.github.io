@@ -608,6 +608,226 @@
    "category": "Politics",
    "feeMultiplier": 1,
    "title": "Will Trump golf?"
+  },
+  "KXCEONVDA": {
+   "category": "Financials",
+   "feeMultiplier": 1,
+   "title": "Nvidia CEO leaving"
+  },
+  "KXDWTSELIMINATION": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "DANCING WITH THE STARS ELIMINATION"
+  },
+  "KXNCAAFFIRSTTDTEAM": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football First Team to Score a Touchdown"
+  },
+  "KXNETFLIXRANKSHOW": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "Netflix TV ranking"
+  },
+  "KXNFL1HFT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "1st Half Fulltime Result"
+  },
+  "KXNETFLIXTOPVIEWSTV": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "NETFLIX TOP SHOW VIEW COUNT"
+  },
+  "KXTRUMPPHOTO": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Trump photos"
+  },
+  "KXYTVIEWSW": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "Highest daily view count this week"
+  },
+  "KXNETFLIXRANKMOVIERUNNERUP": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "RUNNER UP NETFLIX MOVIE"
+  },
+  "KXLALIGA2GAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "LaLiga 2 Game"
+  },
+  "KXVOICELIMINATION": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "who will be eliminated from the voice"
+  },
+  "KXTOKENUSE": {
+   "category": "Science and Technology",
+   "feeMultiplier": 1,
+   "title": "token usage"
+  },
+  "KXSTEAMTOPSELLER": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "STEAM Top Sellers"
+  },
+  "KXNETFLIXTOPVIEWSMOVIE": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "NETFLIX TOP MOVIE VIEW COUNT"
+  },
+  "KXNETFLIXRANKSHOWGLOBAL": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "Netflix TV ranking"
+  },
+  "KXVTBGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Russia VTB United Game"
+  },
+  "KXUSLSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Spread"
+  },
+  "KXEERSTEDIVGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Eerste Divisie Game"
+  },
+  "KXNCAAF1H": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football 1st Half Winner"
+  },
+  "KXNFLPASSYDSPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Passing Yards Protected"
+  },
+  "KXBRASILEIROGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Brasileiro Serie A Game"
+  },
+  "KXNFLPASSTDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football player Passing Touchdowns"
+  },
+  "KXNVDADELAY": {
+   "category": "Financials",
+   "feeMultiplier": 1,
+   "title": "Nvdia delays earnings call"
+  },
+  "KXLIGAMXSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga MX Game"
+  },
+  "KXLIGAPORTUGAL2GAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga Portugal 2 Game"
+  },
+  "KXUSRETAIL": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "US retail sales MoM"
+  },
+  "KXNFL2HTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 2nd Half Total"
+  },
+  "KXSUEZWEEKLY": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Traffic through the Suez Canal"
+  },
+  "KXNWSLGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "NWSL Game"
+  },
+  "KXPERLIGA1GAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Peru Liga 1 Game"
+  },
+  "KXNETFLIXRANKMOVIE": {
+   "category": "Entertainment",
+   "feeMultiplier": 1,
+   "title": "Netflix movie ranking"
+  },
+  "KXURYPDGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Uruguay Primera Division Game"
+  },
+  "KXINTLFRIENDLYSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "International Friendly Spread"
+  },
+  "KXNFL2HSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 2nd Half Spread"
+  },
+  "KXUE": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Monthly Unemployment"
+  },
+  "KXCBDINDONESIA": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Bank Indonesia rate decision"
+  },
+  "KXBUILDPERMS": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Building permits for month"
+  },
+  "KXUSLEI": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "U.S. Leading Economic Index change"
+  },
+  "KXCCAVSICE": {
+   "category": "Financials",
+   "feeMultiplier": 1,
+   "title": "CCA Auction Price versus ICE CCA Futures"
+  },
+  "KXSAMOMINF": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "South Africa MoM inflation"
+  },
+  "KXCOUPEDEFRANCEGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Coupe de France Game"
+  },
+  "KXBRASILEIROTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Brasileiro Total"
+  },
+  "KXLIGAMXTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Liga MX Total"
+  },
+  "KXNCAAFOT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "College Football Overtime"
   }
  },
  "markets": {
@@ -623,11 +843,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.44,
-    "yesAsk": 0.45,
-    "noBid": 0.55,
-    "noAsk": 0.56,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.23,
+    "yesAsk": 0.25,
+    "noBid": 0.75,
+    "noAsk": 0.77,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXNATGASW-26NOV1317-T3.599": {
@@ -642,11 +862,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.53,
-    "yesAsk": 0.56,
-    "noBid": 0.44,
-    "noAsk": 0.47,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.61,
+    "yesAsk": 0.65,
+    "noBid": 0.35,
+    "noAsk": 0.39,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXBTCD-26NOV1317-T74999.99": {
@@ -661,11 +881,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.3,
-    "yesAsk": 0.31,
-    "noBid": 0.69,
-    "noAsk": 0.7,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.29,
+    "yesAsk": 0.3,
+    "noBid": 0.7,
+    "noAsk": 0.71,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXAAAGASW-26NOV16-3.8400": {
@@ -680,11 +900,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.08,
-    "yesAsk": 0.09,
-    "noBid": 0.91,
-    "noAsk": 0.92,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.02,
+    "yesAsk": 0.03,
+    "noBid": 0.97,
+    "noAsk": 0.98,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXRT-EBE-40": {
@@ -699,11 +919,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.38,
-    "yesAsk": 0.42,
-    "noBid": 0.58,
-    "noAsk": 0.62,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.46,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.54,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXTRUMPSAY-26NOV16-MELA": {
@@ -718,11 +938,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.54,
-    "yesAsk": 0.64,
-    "noBid": 0.36,
-    "noAsk": 0.46,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.28,
+    "yesAsk": 0.36,
+    "noBid": 0.64,
+    "noAsk": 0.72,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXHEGSETHOUT-26APR-26NOV16": {
@@ -741,7 +961,7 @@
     "yesAsk": 0.02,
     "noBid": 0.98,
     "noAsk": 0.99,
-    "at": "2026-11-11T00:37:34.764Z"
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXLLM1-26NOV16-GOOG": {
@@ -756,11 +976,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.87,
-    "yesAsk": 0.92,
-    "noBid": 0.08,
-    "noAsk": 0.13,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.81,
+    "yesAsk": 0.87,
+    "noBid": 0.13,
+    "noAsk": 0.19,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXGOLDW-26NOV1317-T4128.99": {
@@ -775,11 +995,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.11,
-    "yesAsk": 0.14,
-    "noBid": 0.86,
-    "noAsk": 0.89,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.02,
+    "yesAsk": 0.04,
+    "noBid": 0.96,
+    "noAsk": 0.98,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXUFCFIGHT-26NOV14GANHOK-HOK": {
@@ -794,11 +1014,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.35,
-    "yesAsk": 0.36,
-    "noBid": 0.64,
-    "noAsk": 0.65,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.37,
+    "yesAsk": 0.38,
+    "noBid": 0.62,
+    "noAsk": 0.63,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXUEFANLGAME-26NOV12TURBEL-BEL": {
@@ -817,7 +1037,7 @@
     "yesAsk": 0.55,
     "noBid": 0.45,
     "noAsk": 0.46,
-    "at": "2026-11-11T00:37:34.764Z"
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXNBAGAME-26NOV10OKCPOR-OKC": {
@@ -830,14 +1050,15 @@
    "rules": "If Oklahoma City wins the Oklahoma City vs Portland Pro Basketball game originally scheduled for Nov 10, 2026, then the market resolves to Yes. If the game is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is cancelled or not started within 48 hours of its originally scheduled start, all markets will resolve to a fair price.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and br",
    "closeTime": "2026-11-13T04:00:00Z",
    "addedAt": "2026-11-10T07:42:47.525Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.53,
     "yesAsk": 0.54,
     "noBid": 0.46,
     "noAsk": 0.47,
     "at": "2026-11-11T00:37:34.764Z"
-   }
+   },
+   "settledAt": "2026-11-12T00:37:28.590Z"
   },
   "KXRAINWKND-26NOV14-SGF": {
    "ticker": "KXRAINWKND-26NOV14-SGF",
@@ -851,11 +1072,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.48,
-    "yesAsk": 0.5,
-    "noBid": 0.5,
-    "noAsk": 0.52,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.46,
+    "yesAsk": 0.49,
+    "noBid": 0.51,
+    "noAsk": 0.54,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXBRENTW-26NOV1317-T88.99": {
@@ -870,11 +1091,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.56,
-    "yesAsk": 0.59,
-    "noBid": 0.41,
-    "noAsk": 0.44,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.7,
+    "yesAsk": 0.73,
+    "noBid": 0.27,
+    "noAsk": 0.3,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXBTCD-26NOV1317-T73499.99": {
@@ -889,11 +1110,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.53,
-    "yesAsk": 0.54,
-    "noBid": 0.46,
-    "noAsk": 0.47,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.6,
+    "yesAsk": 0.61,
+    "noBid": 0.39,
+    "noAsk": 0.4,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXAAAGASW-26NOV16-3.8000": {
@@ -908,11 +1129,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.61,
-    "yesAsk": 0.62,
-    "noBid": 0.38,
-    "noAsk": 0.39,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.43,
+    "yesAsk": 0.45,
+    "noBid": 0.55,
+    "noAsk": 0.57,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXAPCALLAKSEN-26NOV04-NOV181200A": {
@@ -927,11 +1148,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.55,
-    "yesAsk": 0.63,
-    "noBid": 0.37,
-    "noAsk": 0.45,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.2,
+    "yesAsk": 0.24,
+    "noBid": 0.76,
+    "noAsk": 0.8,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXRT-EBE-35": {
@@ -946,11 +1167,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.55,
-    "yesAsk": 0.57,
-    "noBid": 0.43,
-    "noAsk": 0.45,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.69,
+    "yesAsk": 0.71,
+    "noBid": 0.29,
+    "noAsk": 0.31,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXTRUMPSAY-26NOV16-FILI": {
@@ -965,11 +1186,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.4,
-    "yesAsk": 0.44,
-    "noBid": 0.56,
-    "noAsk": 0.6,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.2,
+    "yesAsk": 0.24,
+    "noBid": 0.76,
+    "noAsk": 0.8,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXTRUMPUFC-26NOV-DJT": {
@@ -985,10 +1206,10 @@
    "result": null,
    "last": {
     "yesBid": 0.06,
-    "yesAsk": 0.07,
-    "noBid": 0.93,
+    "yesAsk": 0.08,
+    "noBid": 0.92,
     "noAsk": 0.94,
-    "at": "2026-11-11T00:37:34.764Z"
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXLLM1-26NOV16-ANTH": {
@@ -1003,11 +1224,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.07,
-    "yesAsk": 0.11,
-    "noBid": 0.89,
-    "noAsk": 0.93,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.12,
+    "yesAsk": 0.16,
+    "noBid": 0.84,
+    "noAsk": 0.88,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXNFLTOTAL-26NOV15MINGB-42": {
@@ -1022,11 +1243,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.51,
-    "yesAsk": 0.52,
-    "noBid": 0.48,
-    "noAsk": 0.49,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.52,
+    "yesAsk": 0.53,
+    "noBid": 0.47,
+    "noAsk": 0.48,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXNFLGAME-26NOV12WASNYG-NYG": {
@@ -1041,11 +1262,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.56,
-    "yesAsk": 0.57,
-    "noBid": 0.43,
-    "noAsk": 0.44,
-    "at": "2026-11-11T00:37:34.764Z"
+    "yesBid": 0.55,
+    "yesAsk": 0.56,
+    "noBid": 0.44,
+    "noAsk": 0.45,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   },
   "KXNFLSPREAD-26NOV12WASNYG-NYG3": {
@@ -1064,7 +1285,235 @@
     "yesAsk": 0.5,
     "noBid": 0.5,
     "noAsk": 0.51,
-    "at": "2026-11-11T00:37:34.764Z"
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXRAINWKND-26NOV14-PHX": {
+   "ticker": "KXRAINWKND-26NOV14-PHX",
+   "eventTicker": "KXRAINWKND-26NOV14",
+   "series": "KXRAINWKND",
+   "category": "Climate and Weather",
+   "title": "Will it rain in Phoenix between Nov 14 and Nov 15, 2026?",
+   "sub": "Phoenix",
+   "rules": "If the total precipitation at CLIPHX in Phoenix on any day within November 14, 2026 through November 15, 2026 is strictly greater than 0 inches, then the market resolves to Yes. Not all weather data is the same. While checking a source like AccuWeather or Google Weather may help guide your decision, the official and final value used to determine this market as reported by the Weather Company.\n\nReading weather data\nData for CLIPHX can be found at https://weather.com/kalshi.\n“Trace” amounts (T) and missing daily precipitation values are counted as 0 inches.",
+   "closeTime": "2026-11-16T07:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.45,
+    "yesAsk": 0.47,
+    "noBid": 0.53,
+    "noAsk": 0.55,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXUSRETAIL-26NOV17-T0.4": {
+   "ticker": "KXUSRETAIL-26NOV17-T0.4",
+   "eventTicker": "KXUSRETAIL-26NOV17",
+   "series": "KXUSRETAIL",
+   "category": "Economics",
+   "title": "Will United States retail sales MoM for October 2026 be above 0.4%?",
+   "sub": "Above 0.4%",
+   "rules": "If the United States retail sales MoM for October 2026 is above 0.4%, then the market resolves to Yes.",
+   "closeTime": "2026-11-17T13:25:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.33,
+    "yesAsk": 0.41,
+    "noBid": 0.59,
+    "noAsk": 0.67,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXAPCALLNC03-26NOV04-NOV181200A": {
+   "ticker": "KXAPCALLNC03-26NOV04-NOV181200A",
+   "eventTicker": "KXAPCALLNC03-26NOV04",
+   "series": "KXAPCALLNC03",
+   "category": "Elections",
+   "title": "Will AP call the 2026 North Carolina 3rd Congressional District U.S. House election before 12:00 AM ET on Nov 18, 2026?",
+   "sub": "Before Nov 18",
+   "rules": "If the Associated Press makes its first definitive call of a winner for the 2026 North Carolina 3rd Congressional District U.S. House election before 12:00 AM ET on Nov 18, 2026, then the market resolves to Yes. The call must be an explicit declaration that a candidate, party, or option has won, will win, or equivalent clear language indicating AP has determined the winner. The phrase \"projected to win\" alone is insufficient; it must be AP's clear election call. The call must appear on one of AP's primary platforms (main website, television broadcast, or official social media if that is its pr",
+   "closeTime": "2026-11-18T05:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.89,
+    "yesAsk": 0.94,
+    "noBid": 0.06,
+    "noAsk": 0.11,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXDWTSELIMINATION-26NOV18-TAT": {
+   "ticker": "KXDWTSELIMINATION-26NOV18-TAT",
+   "eventTicker": "KXDWTSELIMINATION-26NOV18",
+   "series": "KXDWTSELIMINATION",
+   "category": "Entertainment",
+   "title": "Will Tatyana Ali and their partner be eliminated from Dancing with the Stars Season 35 before Nov 18, 2026?",
+   "sub": "Tatyana Ali",
+   "rules": "If Tatyana Ali and their partner are officially eliminated from Dancing with the Stars Season 35 before Nov 18, 2026, then the market resolves to Yes. How this is resolved\nThe declaration must be made through official program broadcast, website, verified social media, or press releases.\nIf the season is canceled without declaring eliminations, the market resolves to No.\n\nPayout criteria\nElimination includes being voted off, evicted, knocked out, removed from further contention, voluntary withdrawal, disqualification, or producer removal.\nMultiple simultaneous eliminations count.\nInitial elimin",
+   "closeTime": "2026-11-18T04:59:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.31,
+    "yesAsk": 0.32,
+    "noBid": 0.68,
+    "noAsk": 0.69,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXCEONVDA-01JAN33-16NOV26": {
+   "ticker": "KXCEONVDA-01JAN33-16NOV26",
+   "eventTicker": "KXCEONVDA-01JAN33",
+   "series": "KXCEONVDA",
+   "category": "Financials",
+   "title": "Will Jensen Huang leave as Nvidia CEO before Nov 16, 2026?",
+   "sub": "Before Nov 16, 2026",
+   "rules": "If the CEO of NVIDIA Corporation has announced, or it has been announced on their behalf, that they have left their position as CEO after issuance and before Nov 16, 2026, then the market resolves to Yes. The CEO covered by this event is Jensen Huang, the CEO of NVIDIA Corporation at issuance. The CEO must actually leave their position; announcing a future departure alone does not qualify. The departure must be announced by the CEO or on their behalf after issuance and before the specified date. \"Before\" excludes the specified calendar date. Each deadline is evaluated independently, so more th",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.74,
+    "yesAsk": 0.75,
+    "noBid": 0.25,
+    "noAsk": 0.26,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXTRUMPSAY-26NOV16-CANA": {
+   "ticker": "KXTRUMPSAY-26NOV16-CANA",
+   "eventTicker": "KXTRUMPSAY-26NOV16",
+   "series": "KXTRUMPSAY",
+   "category": "Mentions",
+   "title": "Will Trump say \"Canada / Canadian\" before Nov 16, 2026?",
+   "sub": "Canada / Canadian",
+   "rules": "If Canada / Canadian, or a plural or possessive form of Canada / Canadian, is stated by Donald Trump after November 9, 2026 at 8:30am ET and before Nov 16, 2026 at 12:00am ET, then the market resolves to Yes. Payout criteria\nThe word or phrase must be stated by President Donald Trump in public statements, direct quotes published by Source Agencies, or written public statements on his personal social media accounts (Twitter/Truth Social).\nThe exact phrase/word, or a plural or possessive form of the phrase/word, must be used.\nFor phrases with slashes like \"Doge/Dogecoin,\" either word satisfies t",
+   "closeTime": "2026-11-16T15:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.43,
+    "yesAsk": 0.46,
+    "noBid": 0.54,
+    "noAsk": 0.57,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXHORMUZMAX-26NOV15-NOV11": {
+   "ticker": "KXHORMUZMAX-26NOV15-NOV11",
+   "eventTicker": "KXHORMUZMAX-26NOV15",
+   "series": "KXHORMUZMAX",
+   "category": "Politics",
+   "title": "Will November 11 be the day with the most transit calls through the Strait of Hormuz (11/9 - 11/15)?",
+   "sub": "November 11",
+   "rules": "If Nov 11, 2026 is the date with the highest number of transit calls through the Strait of Hormuz as reported by the IMF PortWatch in the listed week, then the market resolves to Yes. Daily counts will be evaluated from Nov 9, 2026 to Nov 15, 2026. The market will resolve no earlier than Tuesday at 9 AM following the end of the period, once complete data is available. If multiple days tie for the highest number of transit calls, the market for each tied day will resolve to 1/N, where N is the number of tied days.",
+   "closeTime": "2026-11-17T14:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.21,
+    "yesAsk": 0.22,
+    "noBid": 0.78,
+    "noAsk": 0.79,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXTOKENUSE-26NOV16-T232": {
+   "ticker": "KXTOKENUSE-26NOV16-T232",
+   "eventTicker": "KXTOKENUSE-26NOV16",
+   "series": "KXTOKENUSE",
+   "category": "Science and Technology",
+   "title": "Will OpenRouter token usage for Nov 9–15, 2026 be above 232T tokens?",
+   "sub": "Above 232T tokens",
+   "rules": "If the OpenRouter token usage for Nov 9–15, 2026 is above 232T tokens, then the market resolves to Yes. This event will resolve based on the value for the seven UTC calendar days from Nov 9–15, 2026, as observed at 10:00 AM ET on Nov 16, 2026.\n\nFor purposes of this market, “token usage” means the token usage included in OpenRouter's AI Model Rankings and does not represent total AI token usage across all providers or platforms.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with OpenRouter. All trademarks, logos, and brand names are the prope",
+   "closeTime": "2026-11-16T04:59:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.05,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.95,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXUE-AUS26OCT-5.1": {
+   "ticker": "KXUE-AUS26OCT-5.1",
+   "eventTicker": "KXUE-AUS26OCT",
+   "series": "KXUE",
+   "category": "Economics",
+   "title": "Australia unemployment rate in October 2026?",
+   "sub": "Above 5.1%",
+   "rules": "If the Australia unemployment rate is above 5.1% for October 2026, then the market resolves to Yes.",
+   "closeTime": "2026-11-19T00:30:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.01,
+    "yesAsk": 0.07,
+    "noBid": 0.93,
+    "noAsk": 0.99,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXNCAAFGAME-26NOV14TEXLSU-TEX": {
+   "ticker": "KXNCAAFGAME-26NOV14TEXLSU-TEX",
+   "eventTicker": "KXNCAAFGAME-26NOV14TEXLSU",
+   "series": "KXNCAAFGAME",
+   "category": "Sports",
+   "title": "Texas wins",
+   "sub": "Texas",
+   "rules": "If Texas wins the Texas vs LSU college football game originally scheduled for Nov 14, 2026, then the market resolves to Yes. If the game is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is cancelled or not started within 48 hours of its originally scheduled start, the market will resolve to a fair price.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the NCAA. All trademarks, logos, and brand names are the property of th",
+   "closeTime": "2026-11-16T20:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.37,
+    "yesAsk": 0.38,
+    "noBid": 0.62,
+    "noAsk": 0.63,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXNFLGAME-26NOV15MINGB-MIN": {
+   "ticker": "KXNFLGAME-26NOV15MINGB-MIN",
+   "eventTicker": "KXNFLGAME-26NOV15MINGB",
+   "series": "KXNFLGAME",
+   "category": "Sports",
+   "title": "Minnesota wins",
+   "sub": "Minnesota",
+   "rules": "If Minnesota wins the Minnesota vs Green Bay Pro Football game originally scheduled for Nov 15, 2026, then the market resolves to Yes. The following market refers to the team who wins the Minnesota vs Green Bay Pro Football game originally scheduled for Nov 15, 2026. If the game ends in a tie, the market will resolve to $0.50 for each team. If the game is postponed but begins within 48 hours from its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is not started within 48 hours, the market will resolve to a fair price.\n\nK",
+   "closeTime": "2026-11-17T18:00:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.39,
+    "yesAsk": 0.4,
+    "noBid": 0.6,
+    "noAsk": 0.61,
+    "at": "2026-11-12T00:37:28.590Z"
+   }
+  },
+  "KXUFCFIGHT-26NOV14GANHOK-GAN": {
+   "ticker": "KXUFCFIGHT-26NOV14GANHOK-GAN",
+   "eventTicker": "KXUFCFIGHT-26NOV14GANHOK",
+   "series": "KXUFCFIGHT",
+   "category": "Sports",
+   "title": "Ciryl Gane wins",
+   "sub": "Ciryl Gane",
+   "rules": "If Ciryl Gane  wins the Ciryl Gane vs Josh Hokit professional MMA fight originally scheduled for Nov 14, 2026, then the market resolves to Yes. If the fight ends in a draw/no contest, both markets will resolve to $0.50. Note that any revisions after Expiration will not be considered. Therefore, if a fighter is disqualified, removed, or the official result of the fight is reversed or changed in any way after the Contract expires, that will not impact resolution. If the fight is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve b",
+   "closeTime": "2026-11-17T03:30:00Z",
+   "addedAt": "2026-11-12T00:37:28.590Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.62,
+    "yesAsk": 0.63,
+    "noBid": 0.37,
+    "noAsk": 0.38,
+    "at": "2026-11-12T00:37:28.590Z"
    }
   }
  },
@@ -1201,7 +1650,8 @@
      "p": 0.55,
      "confidence": "medium",
      "reasoning": "Sportsbooks have OKC as a small road favorite (about -1.5, -125 moneyline) with Jalen Williams, Holmgren and Wallace out; Portland is missing Morant and Sharpe. Vig-free implied probability is roughly 54-55%, matching the market price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     }
    ],
    "history": [
@@ -1213,6 +1663,11 @@
     {
      "at": "2026-11-11T00:37:34.764Z",
      "equity": 999.87,
+     "cash": 996.09
+    },
+    {
+     "at": "2026-11-12T00:37:28.590Z",
+     "equity": 998.05,
      "cash": 996.09
     }
    ]
@@ -1356,7 +1811,8 @@
      "p": 0.55,
      "confidence": "medium",
      "reasoning": "Betting lines have OKC as a 1.5-point road favourite (about -125), which implies roughly 55%. The Thunder are missing Holmgren, J. Williams and Wallace, and Portland is without Sharpe and Morant. The market price matches consensus, so there is no reason to deviate.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     }
    ],
    "history": [
@@ -1369,6 +1825,11 @@
      "at": "2026-11-11T00:37:34.764Z",
      "equity": 990.09,
      "cash": 946.27
+    },
+    {
+     "at": "2026-11-12T00:37:28.590Z",
+     "equity": 980.08,
+     "cash": 946.27
     }
    ]
   },
@@ -1376,7 +1837,7 @@
    "id": "claude--claude-sonnet-5-5",
    "provider": "claude",
    "model": "claude-sonnet-5-5",
-   "cash": 885.55,
+   "cash": 785.36,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -1518,7 +1979,8 @@
      "p": 0.56,
      "confidence": "low",
      "reasoning": "OKC is the stronger team but plays on the road at a 5-1 Portland team. Both sides have injuries and I found no betting lines, so I stayed close to the market price.",
-     "pass": "edge -0.7¢ is under the 5¢ minimum"
+     "pass": "edge -0.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXRAINWKND-26NOV14-SGF",
@@ -1646,6 +2108,147 @@
      "confidence": "low",
      "reasoning": "No current line was found for the Nov 12 game. The market price of about 50% implies a line near Giants -2.5, and I have no specific reason to move away from it.",
      "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXRAINWKND-26NOV14-PHX",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.45,
+     "yesAsk": 0.47,
+     "p": 0.25,
+     "confidence": "medium",
+     "reasoning": "Saturday has about a 20% chance of showers and Sunday looks drier. The Friday rain chance falls outside the window, and the bigger system arrives next week. Only measurable rain at the airport station counts.",
+     "trade": {
+      "side": "no",
+      "contracts": 88,
+      "price": 0.55,
+      "fee": 1.53,
+      "cost": 48.4,
+      "edge": 0.18
+     }
+    },
+    {
+     "ticker": "KXUSRETAIL-26NOV17-T0.4",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.33,
+     "yesAsk": 0.41,
+     "p": 0.35,
+     "confidence": "low",
+     "reasoning": "No October 2026 consensus found. September was strong at +0.8% versus 0.3% expected, so payback is likely, and the consensus is probably around 0.2–0.4%. The market price is about 37%.",
+     "pass": "edge -3.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAPCALLNC03-26NOV04-NOV181200A",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.89,
+     "yesAsk": 0.94,
+     "p": 0.94,
+     "confidence": "medium",
+     "reasoning": "Murphy conceded Nov 11 after Smith overtook him by 293 votes with counting wrapped up. AP typically calls soon after a concession, and there are six days left. The risk is that AP waits for the canvass or a recount.",
+     "pass": "edge -0.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-TAT",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.31,
+     "yesAsk": 0.32,
+     "p": 0.27,
+     "confidence": "low",
+     "reasoning": "Ali and Ravnik reached the semifinals with about six couples left. One elimination is likely before the Nov 18 cutoff, so the base rate is roughly 17%. A mid-range score and one conflicting bottom-two report push it up a little.",
+     "pass": "edge 2.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXCEONVDA-01JAN33-16NOV26",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.74,
+     "yesAsk": 0.75,
+     "p": 0.04,
+     "confidence": "medium",
+     "reasoning": "As of Nov 11 Huang remains CEO; the board's Wachtell-led investigation just began, Trump defended him, and analysts don't expect removal. A resignation within four days is possible but unlikely. The 75¢ price looks badly mispriced.",
+     "trade": {
+      "side": "no",
+      "contracts": 182,
+      "price": 0.26,
+      "fee": 2.46,
+      "cost": 47.32,
+      "edge": 0.69
+     }
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-CANA",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.43,
+     "yesAsk": 0.46,
+     "p": 0.85,
+     "confidence": "medium",
+     "reasoning": "Trump mentions Canada very frequently (tariffs, trade deal, Carney, Lake America), so a week-long window almost surely includes a mention. The low market price may reflect verification uncertainty or a quiet stretch.",
+     "trade": {
+      "side": "yes",
+      "contracts": 1,
+      "price": 0.46,
+      "fee": 0.02,
+      "cost": 0.46,
+      "edge": 0.37
+     }
+    },
+    {
+     "ticker": "KXHORMUZMAX-26NOV15-NOV11",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.21,
+     "yesAsk": 0.22,
+     "p": 0.15,
+     "confidence": "low",
+     "reasoning": "Seven candidate days gives a base rate of about 14%. I found no evidence that Wednesday is systematically the peak day, and daily counts are noisy. The market price looks slightly rich.",
+     "pass": "edge 4.8¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXTOKENUSE-26NOV16-T232",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.05,
+     "yesAsk": 0.06,
+     "p": 0.06,
+     "confidence": "low",
+     "reasoning": "Unconfirmed late-October weekly volume was about 194T and reports say growth is flattening. Reaching above 232T by mid-November would need roughly 20% more growth. The market price of 5-6¢ is consistent with that.",
+     "pass": "edge -0.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUE-AUS26OCT-5.1",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.07,
+     "p": 0.01,
+     "confidence": "high",
+     "reasoning": "September 2026 unemployment was 4.7%. Exceeding 5.1% in October would take a 0.5-point monthly jump, which is extremely rare.",
+     "pass": "edge -1.1¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNCAAFGAME-26NOV14TEXLSU-TEX",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.37,
+     "yesAsk": 0.38,
+     "p": 0.37,
+     "confidence": "medium",
+     "reasoning": "Most books have LSU favored by about 4.5 at home, with an LSU moneyline near -156. That implies Texas wins about 37–38% of the time, in line with the market price.",
+     "pass": "edge -1.6¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXNFLGAME-26NOV15MINGB-MIN",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.39,
+     "yesAsk": 0.4,
+     "p": 0.4,
+     "confidence": "medium",
+     "reasoning": "Packers are home favorites by about 2 points, with a moneyline near -136/+136 in one listing, which implies about 42% for Minnesota. The market price is consistent with that.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-GAN",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.62,
+     "yesAsk": 0.63,
+     "p": 0.66,
+     "confidence": "medium",
+     "reasoning": "Sportsbook lines of -230 to -280 imply about 66-70% for Gane after removing the margin. The market at 62-63% is slightly lower, so I put him a little above it.",
+     "pass": "edge 1.4¢ is under the 5¢ minimum"
     }
    ],
    "history": [
@@ -1658,6 +2261,11 @@
      "at": "2026-11-11T00:37:34.764Z",
      "equity": 1013.08,
      "cash": 885.55
+    },
+    {
+     "at": "2026-11-12T00:37:28.590Z",
+     "equity": 1000.51,
+     "cash": 785.36
     }
    ]
   },
@@ -1800,7 +2408,8 @@
      "p": 0.55,
      "confidence": "low",
      "reasoning": "No result yet. Game is at Portland; the Thunder are road favorites by market price, with Sharpe, Topic, and Sorber out. I stay close to the 54.5¢ market price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     }
    ],
    "history": [
@@ -1813,6 +2422,11 @@
      "at": "2026-11-11T00:37:34.764Z",
      "equity": 992.02,
      "cash": 956.12
+    },
+    {
+     "at": "2026-11-12T00:37:28.590Z",
+     "equity": 983.63,
+     "cash": 956.12
     }
    ]
   },
@@ -1820,7 +2434,7 @@
    "id": "random--coin-flip",
    "provider": "random",
    "model": "coin-flip",
-   "cash": 565.93,
+   "cash": 392.56,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -1971,7 +2585,10 @@
       "price": 0.46,
       "fee": 0.94,
       "cost": 24.84
-     }
+     },
+     "result": "no",
+     "payout": 54,
+     "pnl": 28.22
     },
     {
      "ticker": "KXRAINWKND-26NOV14-SGF",
@@ -2128,6 +2745,162 @@
       "fee": 0.86,
       "cost": 24.99
      }
+    },
+    {
+     "ticker": "KXRAINWKND-26NOV14-PHX",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.45,
+     "yesAsk": 0.47,
+     "trade": {
+      "side": "no",
+      "contracts": 45,
+      "price": 0.55,
+      "fee": 0.78,
+      "cost": 24.75
+     }
+    },
+    {
+     "ticker": "KXUSRETAIL-26NOV17-T0.4",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.33,
+     "yesAsk": 0.41,
+     "trade": {
+      "side": "no",
+      "contracts": 37,
+      "price": 0.67,
+      "fee": 0.58,
+      "cost": 24.79
+     }
+    },
+    {
+     "ticker": "KXAPCALLNC03-26NOV04-NOV181200A",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.89,
+     "yesAsk": 0.94,
+     "trade": {
+      "side": "no",
+      "contracts": 17,
+      "price": 0.11,
+      "fee": 0.12,
+      "cost": 1.87
+     }
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-TAT",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.31,
+     "yesAsk": 0.32,
+     "trade": {
+      "side": "yes",
+      "contracts": 78,
+      "price": 0.32,
+      "fee": 1.19,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXCEONVDA-01JAN33-16NOV26",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.74,
+     "yesAsk": 0.75,
+     "trade": {
+      "side": "no",
+      "contracts": 96,
+      "price": 0.26,
+      "fee": 1.3,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXTRUMPSAY-26NOV16-CANA",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.43,
+     "yesAsk": 0.46,
+     "trade": {
+      "side": "yes",
+      "contracts": 1,
+      "price": 0.46,
+      "fee": 0.02,
+      "cost": 0.46
+     }
+    },
+    {
+     "ticker": "KXHORMUZMAX-26NOV15-NOV11",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.21,
+     "yesAsk": 0.22,
+     "trade": {
+      "side": "yes",
+      "contracts": 113,
+      "price": 0.22,
+      "fee": 1.36,
+      "cost": 24.86
+     }
+    },
+    {
+     "ticker": "KXTOKENUSE-26NOV16-T232",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.05,
+     "yesAsk": 0.06,
+     "trade": {
+      "side": "no",
+      "contracts": 4,
+      "price": 0.95,
+      "fee": 0.02,
+      "cost": 3.8
+     }
+    },
+    {
+     "ticker": "KXUE-AUS26OCT-5.1",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.07,
+     "trade": {
+      "side": "yes",
+      "contracts": 200,
+      "price": 0.07,
+      "fee": 0.92,
+      "cost": 14
+     }
+    },
+    {
+     "ticker": "KXNCAAFGAME-26NOV14TEXLSU-TEX",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.37,
+     "yesAsk": 0.38,
+     "trade": {
+      "side": "yes",
+      "contracts": 65,
+      "price": 0.38,
+      "fee": 1.08,
+      "cost": 24.7
+     }
+    },
+    {
+     "ticker": "KXNFLGAME-26NOV15MINGB-MIN",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.39,
+     "yesAsk": 0.4,
+     "trade": {
+      "side": "no",
+      "contracts": 40,
+      "price": 0.61,
+      "fee": 0.67,
+      "cost": 24.4
+     }
+    },
+    {
+     "ticker": "KXUFCFIGHT-26NOV14GANHOK-GAN",
+     "at": "2026-11-12T00:37:28.590Z",
+     "yesBid": 0.62,
+     "yesAsk": 0.63,
+     "trade": {
+      "side": "no",
+      "contracts": 65,
+      "price": 0.38,
+      "fee": 1.08,
+      "cost": 24.7
+     }
     }
    ],
    "history": [
@@ -2140,6 +2913,11 @@
      "at": "2026-11-11T00:37:34.764Z",
      "equity": 988.92,
      "cash": 565.93
+    },
+    {
+     "at": "2026-11-12T00:37:28.590Z",
+     "equity": 962.02,
+     "cash": 392.56
     }
    ]
   }
@@ -2189,7 +2967,28 @@
     "claude--claude-sonnet-5-5",
     "random--coin-flip"
    ]
+  },
+  {
+   "at": "2026-11-12T00:37:28.590Z",
+   "markets": [
+    "KXRAINWKND-26NOV14-PHX",
+    "KXUSRETAIL-26NOV17-T0.4",
+    "KXAPCALLNC03-26NOV04-NOV181200A",
+    "KXDWTSELIMINATION-26NOV18-TAT",
+    "KXCEONVDA-01JAN33-16NOV26",
+    "KXTRUMPSAY-26NOV16-CANA",
+    "KXHORMUZMAX-26NOV15-NOV11",
+    "KXTOKENUSE-26NOV16-T232",
+    "KXUE-AUS26OCT-5.1",
+    "KXNCAAFGAME-26NOV14TEXLSU-TEX",
+    "KXNFLGAME-26NOV15MINGB-MIN",
+    "KXUFCFIGHT-26NOV14GANHOK-GAN"
+   ],
+   "traders": [
+    "claude--claude-sonnet-5-5",
+    "random--coin-flip"
+   ]
   }
  ],
- "updated": "2026-11-11T00:37:34.764Z"
+ "updated": "2026-11-12T00:37:28.590Z"
 }
