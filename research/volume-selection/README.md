@@ -2,10 +2,12 @@
 
 Research notes, kept in the repo and not published on the site. Last run: Nov 12, 2026.
 
-**Short answer: in some markets, yes.** A market's final trading volume is only known after it
-ends, and in two of the four groups tested it carries information about how the market resolved.
-Choosing questions by it then distorts how accurate the market's own price looks, which is the
-baseline forecasting benchmarks compare models against.
+**Short answer: the leak is real, but it did not flatter real models.** A market's final trading
+volume is only known after it ends, and in two of the four groups tested it carries information
+about how the market resolved. Choosing questions by it distorts how accurate the market's own
+price looks. But when two real models were scored against the market, a volume filter made them
+look worse, not better, and did not change their ranking. So the claim that volume filters bias
+benchmark conclusions is not supported by this test.
 
 ## The question
 
@@ -86,6 +88,39 @@ Polymarket, everything except sports:
 The volume filter moves the market from looking underconfident to looking about right or slightly
 overconfident. The hedging forecaster does not beat the market in any Polymarket group.
 
+## Real model forecasts
+
+The test above used a synthetic hedger. This one uses real forecasts (`forecast.py`,
+`score_forecasts.py`). Claude Sonnet 5.5 and Claude Haiku 5.5 each gave a probability for the 2,284
+Polymarket non-sports markets, as of a day before each ended. They worked closed-book: no tools,
+and the market's price was not shown. A search would have found the outcomes, so this is the only
+leak-free setup available after the fact. Neither model shows any sign of knowing the outcomes: on
+the 226 markets priced 40 to 60 cents, both score 0.313, worse than a coin flip's 0.250.
+
+Brier score, model minus market (positive means the model is worse):
+
+| Markets kept | Markets | Haiku 5.5 | Sonnet 5.5 |
+|---|---:|---|---|
+| Random sample | 1,575 | +0.040 (+0.031 to +0.049) | +0.036 (+0.027 to +0.045) |
+| Final volume of $1,000 or more | 709 | +0.073 (+0.059 to +0.087) | +0.066 (+0.052 to +0.081) |
+| Final volume of $100,000 or more | 737 | +0.125 (+0.102 to +0.152) | +0.120 (+0.098 to +0.147) |
+| Price moved in 24 or more of the prior 168 hours | 511 | +0.093 (+0.076 to +0.111) | +0.088 (+0.069 to +0.108) |
+
+The gap grows with final volume. The groups differ in what they hold (the random sample is mostly
+weather, the high-volume set mostly politics and crypto), so the direct test matters more: among
+markets that looked alike a day before the end, the model's advantage over the price changes by
+-0.020 per tenfold final volume for both models (Haiku -0.028 to -0.012, Sonnet -0.028 to -0.011).
+With category also held fixed it is -0.022 for both, still clear of zero. Within categories it is
+negative in weather and finance, about zero in politics, and about zero in crypto for Sonnet. The
+one exception is Haiku in crypto, +0.016 (+0.005 to +0.029).
+
+The ranking does not move. Sonnet is ahead of Haiku by 0.004 in the random sample (0.000 to 0.008)
+and by 0.005 among high-volume markets (-0.004 to +0.013).
+
+The likely reason: high-volume markets are the ones where traders know far more than a base rate.
+That information gap is much larger than the distortion the leak adds to the price, so for a
+forecaster this far from the market the filter mostly selects questions where it is outclassed.
+
 ## Checks
 
 - **Horizon.** Kalshi sports: -0.39, -0.37 and -0.30 at 6, 24 and 72 hours, all clear of zero.
@@ -102,14 +137,17 @@ overconfident. The hedging forecaster does not beat the market in any Polymarket
 - That hedging forecasters gain everywhere. That happens on Kalshi sports only.
 - Why Polymarket sports shows no leak when Kalshi sports shows a strong one.
 - Anything about Kalshi outside sports: 381 events is too few.
-- An effect on real model forecasts. The hedger here is synthetic.
+- What happens for forecasters that are nearly as good as the market, such as models with search.
+  The leak could matter there, where small differences decide who wins. That can't be tested after
+  the fact, because search would find the outcomes; it needs forecasts collected before markets end.
 
 Other limits: one to two months of data, the Polymarket "liquidity at the time" measure is a proxy,
-and Polymarket's end time is the earlier of the scheduled end and the actual close.
+Polymarket's end time is the earlier of the scheduled end and the actual close, and the model test
+covers two models from one family, asked ten questions per call.
 
 ## Next
 
-1. Score real model forecasts with and without a volume filter, to see whether rankings move.
+1. Collect forecasts from models with search before markets end, then repeat the model test.
 2. Get more Kalshi non-sports markets by going past the live-data cutoff into the historical API.
 3. Find out what differs about Polymarket sports.
 4. Read the two volume-filtered benchmarks properly.
@@ -121,9 +159,11 @@ pip install numpy
 python scripts/kalshi/house/backfill.py                 # data/kalshi/history.csv.gz, about 90 minutes
 python research/volume-selection/polymarket.py          # data/polymarket/history.csv.gz, about 30 minutes
 python research/volume-selection/analyze.py --json research/volume-selection/results.json
+python research/volume-selection/forecast.py            # asks the models; needs the claude CLI logged in
+python research/volume-selection/score_forecasts.py --json research/volume-selection/forecast_results.json
 ```
 
 Both downloads use public endpoints with no account. One trap: Polymarket's listing silently stops
 near 2,000 rows per query, so `polymarket.py` splits any window that reaches that depth. The
-downloaded data stays out of git (`/data/` is ignored); `results.json` holds only the summary
-numbers.
+downloaded data stays out of git (`/data/` is ignored). `results.json` and `forecast_results.json`
+hold only summary numbers, and `forecasts.csv` holds the models' own probabilities by market id.

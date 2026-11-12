@@ -1,0 +1,166 @@
+{
+ "claude-haiku-5-5": {
+  "n": 2284,
+  "by_rule": [
+   {
+    "rule": "random sample",
+    "n": 1575,
+    "events": 1334,
+    "market_brier": 0.0794,
+    "model_brier": 0.1196,
+    "gap": 0.0402,
+    "gap_ci": [
+     0.0314,
+     0.0488
+    ]
+   },
+   {
+    "rule": "final volume >= $1,000 (random sample)",
+    "n": 709,
+    "events": 636,
+    "market_brier": 0.0806,
+    "model_brier": 0.1539,
+    "gap": 0.0732,
+    "gap_ci": [
+     0.0594,
+     0.0873
+    ]
+   },
+   {
+    "rule": "final volume >= $100,000",
+    "n": 737,
+    "events": 220,
+    "market_brier": 0.0949,
+    "model_brier": 0.2197,
+    "gap": 0.1248,
+    "gap_ci": [
+     0.1023,
+     0.1519
+    ]
+   },
+   {
+    "rule": "price moved in >= 24 of the prior 168 hours",
+    "n": 511,
+    "events": 454,
+    "market_brier": 0.078,
+    "model_brier": 0.1711,
+    "gap": 0.0931,
+    "gap_ci": [
+     0.0762,
+     0.1107
+    ]
+   }
+  ],
+  "advantage_per_10x_final_volume": -0.0199,
+  "advantage_ci": [
+   -0.0283,
+   -0.0115
+  ],
+  "verdict": "the model loses ground where final volume is high",
+  "brier_on_uncertain_markets": 0.3129,
+  "uncertain_markets": 226
+ },
+ "claude-sonnet-5-5": {
+  "n": 2283,
+  "by_rule": [
+   {
+    "rule": "random sample",
+    "n": 1575,
+    "events": 1334,
+    "market_brier": 0.0794,
+    "model_brier": 0.1154,
+    "gap": 0.036,
+    "gap_ci": [
+     0.0274,
+     0.045
+    ]
+   },
+   {
+    "rule": "final volume >= $1,000 (random sample)",
+    "n": 709,
+    "events": 636,
+    "market_brier": 0.0806,
+    "model_brier": 0.1469,
+    "gap": 0.0663,
+    "gap_ci": [
+     0.0516,
+     0.081
+    ]
+   },
+   {
+    "rule": "final volume >= $100,000",
+    "n": 736,
+    "events": 220,
+    "market_brier": 0.0949,
+    "model_brier": 0.2151,
+    "gap": 0.1202,
+    "gap_ci": [
+     0.0981,
+     0.1472
+    ]
+   },
+   {
+    "rule": "price moved in >= 24 of the prior 168 hours",
+    "n": 511,
+    "events": 454,
+    "market_brier": 0.078,
+    "model_brier": 0.1659,
+    "gap": 0.0879,
+    "gap_ci": [
+     0.0694,
+     0.1075
+    ]
+   }
+  ],
+  "advantage_per_10x_final_volume": -0.0196,
+  "advantage_ci": [
+   -0.0276,
+   -0.0107
+  ],
+  "verdict": "the model loses ground where final volume is high",
+  "brier_on_uncertain_markets": 0.3134,
+  "uncertain_markets": 226
+ },
+ "ranking": {
+  "a": "claude-haiku-5-5",
+  "b": "claude-sonnet-5-5",
+  "by_rule": [
+   {
+    "rule": "random sample",
+    "n": 1575,
+    "gap": 0.0042,
+    "gap_ci": [
+     0.0001,
+     0.0084
+    ]
+   },
+   {
+    "rule": "final volume >= $1,000 (random sample)",
+    "n": 709,
+    "gap": 0.0069,
+    "gap_ci": [
+     -0.0003,
+     0.0139
+    ]
+   },
+   {
+    "rule": "final volume >= $100,000",
+    "n": 736,
+    "gap": 0.0049,
+    "gap_ci": [
+     -0.0036,
+     0.0133
+    ]
+   },
+   {
+    "rule": "price moved in >= 24 of the prior 168 hours",
+    "n": 511,
+    "gap": 0.0052,
+    "gap_ci": [
+     -0.0056,
+     0.0157
+    ]
+   }
+  ]
+ }
+}
