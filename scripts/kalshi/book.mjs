@@ -8,6 +8,7 @@ export const CONFIG = {
   maxStake: 50, // never more than $50 on one market
   feeRate: 0.07, // Kalshi's taker fee: 7% × price × (1 − price) per contract
   coinStake: 25, // what the coin-flip trader bets every time
+  skipCategories: ['Sports'], // the traders stay out of these
 };
 
 const round2 = (x) => Math.round(x * 100) / 100 + 0; // + 0 turns -0 into 0
@@ -24,10 +25,10 @@ export function tradable(m) {
 }
 
 /**
- * Pick n markets: one per event (the one nearest 50¢), at most two per series, sports held to a
- * quarter of the round, and the rest dealt round-robin across categories by 24h volume.
+ * Pick up to n markets: one per event (the one nearest 50¢), at most two per series, none from
+ * the skipped categories, dealt round-robin across the rest by 24h volume.
  */
-export function select(markets, categoryOf, n, seen = new Set()) {
+export function select(markets, categoryOf, n, seen = new Set(), skip = CONFIG.skipCategories) {
   const byEvent = new Map();
   for (const m of markets) {
     if (seen.has(m.ticker) || !tradable(m)) continue;
@@ -37,32 +38,26 @@ export function select(markets, categoryOf, n, seen = new Set()) {
   const buckets = new Map();
   for (const m of [...byEvent.values()].sort((a, b) => b.volume24h - a.volume24h)) {
     const c = categoryOf(m.series);
-    if (!c) continue;
+    if (!c || skip.includes(c)) continue;
     if (!buckets.has(c)) buckets.set(c, []);
     buckets.get(c).push({ ...m, category: c });
   }
-  const picked = [], perSeries = {};
-  const take = (m) => {
-    if ((perSeries[m.series] ?? 0) >= 2) return false;
-    perSeries[m.series] = (perSeries[m.series] ?? 0) + 1;
-    picked.push(m);
-    return true;
-  };
-  const deal = (cats, limit) => {
-    for (let progressed = true; progressed && picked.length < limit;) {
-      progressed = false;
-      for (const c of cats) {
-        if (picked.length >= limit) break;
-        const q = buckets.get(c);
-        while (q?.length) if (take(q.shift())) { progressed = true; break; }
+  const picked = [], perSeries = {}, cats = [...buckets.keys()].sort();
+  for (let progressed = true; progressed && picked.length < n;) {
+    progressed = false;
+    for (const c of cats) {
+      if (picked.length >= n) break;
+      const q = buckets.get(c);
+      while (q.length) {
+        const m = q.shift();
+        if ((perSeries[m.series] ?? 0) >= 2) continue;
+        perSeries[m.series] = (perSeries[m.series] ?? 0) + 1;
+        picked.push(m);
+        progressed = true;
+        break;
       }
     }
-  };
-  const others = [...buckets.keys()].filter((c) => c !== 'Sports').sort();
-  const sportsQuota = Math.floor(n / 4);
-  deal(others, n - sportsQuota);
-  deal(['Sports'], n); // sports fill their quarter, plus any slots the other categories couldn't
-  deal(others, n);
+  }
   return picked;
 }
 

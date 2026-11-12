@@ -138,7 +138,7 @@ const action = (f: Forecast) => {
   <div class="prose pt-method">
     <h2>Rules</h2>
     <ul>
-      <li><strong>Markets.</strong> Each round takes open markets that close within about a week and have a real two-sided price between 6¢ and 94¢. One market per event, two per series, sports held to a quarter of the round.</li>
+      <li><strong>Markets.</strong> Each round takes open markets that close within about a week and have a real two-sided price between 6¢ and 94¢. One market per event, two per series, and no sports (the first two rounds included a few).</li>
       <li><strong>Forecasts.</strong> One fresh run of the vendor’s own agent CLI per market, with web search where the CLI has it. The model sees the rules and the current price and returns a probability. It never sees its portfolio and cannot trade.</li>
       <li><strong>Trades.</strong> Buy only when the forecast beats the asking price plus the fee by {ledger.config.minEdge * 100}¢ a contract. Size is a quarter of the Kelly stake, capped at {whole(ledger.config.maxStake)} a market and at what is actually on offer. Positions are held until the market resolves.</li>
       <li><strong>Fees.</strong> Kalshi’s taker fee, 7% × price × (1 − price) per contract, rounded up to the cent, with each series’ own multiplier.</li>

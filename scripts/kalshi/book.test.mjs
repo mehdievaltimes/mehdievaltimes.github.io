@@ -56,8 +56,16 @@ test('select spreads a round across events, series and categories', () => {
   const picked = select(markets, cat, 8).map((m) => m.ticker);
   assert.ok(picked.includes('ECON-A2') && !picked.includes('ECON-A1') && !picked.includes('LONG-1'));
   assert.equal(picked.filter((t) => t.startsWith('WX')).length, 2, 'two per series');
-  assert.equal(picked.filter((t) => t.startsWith('NFL')).length, 2, 'two per series holds for sports too');
   assert.ok(!select(markets, cat, 8, new Set(['ECON-A2'])).some((m) => m.ticker === 'ECON-A2'), 'seen markets are skipped');
+});
+
+test('the traders stay out of sports, even when that leaves the round short', () => {
+  const mk = (ticker, series, volume24h) => ({ ticker, eventTicker: ticker, series, status: 'active', yesBid: 0.5, yesAsk: 0.52, volume: 5000, volume24h });
+  const markets = [...Array.from({ length: 8 }, (_, i) => mk(`NFL-${i}`, 'NFL', 9000 - i)), mk('ECON-1', 'ECON', 40), mk('WX-1', 'WX', 30)];
+  const cat = (s) => ({ NFL: 'Sports', ECON: 'Economics', WX: 'Climate and Weather' })[s];
+  assert.deepEqual(select(markets, cat, 8).map((m) => m.ticker).sort(), ['ECON-1', 'WX-1']);
+  // The rule is a setting, not hard-wired: with nothing skipped, sports come back under the two-per-series cap.
+  assert.equal(select(markets, cat, 8, new Set(), []).filter((m) => m.ticker.startsWith('NFL')).length, 2);
 });
 
 test('settling pays winners, zeroes losers, refunds voids, and equity adds up', () => {
