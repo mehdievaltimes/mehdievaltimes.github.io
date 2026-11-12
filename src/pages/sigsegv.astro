@@ -24,7 +24,8 @@ import Base from '../layouts/Base.astro';
         <option value="found">found</option>
         <option value="skip">skipped</option>
       </select>
-      <input type="text" id="sg-me" placeholder="my UNI (hides yours)" autocomplete="off" />
+      <span class="sg-break"></span>
+      <span class="meta" id="sg-count"></span>
       <label class="meta"><input type="checkbox" id="sg-closed" /> closed too</label>
       <label class="meta"><input type="checkbox" id="sg-examples" /> pigz (example)</label>
     </form>
@@ -33,8 +34,6 @@ import Base from '../layouts/Base.astro';
       <summary class="meta"></summary>
       <p id="sg-unused-list"></p>
     </details>
-
-    <p class="meta" id="sg-count"></p>
     <div id="sg-list"></div>
   </div>
 
@@ -64,7 +63,7 @@ import Base from '../layouts/Base.astro';
     const EXAMPLES = new Set(['pigz']);
     const MARKS = ['', 'looking', 'found', 'skip'];
     const marks = store.get('sigsegv-marks', {});
-    const prefs = { q: '', round: '', sort: 'new', mark: 'all', me: '', closed: false, examples: false, ...store.get('sigsegv-prefs', {}) };
+    const prefs = { q: '', round: '', sort: 'new', mark: 'all', closed: false, examples: false, ...store.get('sigsegv-prefs', {}) };
     const state = { projects: {}, prs: [], generated: null, live: null };
 
     const key = (p) => `${p.repo}#${p.n}`;
@@ -97,12 +96,10 @@ import Base from '../layouts/Base.astro';
 
     function visible() {
       const q = prefs.q.trim().toLowerCase();
-      const me = prefs.me.trim().toLowerCase();
       const rows = state.prs.filter((p) => {
         if (!prefs.closed && !open(p)) return false;
         if (!prefs.examples && EXAMPLES.has(p.repo)) return false;
         if (prefs.round === 'other' ? p.round : prefs.round ? p.round !== Number(prefs.round) : !p.round) return false;
-        if (me && p.uni === me) return false;
         const m = marks[key(p)] || '';
         if (prefs.mark === 'none' ? m : prefs.mark !== 'all' && m !== prefs.mark) return false;
         if (!q) return true;
@@ -243,7 +240,7 @@ import Base from '../layouts/Base.astro';
 
     async function init() {
       $('sg-q').value = prefs.q; $('sg-sort').value = prefs.sort; $('sg-mark').value = prefs.mark;
-      $('sg-me').value = prefs.me; $('sg-closed').checked = prefs.closed; $('sg-examples').checked = prefs.examples;
+      $('sg-closed').checked = prefs.closed; $('sg-examples').checked = prefs.examples;
       try {
         const snap = await (await fetch('/sigsegv.json', { cache: 'no-cache' })).json();
         Object.assign(state, { projects: snap.projects, prs: snap.prs, generated: snap.generated });
@@ -255,7 +252,7 @@ import Base from '../layouts/Base.astro';
     }
 
     $('sg-bar').addEventListener('input', () => {
-      Object.assign(prefs, { q: $('sg-q').value, round: $('sg-round').value, sort: $('sg-sort').value, mark: $('sg-mark').value, me: $('sg-me').value, closed: $('sg-closed').checked, examples: $('sg-examples').checked });
+      Object.assign(prefs, { q: $('sg-q').value, round: $('sg-round').value, sort: $('sg-sort').value, mark: $('sg-mark').value, closed: $('sg-closed').checked, examples: $('sg-examples').checked });
       store.set('sigsegv-prefs', prefs);
       render();
     });
@@ -266,9 +263,10 @@ import Base from '../layouts/Base.astro';
 <style is:global>
   body:has(.sg) .wrap { max-width: 60rem; }
   body:has(.sg) main { max-width: none; }
-  .sg-bar { display: flex; flex-wrap: wrap; gap: .5rem; align-items: center; margin-bottom: 1rem; }
+  .sg-bar { display: flex; flex-wrap: wrap; gap: .5rem .9rem; align-items: center; margin-bottom: .6rem; }
   .sg-bar input[type='text'] { width: auto; flex: 1 1 14rem; padding: .5rem .7rem; font-size: .92rem; }
-  #sg-me { flex: 0 1 11rem; }
+  .sg-break { flex-basis: 100%; height: 0; }
+  #sg-count { margin-right: auto; }
   .sg-bar select { font: .85rem var(--sans); padding: .5rem .6rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); }
   .sg-bar label { display: flex; gap: .35rem; align-items: center; }
   .sg-unused { margin-bottom: .8rem; }
