@@ -75,8 +75,8 @@ and logo are in `terminal/text.ts`. History and the motd are kept per browser in
 
 Six challenges: the terminal's autograder (git), plus forensics, web, crypto, reversing and ML. Their files
 are in `public/ctf/`; `src/data/ctf.json` holds the SHA-256 of each flag and the sealed-export blob. The page
-checks flags in the browser and keeps progress in `localStorage`. The autograder's hash is the terminal's
-own `ANSWER_SHA256`, so a solve in either place counts in both.
+checks flags in the browser and keeps progress in `localStorage`. The autograder's hash is the first of the terminal's
+`ANSWERS_SHA256`, and both pages keep that solve through `terminal/solves.ts`, so it counts in either place.
 
 The scripts that made the challenge files contain the flags, so they are deliberately not in this repo. To
 change a flag, regenerate that challenge's file and its hash together.

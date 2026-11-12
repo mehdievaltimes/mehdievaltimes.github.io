@@ -45,12 +45,13 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
 <script>
   import { HOME, ADMIN_HOME, ETC, SRV, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWERS_SHA256, ANSWER_KEY, BAIT, STATIC_ELF, fileAt, type Dir } from './terminal/fs';
   import { EIGHT_BALL, MAN, PUBLIC } from './terminal/text';
+  import { markSolved } from './terminal/solves';
 
   type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos', ctf: '/ctf', trading: '/trading' };
-  const SOLVED_KEY = 'term-s', HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
+  const HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
 
   const section = document.getElementById('term')!;
   const outEl = document.getElementById('term-out')!;
@@ -114,8 +115,6 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   const pathStr = (p: string[]) => startsWith(p, homeOf(user)) ? '~' + abs(p.slice(2)).replace(/^\/$/, '') : abs(p);
   const sigil = () => (user === 'admin' ? '#' : '$');
   const prompt = () => `${user}@${host}:${pathStr(cwd)}${sigil()}`;
-  // The answers this browser got right, numbered from 1 in the order of ANSWERS_SHA256.
-  const solved = () => (store.get(SOLVED_KEY) ?? '').split(',').filter(Boolean);
 
   // ---- Output: queued and revealed one line at a time. Ctrl+C skips to the end. ----
   // A line is plain text (URLs become links) or a list of segments, some of them clickable.
@@ -1123,7 +1122,7 @@ These are common Git commands:
       if (guess === BAIT) { io.err("✗ rejected. Nice try: that one's a decoy."); return 1; }
       const n = ANSWERS_SHA256.indexOf(await sha256(guess));
       if (n < 0) { io.err('✗ rejected. 0/1 tests passed.'); return 1; }
-      store.set(SOLVED_KEY, [...new Set([...solved(), String(n + 1)])].sort().join(','));
+      markSolved(n + 1);
       io.out('✓ accepted. 1/1 tests passed.', 'ok');
     },
   };

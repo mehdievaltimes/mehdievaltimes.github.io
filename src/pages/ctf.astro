@@ -1,12 +1,12 @@
 ---
 import Base from '../layouts/Base.astro';
 import ctf from '../data/ctf.json';
-import { ANSWER_SHA256 } from '../components/terminal/fs';
+import { ANSWERS_SHA256 } from '../components/terminal/fs';
 
 // Only SHA-256 hashes of the flags ship. The files that make the challenges aren't in this repo.
 type Challenge = { id: string; title: string; cat: string; level: string; hash: string; hint: string };
 const challenges: Challenge[] = [
-  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWER_SHA256,
+  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWERS_SHA256[0],
     hint: 'Deleting a secret in a new commit doesn’t delete it from the old ones. Not everything is in the log, either.' },
   { id: 'portrait', title: 'Portrait', cat: 'forensics', level: 'easy', hash: ctf.hashes.portrait,
     hint: 'What you see is the high bits of each color. Look at them one bit at a time.' },
@@ -105,12 +105,13 @@ const sealed = ctf.sealed;
   <p class="meta reset-line">Progress is saved in this browser only. <button class="linkish" id="ctf-reset">reset</button></p>
 
   <script>
+    import { solvedAnswers, markSolved } from '../components/terminal/solves';
+
     const KEY = 'ctf-solved';
-    const TERM_KEY = 'term-s'; // the homepage terminal's own record of the autograder solve
     const load = (): Record<string, boolean> => { try { return JSON.parse(localStorage.getItem(KEY) || '{}'); } catch { return {}; } };
     const save = (s: Record<string, boolean>) => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch {} };
     const solved = load();
-    try { if (localStorage.getItem(TERM_KEY) === '1') solved.autograder = true; } catch {}
+    if (solvedAnswers().includes('1')) solved.autograder = true; // solved in the homepage terminal
 
     const sha256 = async (s: string) =>
       [...new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)))].map((b) => b.toString(16).padStart(2, '0')).join('');
@@ -137,7 +138,7 @@ const sealed = ctf.sealed;
         if ((await sha256(guess)) === li.dataset.hash) {
           solved[li.dataset.id!] = true;
           save(solved);
-          if (li.dataset.id === 'autograder') try { localStorage.setItem(TERM_KEY, '1'); } catch {}
+          if (li.dataset.id === 'autograder') markSolved(1);
           msg.textContent = '✓ correct';
           paint();
         } else {
