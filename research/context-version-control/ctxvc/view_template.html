@@ -1,0 +1,332 @@
+<title>Context Edit Trail</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a run header with the whole trajectory as one bar chart, then a step rail on the
+   left and the selected step (thought, command, diff, provenance) on the right. */
+:root {
+  --bg: #f4f6f9; --surface: #ffffff; --sunk: #eceff4; --ink: #18202c; --muted: #5a6677;
+  --line: #d5dbe5; --accent: #3d43c4; --accent-soft: #e6e7fb;
+  --w-user: #0b6e69; --w-tool: #a34a07; --w-model: #5b34b8; --w-edit: #b01657; --w-harness: #5f6b7b;
+  --del: #a8261b; --add: #17703a; --warn: #9a5b00;
+  --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #11151c; --surface: #19202a; --sunk: #141a22; --ink: #e5e9f0; --muted: #98a4b5;
+    --line: #2b3441; --accent: #9ea2ff; --accent-soft: #262a52;
+    --w-user: #52d6cb; --w-tool: #f2a65a; --w-model: #b9a0f7; --w-edit: #f58bb6; --w-harness: #a3aebd;
+    --del: #ff9288; --add: #7fdca2; --warn: #f0b860; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #11151c; --surface: #19202a; --sunk: #141a22; --ink: #e5e9f0; --muted: #98a4b5;
+  --line: #2b3441; --accent: #9ea2ff; --accent-soft: #262a52;
+  --w-user: #52d6cb; --w-tool: #f2a65a; --w-model: #b9a0f7; --w-edit: #f58bb6; --w-harness: #a3aebd;
+  --del: #ff9288; --add: #7fdca2; --warn: #f0b860; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 15px; line-height: 1.5; }
+.page { max-width: 1280px; margin: 0 auto; padding-block: 24px 48px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  display: flex; flex-direction: column; gap: 20px; }
+h1 { font-size: 24px; font-weight: 600; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h2 { font-size: 12px; font-weight: 600; margin: 0; text-transform: uppercase; letter-spacing: 0.07em; color: var(--muted); }
+.head { display: flex; flex-direction: column; gap: 10px; }
+.facts { display: flex; flex-wrap: wrap; gap: 6px 20px; color: var(--muted); font-size: 14px; }
+.facts b { color: var(--ink); font-weight: 500; font-variant-numeric: tabular-nums; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 13px; color: var(--muted); align-items: center; }
+.chip { display: inline-block; font-family: var(--mono); font-size: 11.5px; line-height: 1.5; padding: 0 6px; border-radius: 4px;
+  white-space: nowrap; color: var(--c); background: color-mix(in srgb, var(--c) 13%, var(--surface)); }
+.w-user { --c: var(--w-user); } .w-tool { --c: var(--w-tool); } .w-model { --c: var(--w-model); }
+.w-edit { --c: var(--w-edit); } .w-harness { --c: var(--w-harness); }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; }
+.chart { padding: 14px 16px 10px; display: flex; flex-direction: column; gap: 8px; }
+.chart-top { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: baseline; }
+.chart-scroll { overflow-x: auto; }
+.chart svg { display: block; height: 96px; }
+.chart .bar { cursor: pointer; }
+.chart .bar:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.note { font-size: 13px; color: var(--muted); }
+.trace { display: flex; flex-direction: column; gap: 8px; padding: 12px 16px; }
+.trace label { font-size: 13px; color: var(--muted); }
+.trace input { font: inherit; font-family: var(--mono); font-size: 13px; padding: 7px 10px; width: 100%; color: var(--ink);
+  background: var(--sunk); border: 1px solid var(--line); border-radius: 6px; }
+.trace input:focus-visible, button:focus-visible, .step:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.strip { display: flex; gap: 1px; height: 10px; }
+.strip i { flex: 1 1 0; min-width: 2px; background: var(--sunk); border-radius: 1px; }
+.strip i.on { background: var(--accent); }
+.work { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 16px; align-items: start; }
+.rail { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); max-height: calc(100vh - 24px); overflow-y: auto; padding: 6px; }
+.step { display: grid; grid-template-columns: 34px 62px minmax(0, 1fr); gap: 8px; align-items: center; width: 100%;
+  padding: 6px 8px; border: 0; border-radius: 6px; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.step:hover { background: var(--sunk); }
+.step[aria-current="true"] { background: var(--accent-soft); }
+.step .n { font-family: var(--mono); font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; text-align: right; }
+.kind { font-size: 11.5px; font-weight: 500; padding: 1px 7px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); text-align: center; }
+.kind.edit { color: var(--w-edit); border-color: color-mix(in srgb, var(--w-edit) 45%, var(--surface)); }
+.kind.rollback { color: var(--warn); border-color: color-mix(in srgb, var(--warn) 45%, var(--surface)); }
+.step .cmd { font-family: var(--mono); font-size: 12px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--muted); }
+.detail { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.dhead { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: baseline; padding: 14px 16px; }
+.dhead .big { font-size: 19px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.dhead .tok { font-family: var(--mono); font-size: 13px; color: var(--muted); }
+.nav { margin-left: auto; display: flex; gap: 6px; }
+button.b { font: inherit; font-size: 13px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+button.b:hover { background: var(--sunk); }
+button.b:disabled { opacity: 0.45; cursor: default; }
+.sec { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; min-width: 0; }
+.sec-top { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; justify-content: space-between; }
+.thought { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 78ch; }
+pre { margin: 0; font-family: var(--mono); font-size: 12.5px; line-height: 1.55; background: var(--sunk); border-radius: 6px; padding: 10px 12px;
+  overflow-x: auto; max-height: 340px; overflow-y: auto; white-space: pre; }
+.lines { font-family: var(--mono); font-size: 12.5px; line-height: 1.6; background: var(--sunk); border-radius: 6px; padding: 8px 0;
+  overflow-x: auto; max-height: 520px; overflow-y: auto; }
+.ln { display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 10px; padding: 0 12px; white-space: pre; }
+.ln .o { text-align: right; }
+.ln.del { background: color-mix(in srgb, var(--del) 10%, transparent); }
+.ln.del .t { color: var(--del); }
+.ln.add { background: color-mix(in srgb, var(--add) 12%, transparent); }
+.ln.add .t { color: var(--add); }
+.ln.mis .t { text-decoration: underline wavy color-mix(in srgb, var(--warn) 70%, transparent); text-underline-offset: 3px; }
+.turn { padding: 6px 12px 2px; color: var(--muted); font-size: 12px; }
+.turn b { color: var(--ink); font-weight: 500; }
+.from { color: var(--muted); }
+.empty { color: var(--muted); font-size: 14px; }
+.flag { color: var(--warn); font-size: 13px; }
+@media (max-width: 820px) {
+  .work { grid-template-columns: minmax(0, 1fr); }
+  .rail { position: static; max-height: 220px; }
+  .ln { grid-template-columns: 78px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: no-preference) { .step, button.b { transition: background-color 120ms; } }
+</style>
+
+<div class="page">
+  <header class="head">
+    <h1 id="title">Context Edit Trail</h1>
+    <div class="facts" id="facts"></div>
+    <div class="legend">
+      <span>Who wrote a line:</span>
+      <span class="chip w-user">user</span><span class="chip w-tool">tool</span><span class="chip w-model">model</span>
+      <span class="chip w-edit">edit</span><span class="chip w-harness">harness</span>
+      <span>· the number after @ is the call it entered at</span>
+    </div>
+  </header>
+
+  <section class="card chart" aria-label="Context size at every call">
+    <div class="chart-top">
+      <h2>Context size at every call</h2>
+      <span class="note" id="chart-note"></span>
+    </div>
+    <div class="chart-scroll"><svg id="chart" role="img" aria-label="Bar per call; height is context size"></svg></div>
+  </section>
+
+  <section class="card trace">
+    <label for="trace-input">Trace a piece of text through the run (exact match, 3+ characters)</label>
+    <input id="trace-input" type="text" autocomplete="off" spellcheck="false" placeholder="e.g. a value, an id, or a sentence from a tool output">
+    <div class="strip" id="trace-strip" hidden></div>
+    <div class="note" id="trace-out">Shows at which call the text entered the context, and which call removed it.</div>
+  </section>
+
+  <div class="work">
+    <nav class="card rail" id="rail" aria-label="Steps"></nav>
+    <main class="detail" id="detail"></main>
+  </div>
+</div>
+
+<script type="application/json" id="run-data">/*__RUN_DATA__*/null</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById('run-data').textContent);
+  var root = document.getElementById('detail');
+  if (!D) { root.textContent = 'No run data in this file.'; return; }
+  var T = D.texts, R = D.roles, O = D.origins, S = D.steps, V = D.versions;
+  var cur = 0, showAllCtx = false;
+
+  function el(tag, attrs, kids) {
+    var n = document.createElement(tag);
+    for (var k in (attrs || {})) {
+      if (k === 'text') n.textContent = attrs[k];
+      else if (k === 'class') n.className = attrs[k];
+      else if (k.slice(0, 2) === 'on') n.addEventListener(k.slice(2), attrs[k]);
+      else n.setAttribute(k, attrs[k]);
+    }
+    (kids || []).forEach(function (c) { if (c) n.appendChild(typeof c === 'string' ? document.createTextNode(c) : c); });
+    return n;
+  }
+  function fmt(n) { return (n == null ? '–' : Number(n).toLocaleString('en-US')); }
+  function chip(oid) { var o = O[oid]; return el('span', { class: 'chip w-' + o.w, text: o.l, title: o.w + ', entered after call ' + o.s }); }
+  function expectedRole(w) { return w === 'model' ? 'assistant' : (w === 'tool' ? 'tool' : (w === 'user' ? 'user' : null)); }
+  function mismatch(line) {
+    var o = O[line[1]], role = R[line[2]];
+    if (o.w === 'tool') return role !== 'tool';
+    if (o.w === 'edit') return role === 'user' || role === 'tool';
+    if (o.w === 'model') return role !== 'assistant';
+    return false;
+  }
+  function lineRow(line, cls) {
+    var row = el('div', { class: 'ln ' + (cls || '') + (mismatch(line) ? ' mis' : '') });
+    row.appendChild(el('span', { class: 'o' }, [chip(line[1])]));
+    var t = el('span', { class: 't', text: T[line[0]] || ' ' });
+    if (line[3] && line[3].length) {
+      t.appendChild(el('span', { class: 'from', text: '   ← from ' }));
+      line[3].forEach(function (d, i) { if (i) t.appendChild(document.createTextNode(' ')); t.appendChild(chip(d)); });
+    }
+    row.appendChild(t);
+    return row;
+  }
+
+  // ---- header
+  document.getElementById('title').textContent = D.title;
+  (function () {
+    var m = D.meta || {}, f = document.getElementById('facts'), res = m.result || {};
+    var edits = S.filter(function (s) { return s.kind === 'edit'; }).length;
+    var items = [['model', m.model], ['condition', m.condition], ['calls', S.length], ['context edits', edits],
+                 ['budget', m.limit ? fmt(m.limit) + ' tokens' : null],
+                 ['score', res.total != null ? res.correct + ' / ' + res.total : null], ['ended by', res.terminated_by]];
+    items.forEach(function (it) { if (it[1] != null && it[1] !== '') f.appendChild(el('span', {}, [it[0] + ' ', el('b', { text: String(it[1]) })])); });
+  })();
+
+  // ---- chart: one bar per version, height = context tokens
+  function drawChart() {
+    var svg = document.getElementById('chart'), ns = 'http://www.w3.org/2000/svg';
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var limit = (D.meta && D.meta.limit) || 0, max = Math.max.apply(null, V.map(function (v) { return v.tokens; }).concat([limit, 1]));
+    var bw = 14, gap = 3, H = 96, top = 6, base = H - 16, W = Math.max(V.length * (bw + gap) + 8, 120);
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H); svg.setAttribute('width', W);
+    function y(tok) { return base - (base - top) * tok / max; }
+    if (limit) {
+      var ln = document.createElementNS(ns, 'line');
+      ln.setAttribute('x1', 0); ln.setAttribute('x2', W); ln.setAttribute('y1', y(limit)); ln.setAttribute('y2', y(limit));
+      ln.setAttribute('stroke', 'var(--warn)'); ln.setAttribute('stroke-dasharray', '4 3'); ln.setAttribute('stroke-width', '1');
+      svg.appendChild(ln);
+    }
+    V.forEach(function (v, i) {
+      var st = S[i], isEdit = st && st.kind === 'edit', sel = i === cur;
+      var r = document.createElementNS(ns, 'rect');
+      r.setAttribute('x', 4 + i * (bw + gap)); r.setAttribute('width', bw);
+      r.setAttribute('y', y(v.tokens)); r.setAttribute('height', Math.max(base - y(v.tokens), 1)); r.setAttribute('rx', 2);
+      r.setAttribute('fill', isEdit ? 'var(--w-edit)' : 'var(--muted)');
+      r.setAttribute('opacity', sel ? '1' : (isEdit ? '0.7' : '0.38'));
+      r.setAttribute('class', 'bar'); r.setAttribute('tabindex', st ? '0' : '-1');
+      var tt = document.createElementNS(ns, 'title');
+      tt.textContent = 'call ' + v.call + ': ' + fmt(v.tokens) + ' tokens' + (isEdit ? ' (this call edited the context)' : '');
+      r.appendChild(tt);
+      if (st) { r.addEventListener('click', function () { select(i); }); r.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); select(i); } }); }
+      svg.appendChild(r);
+      if (i % 5 === 0) {
+        var tx = document.createElementNS(ns, 'text');
+        tx.setAttribute('x', 4 + i * (bw + gap) + bw / 2); tx.setAttribute('y', H - 3); tx.setAttribute('text-anchor', 'middle');
+        tx.setAttribute('font-size', '10'); tx.setAttribute('fill', 'var(--muted)'); tx.setAttribute('font-family', 'var(--mono)');
+        tx.textContent = v.call; svg.appendChild(tx);
+      }
+    });
+    document.getElementById('chart-note').textContent = 'pink bars are calls that edited the context' + (limit ? '; dashed line is the ' + fmt(limit) + '-token limit' : '');
+  }
+
+  // ---- rail
+  function drawRail() {
+    var rail = document.getElementById('rail');
+    while (rail.firstChild) rail.removeChild(rail.firstChild);
+    S.forEach(function (s, i) {
+      var b = el('button', { class: 'step', type: 'button', 'aria-current': i === cur ? 'true' : 'false', onclick: function () { select(i); } }, [
+        el('span', { class: 'n', text: String(s.call) }),
+        el('span', { class: 'kind ' + s.kind, text: s.kind }),
+        el('span', { class: 'cmd', text: (s.command || '(no command)').replace(/\s+/g, ' ') })
+      ]);
+      rail.appendChild(b);
+    });
+  }
+
+  // ---- detail
+  function section(title, body, extra) {
+    return el('section', { class: 'card sec' }, [el('div', { class: 'sec-top' }, [el('h2', { text: title }), extra || null]), body]);
+  }
+  function drawDetail() {
+    var s = S[cur], v = V[cur];
+    while (root.firstChild) root.removeChild(root.firstChild);
+    var prev = el('button', { class: 'b', type: 'button', text: '← Previous', onclick: function () { select(cur - 1); } });
+    var next = el('button', { class: 'b', type: 'button', text: 'Next →', onclick: function () { select(cur + 1); } });
+    prev.disabled = cur === 0; next.disabled = cur === S.length - 1;
+    var head = el('div', { class: 'card dhead' }, [
+      el('span', { class: 'big', text: 'Call ' + s.call }),
+      el('span', { class: 'kind ' + s.kind, text: s.kind }),
+      el('span', { class: 'tok', text: fmt(s.tb) + ' → ' + fmt(s.ta) + ' tokens' }),
+      (s.events || []).length ? el('span', { class: 'note', text: 'harness: ' + s.events.join(', ') }) : null,
+      el('span', { class: 'nav' }, [prev, next])
+    ]);
+    root.appendChild(head);
+
+    root.appendChild(section('Thought', s.thought ? el('div', { class: 'thought', text: s.thought }) : el('div', { class: 'empty', text: 'The model gave no reasoning at this call.' })));
+    root.appendChild(section('Command', s.command ? el('pre', { text: s.command }) : el('div', { class: 'empty', text: 'No command.' }),
+      s.exit != null ? el('span', { class: 'note', text: 'exit code ' + s.exit }) : null));
+    if (s.obs) root.appendChild(section('Result', el('pre', { text: s.obs })));
+
+    if (s.removed.length || s.written.length || s.moved) {
+      var box = el('div', { class: 'lines' });
+      s.removed.forEach(function (l) { box.appendChild(lineRow(l, 'del')); });
+      s.written.forEach(function (l) { box.appendChild(lineRow(l, 'add')); });
+      var rel = Object.keys(s.relabel || {}).map(function (k) { return k + ' on ' + s.relabel[k] + ' lines'; }).join(', ');
+      var sum = s.removed.length + ' lines removed · ' + s.written.length + ' written' + (s.moved ? ' · ' + s.moved + ' moved' : '');
+      var body = el('div', { style: 'display:flex;flex-direction:column;gap:8px;min-width:0' }, [
+        box, rel ? el('div', { class: 'flag', text: 'Role labels changed by this edit: ' + rel }) : null]);
+      root.appendChild(section('What this call changed in the context', body, el('span', { class: 'note', text: sum })));
+    } else {
+      root.appendChild(section('What this call changed in the context', el('div', { class: 'empty', text: 'Nothing was removed or rewritten; the context only grew.' })));
+    }
+
+    var ctx = el('div', { class: 'lines' }), lastMsg = -1, shown = 0, cap = showAllCtx ? Infinity : 400, mis = 0;
+    v.lines.forEach(function (l) {
+      if (mismatch(l) && T[l[0]].trim()) mis++;
+      if (shown >= cap) return;
+      if (l[4] !== lastMsg) { lastMsg = l[4]; ctx.appendChild(el('div', { class: 'turn' }, ['turn ' + (l[4] - D.protect + 1) + ' · role ', el('b', { text: R[l[2]] })])); }
+      ctx.appendChild(lineRow(l)); shown++;
+    });
+    var more = v.lines.length > cap ? el('button', { class: 'b', type: 'button', text: 'Show all ' + v.lines.length + ' lines', onclick: function () { showAllCtx = true; drawDetail(); } }) : null;
+    var body2 = el('div', { style: 'display:flex;flex-direction:column;gap:8px;min-width:0' }, [
+      mis ? el('div', { class: 'flag', text: mis + ' lines sit under a role label that does not match who wrote them (underlined).' }) : null, ctx, more]);
+    root.appendChild(section('Context the model saw at this call', body2, el('span', { class: 'note', text: fmt(v.tokens) + ' tokens · ' + v.lines.length + ' lines' })));
+  }
+
+  function select(i) {
+    if (i < 0 || i >= S.length) return;
+    cur = i; drawRail(); drawChart(); drawDetail();
+    var a = document.querySelector('.step[aria-current="true"]');
+    if (a && a.scrollIntoView) a.scrollIntoView({ block: 'nearest' });
+  }
+
+  // ---- trace
+  var vtext = null;
+  function trace(q) {
+    var strip = document.getElementById('trace-strip'), out = document.getElementById('trace-out');
+    if (q.length < 3) { strip.hidden = true; out.textContent = 'Shows at which call the text entered the context, and which call removed it.'; return; }
+    if (!vtext) vtext = V.map(function (v) { return v.lines.map(function (l) { return T[l[0]]; }).join('\n'); });
+    var pres = vtext.map(function (t) { return t.indexOf(q) >= 0; });
+    while (strip.firstChild) strip.removeChild(strip.firstChild);
+    pres.forEach(function (p, i) { strip.appendChild(el('i', { class: p ? 'on' : '', title: 'call ' + V[i].call })); });
+    strip.hidden = false;
+    var first = pres.indexOf(true);
+    if (first < 0) { out.textContent = 'This text was never in the context.'; return; }
+    var hit = V[first].lines.filter(function (l) { return T[l[0]].indexOf(q) >= 0; })[0];
+    var msg = 'Entered at call ' + V[first].call + (hit ? ' (written by ' + O[hit[1]].l + ')' : '') + '. ';
+    var last = pres.lastIndexOf(true);
+    if (last === pres.length - 1) msg += 'Still in the context at the end.';
+    else { msg += 'Removed by call ' + S[last].call + ' (' + S[last].kind + ').'; }
+    while (out.firstChild) out.removeChild(out.firstChild);
+    out.appendChild(document.createTextNode(msg + ' '));
+    if (last < pres.length - 1) out.appendChild(el('button', { class: 'b', type: 'button', text: 'Open call ' + S[last].call, onclick: function () { select(last); } }));
+  }
+  document.getElementById('trace-input').addEventListener('input', function (e) { trace(e.target.value); });
+  document.addEventListener('keydown', function (e) {
+    if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+    if (e.key === 'ArrowDown' || e.key === 'j') { e.preventDefault(); select(cur + 1); }
+    if (e.key === 'ArrowUp' || e.key === 'k') { e.preventDefault(); select(cur - 1); }
+  });
+
+  // open on the first edit, which is where the trail gets interesting
+  var firstEdit = S.findIndex(function (s) { return s.kind === 'edit'; });
+  select(firstEdit >= 0 ? firstEdit : 0);
+})();
+</script>
