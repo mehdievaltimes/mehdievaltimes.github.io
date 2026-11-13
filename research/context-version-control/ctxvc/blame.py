@@ -147,27 +147,38 @@ class History:
         return o.id
 
     def _fresh_lines(self, messages: list[dict], start: int, step: int,
-                     writers: list[str] | None) -> list[Line]:
-        """Lines of newly appended messages, each message with its own origin."""
+                     writers: list[str] | None, harness_tail: int | None = None) -> list[Line]:
+        """Lines of newly appended messages, each message with its own origin.
+
+        Who wrote a message comes from the sidecar when there is one. What the harness
+        added at the end of a tool result (exit code, size readout, edit receipt) is
+        ``harness_tail`` lines, also from the sidecar. Without a sidecar those are
+        guessed from their wording, but only at the very end of a tool result: a line
+        in the middle of a tool output that imitates a harness notice stays tool text.
+        """
         lines: list[Line] = []
         for k, i in enumerate(range(max(start, self.protect), len(messages))):
             m = messages[i]
             role = str(m.get("role", "user"))
+            body = rendered_text(m).split("\n")
             if writers and k < len(writers):
                 writer = writers[k]
             else:
                 writer = {"assistant": "model", "tool": "tool"}.get(role, "user")
+                if writer == "user" and HARNESS_LINE_RE.match(body[0].lstrip()):
+                    writer = "harness"                      # inferred: no sidecar
             oid = self._origin(step, writer, role)
-            hid: int | None = None
-            body = rendered_text(m)
-            whole_harness = writer == "user" and bool(HARNESS_LINE_RE.match(body.lstrip()))
-            for text in body.split("\n"):
-                if whole_harness or (writer in ("tool", "user") and HARNESS_LINE_RE.match(text)):
-                    if hid is None:
-                        hid = self._origin(step, "harness", role)
-                    lines.append(Line(text, i, role, hid))
+            n_tail = 0
+            if writer == "tool":
+                if harness_tail is not None:
+                    n_tail = min(harness_tail, len(body))
                 else:
-                    lines.append(Line(text, i, role, oid))
+                    while n_tail < len(body) and (not body[-1 - n_tail].strip()
+                                                  or HARNESS_LINE_RE.match(body[-1 - n_tail])):
+                        n_tail += 1
+            hid = self._origin(step, "harness", role) if n_tail else None
+            for j, text in enumerate(body):
+                lines.append(Line(text, i, role, hid if (hid is not None and j >= len(body) - n_tail) else oid))
         return lines
 
     def _build(self) -> None:
@@ -199,7 +210,8 @@ class History:
             new_lines = self._carry(prev.lines, base_flat, call, tr)
             if tr.removed or tr.written or tr.moved:
                 tr.kind = "rollback" if rec and "rollback" in (rec.get("events") or []) else "edit"
-            appended = self._fresh_lines(b, base_end, call, (rec or {}).get("writers"))
+            appended = self._fresh_lines(b, base_end, call, (rec or {}).get("writers"),
+                                         (rec or {}).get("harness_tail"))
             tr.appended = appended
             new_lines.extend(appended)
 

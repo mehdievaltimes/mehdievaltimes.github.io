@@ -62,6 +62,7 @@ def run_one(task: Task, cfg: Config, llm: Any, run_dir: Path, sandbox_root: Path
     g = grade(task, run.snapshots)
     tok = [s.get("tokens") or 0 for s in run.snapshots]
     result = {"task": task.name, "family": task.family, **(meta or {}),
+              "obeyed": g.get("obeyed"), "obey_rate": g.get("obey_rate"),
               "phase1_reward": g.get("phase1_reward"),
               "reward": g["reward"], "correct": g["correct"], "answered": g["answered"], "total": g["total"],
               "per_query": g["per_query"], "terminated_by": state.terminated_by,
@@ -83,10 +84,10 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--work", default="/home/user/ctxvc-work/sandboxes")
     ap.add_argument("--model", default="haiku")
-    ap.add_argument("--budget", type=int, default=6000)
-    ap.add_argument("--reserve", type=int, default=600)
+    ap.add_argument("--budget", type=int, default=8000)
+    ap.add_argument("--reserve", type=int, default=800)
     ap.add_argument("--batches", type=int, default=12)
-    ap.add_argument("--per-batch", type=int, default=40)
+    ap.add_argument("--per-batch", type=int, default=30)
     ap.add_argument("--queries", type=int, default=12)
     ap.add_argument("--max-calls", type=int, default=120)
     ap.add_argument("--jobs", type=int, default=4)
@@ -98,13 +99,13 @@ def main() -> None:
     for seed in [int(s) for s in a.seeds.split(",")]:
         kw = {"n_batches": a.batches, "per_batch": a.per_batch}
         kw["n_get" if a.family == "kv" else "n_q"] = a.queries
-        if a.family == "ledger" and a.per_batch == 40:
-            kw["per_batch"] = 36
         task = MAKERS[a.family](seed, **kw)
         for cond in a.conditions.split(","):
             cfg = condition(cond, a.family, budget=a.budget, reserve=a.reserve, max_calls=a.max_calls)
             name = f"{task.name}-{cond}"
-            jobs.append((task, cfg, out / name, work / name, {"condition": cond, "seed": seed}))
+            jobs.append((task, cfg, out / name, work / name,
+                         {"condition": cond, "seed": seed,
+                          "task_spec": {"family": a.family, "seed": seed, "kwargs": kw}}))
 
     results = []
     with ThreadPoolExecutor(max_workers=a.jobs) as pool:

@@ -90,11 +90,32 @@ def messages_tokens(messages: list[Message]) -> int:
     return sum(est_tokens(rendered_text(m)) + 4 for m in messages)
 
 
-def render(messages: list[Message], protect: int = 2) -> str:
-    """Render the editable region (messages after the pinned prefix) to file text."""
+#: Zero-width mark put in front of a body line that only looks like a turn header.
+_ZW = "\u200b"
+_UNESCAPE_RE = re.compile(r"(?m)^\u200b(?=\[\[CTX_TURN)")
+
+
+def escape_body(body: str) -> str:
+    return "\n".join(_ZW + l if HEADER_RE.match(l) else l for l in body.split("\n"))
+
+
+def unescape_body(body: str) -> str:
+    return _UNESCAPE_RE.sub("", body)
+
+
+def render(messages: list[Message], protect: int = 2, escape: tuple[str, ...] = ()) -> str:
+    """Render the editable region (messages after the pinned prefix) to file text.
+
+    ``escape`` names roles whose body lines are marked when they look like a turn
+    header, so that they cannot be read back as one. The released harness gets this
+    for assistant turns for free (a command is a JSON string in its mirror, so it
+    never starts a line with ``[[CTX_TURN``); nothing protects tool output there."""
     blocks = []
     for n, m in enumerate(messages[protect:], start=1):
-        blocks.append(f"[[CTX_TURN {n} role={m.get('role', 'user')}]]\n{rendered_text(m)}")
+        body = rendered_text(m)
+        if m.get("role") in escape:
+            body = escape_body(body)
+        blocks.append(f"[[CTX_TURN {n} role={m.get('role', 'user')}]]\n{body}")
     return "\n\n".join(blocks)
 
 
@@ -125,7 +146,7 @@ def parse_back(text: str, protected: list[Message], *, fold_roles: bool = True) 
             role = "assistant" if role == "assistant" else "user"
         elif role == "system":
             role = "user"  # a system turn can never be minted by an edit
-        msgs.append({"role": role, "content": body})
+        msgs.append({"role": role, "content": unescape_body(body)})
 
     merged: list[Message] = []
     for i, m in enumerate(msgs):

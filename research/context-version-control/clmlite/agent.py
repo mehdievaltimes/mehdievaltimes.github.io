@@ -24,6 +24,7 @@ from typing import Any
 
 from ctxvc.ctxfile import messages_tokens, parse_back, render, rendered_text
 from ctxvc.store import RunWriter, messages_sha
+from ctxvc.sync import provenance_parse_back
 
 from .sandbox import CTX_FILE, Sandbox
 from .tasks import Task
@@ -101,8 +102,10 @@ class Config:
     reserve: int = 600
     history: bool = False          # expose the read-only history to the model
     fold_roles: bool = True        # released behaviour: an edit turns tool turns into user turns
+    sync: str = "released"         # "released": trust the headers; "provenance": roles follow origin
     skill: str = ""                # method text appended to the task (e.g. the paper's offload recipe)
-    nudges: tuple[float, ...] = (0.5, 0.75)
+    nudges: tuple[float, ...] = (0.5, 0.75, 0.9)
+    max_over: int = 3              # consecutive over-limit calls tolerated before the run ends
     max_calls: int = 120
     obs_max_chars: int = 6000
     save_fs: bool = True
@@ -119,7 +122,7 @@ class State:
     call: int = 0
     delivered: int = 0
     nudged: list[float] = field(default_factory=list)
-    warned: bool = False
+    warned: int = 0                # consecutive calls that started over the limit
     terminated_by: str | None = None
 
 
@@ -184,8 +187,15 @@ def is_ready_command(command: str, exit_code: int) -> bool:
 class Episode:
     def __init__(self, task: Task, cfg: Config, llm: Any, run_dir: Path | str, sandbox_root: Path | str,
                  *, meta: dict[str, Any] | None = None, start: State | None = None,
-                 fs_tar: Path | str | None = None, transcript: list[tuple[int, str, str]] | None = None):
+                 fs_tar: Path | str | None = None, transcript: list[tuple[int, str, str]] | None = None,
+                 forced: dict[int, str] | None = None, action_hook: Any = None):
+        """``start``/``fs_tar``/``transcript`` resume from a saved step (replay).
+        ``forced`` maps a call index to the reply to use instead of asking the model.
+        ``action_hook(call, reply_text) -> reply_text`` may rewrite a model reply before it runs."""
         self.task, self.cfg, self.llm = task, cfg, llm
+        self.forced = dict(forced or {})
+        self.action_hook = action_hook
+        self.resumed = start is not None
         self.sandbox = Sandbox(sandbox_root)
         extra = HISTORY_PROMPT.format(ctx_file=CTX_FILE) if cfg.history else ""
         self.system = SYSTEM_PROMPT.format(limit=cfg.limit, ctx_file=CTX_FILE, extra=extra)
@@ -223,17 +233,23 @@ class Episode:
         s.delivered += 1
         return True
 
+    def _render(self) -> str:
+        """The context file. Look-alike headers are marked in the model's own turns, and,
+        with the provenance read-back, in every turn."""
+        roles = ("assistant", "tool", "user") if self.cfg.sync == "provenance" else ("assistant",)
+        return render(self.state.messages, protect=2, escape=roles)
+
     def _prompt(self) -> str:
         s = self.state
         return (f"{self.instruction}\n\n"
                 f"---- CONTEXT (live content of {CTX_FILE}; ~{self._tokens()}/{self.cfg.limit} tokens) ----\n"
-                f"{render(s.messages, protect=2)}\n"
+                f"{self._render()}\n"
                 f"---- END OF CONTEXT ----\n\n"
                 "Reply with a THOUGHT and exactly one ```bash block.")
 
     def _export_history(self) -> None:
         s, h = self.state, self.sandbox.hist
-        (h / "versions" / f"v{s.call:04d}.txt").write_text(render(s.messages, protect=2) + "\n", encoding="utf-8")
+        (h / "versions" / f"v{s.call:04d}.txt").write_text(self._render() + "\n", encoding="utf-8")
         with (h / "INDEX.txt").open("a", encoding="utf-8") as fh:
             fh.write(f"v{s.call:04d}  tokens={self._tokens()}  turns={len(s.messages) - 2}\n")
         blocks = [f"[[HIST call={c} role={r}]]\n{t}" for c, r, t in self.transcript]
@@ -253,21 +269,28 @@ class Episode:
     def run(self, max_calls: int | None = None) -> State:
         s, cfg, limit = self.state, self.cfg, self.cfg.limit
         stop_at = s.call + (max_calls if max_calls is not None else cfg.max_calls)
+        # A resumed context already holds the notices the harness added before that call.
+        skip_pre = self.resumed
         while s.terminated_by is None and s.call < stop_at:
             events: list[str] = []
             pre: list[dict[str, Any]] = []
             tokens = self._tokens()
-            if tokens > limit:
-                if s.warned:
+            if skip_pre:
+                skip_pre = False
+                events.append("resumed")
+            elif tokens > limit:
+                if s.warned >= cfg.max_over:
                     s.terminated_by = "budget_wall"
                     break
-                s.warned = True
+                s.warned += 1
                 events.append("over_limit")
+                left = cfg.max_over - s.warned
                 pre.append({"role": "user", "content":
                             f"[SYSTEM NOTICE] CONTEXT LIMIT: ~{tokens} tokens is over your {limit}-token "
-                            f"limit. Your next command must compact {CTX_FILE}, or the run ends."})
+                            f"limit. Your next command must compact {CTX_FILE} to well below the limit"
+                            f"{'' if left else ' -- this is the last warning'}, or the run ends."})
             else:
-                s.warned = False
+                s.warned = 0
                 frac = tokens / limit
                 s.nudged = [r for r in s.nudged if frac >= r]          # re-arm after shrinking
                 for r in cfg.nudges:
@@ -289,14 +312,24 @@ class Episode:
                 self._export_history()
             state_before = {"delivered": s.delivered, "nudged": list(s.nudged), "warned": s.warned}
 
-            reply = self.llm.complete(self.system, self._prompt())
+            source, raw_model = "model", None
+            if s.call in self.forced:
+                reply = {"text": self.forced[s.call], "cost_usd": 0.0, "model": "forced"}
+                source = "forced"
+            else:
+                reply = self.llm.complete(self.system, self._prompt())
+                if self.action_hook is not None:
+                    changed = self.action_hook(s.call, reply["text"])
+                    if changed != reply["text"]:
+                        raw_model, source = reply["text"], "hooked"
+                        reply = dict(reply, text=changed)
             self.cost += reply.get("cost_usd") or 0.0
             text = reply["text"]
             thought, command = parse_reply(text)
             rec: dict[str, Any] = {
                 "call": s.call, "ctx_in": sha, "tokens_in": self._tokens(), "state": state_before,
                 "pre_writers": ["harness"] * len(pre), "thought": thought, "command": command,
-                "raw": text, "events": events,
+                "raw": text, "reply_source": source, "raw_model": raw_model, "events": events,
                 "usage": {k: reply.get(k) for k in ("input_tokens", "output_tokens", "cost_usd", "model")},
                 "t": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
             writers: list[str] = []
@@ -313,7 +346,7 @@ class Episode:
                 s.call += 1
                 continue
 
-            rendered = render(s.messages, protect=2)
+            rendered = self._render()
             self.sandbox.write_ctx(rendered)
             before = self._tokens()
             rc, out, err = self.sandbox.exec(command, timeout=cfg.command_timeout)
@@ -321,7 +354,10 @@ class Episode:
             note = ""
             edit: dict[str, Any] | None = None
             if read_back is not None and read_back.strip() != rendered.strip():
-                cand = parse_back(read_back, s.messages[:2], fold_roles=cfg.fold_roles)
+                if cfg.sync == "provenance":
+                    cand = provenance_parse_back(s.messages, read_back, protect=2)
+                else:
+                    cand = parse_back(read_back, s.messages[:2], fold_roles=cfg.fold_roles)
                 after = messages_tokens(cand[1:])
                 if after > before and after > limit:
                     note = (f"\n[LIVE_CTX_MAIN.txt: edit REJECTED -- it GREW context ~{before}->{after} "
@@ -342,6 +378,8 @@ class Episode:
             tool = {"role": "tool", "content": obs}
             s.messages.append(tool)
             tool["content"] = obs + f"\n[context: ~{self._tokens()}/{limit} tokens]" + note
+            # what the harness itself wrote at the end of the tool result: blank, exit code, readout, receipt
+            harness_tail = 3 + note.count("\n")
             self.transcript += [(s.call, "assistant", text), (s.call, "tool", tool["content"])]
             writers += ["model", "tool"]
 
@@ -356,7 +394,7 @@ class Episode:
                 writers.append("harness")
 
             rec.update(exit_code=rc, observation=tool["content"], edit=edit,
-                       n_appended=len(writers), writers=writers)
+                       n_appended=len(writers), writers=writers, harness_tail=harness_tail)
             self.writer.step(rec)
             s.call += 1
 
