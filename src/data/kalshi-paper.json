@@ -828,6 +828,76 @@
    "category": "Sports",
    "feeMultiplier": 1,
    "title": "College Football Overtime"
+  },
+  "KXFEAR": {
+   "category": "Financials",
+   "feeMultiplier": 1,
+   "title": "Fear and Greed index"
+  },
+  "KXNFL1H": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Half Winner"
+  },
+  "KXNFLPASSATT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Passing Attempts"
+  },
+  "KXNFLPASSCOMP": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Passing Completions"
+  },
+  "KXNFLLADDERRECYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Receiving Yards Ladder"
+  },
+  "KXNFLPASSTDSPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Passing Touchdowns Protected"
+  },
+  "KXNFLPASSINT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Passing Interceptions"
+  },
+  "KXNFLRECYDSPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Receiving Yards Protected"
+  },
+  "KXNFLLONGRSH": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Longest Rush"
+  },
+  "KXPRESSSECANNOUNCE": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "When will Trump's new Press Secretary be announced?"
+  },
+  "KXNFLRACE": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Race to Points"
+  },
+  "KXNFL4Q": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 4th Quarter Winner"
+  },
+  "KXUKRETAIL": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "UK retail sales MoM"
+  },
+  "KXHOUSINGSTART": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Monthly housing starts"
   }
  },
  "markets": {
@@ -843,11 +913,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.23,
-    "yesAsk": 0.25,
-    "noBid": 0.75,
-    "noAsk": 0.77,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.17,
+    "yesAsk": 0.18,
+    "noBid": 0.82,
+    "noAsk": 0.83,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNATGASW-26NOV1317-T3.599": {
@@ -862,11 +932,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.61,
-    "yesAsk": 0.65,
-    "noBid": 0.35,
-    "noAsk": 0.39,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.82,
+    "yesAsk": 0.84,
+    "noBid": 0.16,
+    "noAsk": 0.18,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXBTCD-26NOV1317-T74999.99": {
@@ -881,11 +951,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.29,
-    "yesAsk": 0.3,
-    "noBid": 0.7,
-    "noAsk": 0.71,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.02,
+    "yesAsk": 0.03,
+    "noBid": 0.97,
+    "noAsk": 0.98,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXAAAGASW-26NOV16-3.8400": {
@@ -919,11 +989,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.46,
-    "yesAsk": 0.54,
-    "noBid": 0.46,
-    "noAsk": 0.54,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.89,
+    "yesAsk": 0.9,
+    "noBid": 0.1,
+    "noAsk": 0.11,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXTRUMPSAY-26NOV16-MELA": {
@@ -938,11 +1008,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.28,
-    "yesAsk": 0.36,
-    "noBid": 0.64,
-    "noAsk": 0.72,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.4,
+    "yesAsk": 0.42,
+    "noBid": 0.58,
+    "noAsk": 0.6,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXHEGSETHOUT-26APR-26NOV16": {
@@ -976,11 +1046,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.81,
-    "yesAsk": 0.87,
-    "noBid": 0.13,
-    "noAsk": 0.19,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.89,
+    "yesAsk": 0.92,
+    "noBid": 0.08,
+    "noAsk": 0.11,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXGOLDW-26NOV1317-T4128.99": {
@@ -1014,11 +1084,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.37,
-    "yesAsk": 0.38,
-    "noBid": 0.62,
-    "noAsk": 0.63,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.35,
+    "yesAsk": 0.36,
+    "noBid": 0.64,
+    "noAsk": 0.65,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXUEFANLGAME-26NOV12TURBEL-BEL": {
@@ -1031,14 +1101,15 @@
    "rules": "If Belgium wins the Turkiye vs Belgium professional UEFA Nations League soccer game originally scheduled for Nov 12, 2026 after 90 minutes plus stoppage time (does not include extra time or penalties), then the market resolves to Yes. The following market refers to the Turkiye vs Belgium professional UEFA Nations League soccer game originally scheduled for Nov 12, 2026 after 90 minutes plus stoppage time (does not include extra time or penalties). If the game ends in a tie, the market called \"Tie\" resolves to Yes. If the game is cancelled or rescheduled to over 48 hours away, the market will r",
    "closeTime": "2026-11-14T17:00:00Z",
    "addedAt": "2026-11-10T07:42:47.525Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.54,
     "yesAsk": 0.55,
     "noBid": 0.45,
     "noAsk": 0.46,
     "at": "2026-11-12T00:37:28.590Z"
-   }
+   },
+   "settledAt": "2026-11-13T00:37:55.027Z"
   },
   "KXNBAGAME-26NOV10OKCPOR-OKC": {
    "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -1072,11 +1143,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.46,
-    "yesAsk": 0.49,
-    "noBid": 0.51,
-    "noAsk": 0.54,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.25,
+    "yesAsk": 0.27,
+    "noBid": 0.73,
+    "noAsk": 0.75,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXBRENTW-26NOV1317-T88.99": {
@@ -1091,11 +1162,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.7,
-    "yesAsk": 0.73,
-    "noBid": 0.27,
-    "noAsk": 0.3,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.95,
+    "yesAsk": 0.96,
+    "noBid": 0.04,
+    "noAsk": 0.05,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXBTCD-26NOV1317-T73499.99": {
@@ -1110,11 +1181,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.6,
-    "yesAsk": 0.61,
-    "noBid": 0.39,
-    "noAsk": 0.4,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.05,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.95,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXAAAGASW-26NOV16-3.8000": {
@@ -1129,11 +1200,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.43,
-    "yesAsk": 0.45,
-    "noBid": 0.55,
-    "noAsk": 0.57,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.54,
+    "yesAsk": 0.55,
+    "noBid": 0.45,
+    "noAsk": 0.46,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXAPCALLAKSEN-26NOV04-NOV181200A": {
@@ -1148,11 +1219,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.2,
-    "yesAsk": 0.24,
-    "noBid": 0.76,
-    "noAsk": 0.8,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.37,
+    "yesAsk": 0.42,
+    "noBid": 0.58,
+    "noAsk": 0.63,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXRT-EBE-35": {
@@ -1167,11 +1238,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.69,
-    "yesAsk": 0.71,
-    "noBid": 0.29,
-    "noAsk": 0.31,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.98,
+    "yesAsk": 0.99,
+    "noBid": 0.01,
+    "noAsk": 0.02,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXTRUMPSAY-26NOV16-FILI": {
@@ -1184,14 +1255,15 @@
    "rules": "If Filibuster, or a plural or possessive form of Filibuster, is stated by Donald Trump after November 9, 2026 at 8:30am ET and before Nov 16, 2026 at 12:00am ET, then the market resolves to Yes. Payout criteria\nThe word or phrase must be stated by President Donald Trump in public statements, direct quotes published by Source Agencies, or written public statements on his personal social media accounts (Twitter/Truth Social).\nThe exact phrase/word, or a plural or possessive form of the phrase/word, must be used.\nFor phrases with slashes like \"Doge/Dogecoin,\" either word satisfies the criterion.\n",
    "closeTime": "2026-11-16T15:00:00Z",
    "addedAt": "2026-11-11T00:37:34.764Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.2,
     "yesAsk": 0.24,
     "noBid": 0.76,
     "noAsk": 0.8,
     "at": "2026-11-12T00:37:28.590Z"
-   }
+   },
+   "settledAt": "2026-11-13T00:37:55.027Z"
   },
   "KXTRUMPUFC-26NOV-DJT": {
    "ticker": "KXTRUMPUFC-26NOV-DJT",
@@ -1209,7 +1281,7 @@
     "yesAsk": 0.08,
     "noBid": 0.92,
     "noAsk": 0.94,
-    "at": "2026-11-12T00:37:28.590Z"
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXLLM1-26NOV16-ANTH": {
@@ -1224,11 +1296,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.12,
-    "yesAsk": 0.16,
-    "noBid": 0.84,
-    "noAsk": 0.88,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.08,
+    "yesAsk": 0.09,
+    "noBid": 0.91,
+    "noAsk": 0.92,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNFLTOTAL-26NOV15MINGB-42": {
@@ -1247,7 +1319,7 @@
     "yesAsk": 0.53,
     "noBid": 0.47,
     "noAsk": 0.48,
-    "at": "2026-11-12T00:37:28.590Z"
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNFLGAME-26NOV12WASNYG-NYG": {
@@ -1262,11 +1334,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.55,
-    "yesAsk": 0.56,
-    "noBid": 0.44,
-    "noAsk": 0.45,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.53,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.47,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNFLSPREAD-26NOV12WASNYG-NYG3": {
@@ -1281,11 +1353,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.49,
-    "yesAsk": 0.5,
-    "noBid": 0.5,
-    "noAsk": 0.51,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.47,
+    "yesAsk": 0.48,
+    "noBid": 0.52,
+    "noAsk": 0.53,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXRAINWKND-26NOV14-PHX": {
@@ -1301,10 +1373,10 @@
    "result": null,
    "last": {
     "yesBid": 0.45,
-    "yesAsk": 0.47,
-    "noBid": 0.53,
+    "yesAsk": 0.46,
+    "noBid": 0.54,
     "noAsk": 0.55,
-    "at": "2026-11-12T00:37:28.590Z"
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXUSRETAIL-26NOV17-T0.4": {
@@ -1319,11 +1391,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.33,
-    "yesAsk": 0.41,
-    "noBid": 0.59,
-    "noAsk": 0.67,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.39,
+    "yesAsk": 0.48,
+    "noBid": 0.52,
+    "noAsk": 0.61,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXAPCALLNC03-26NOV04-NOV181200A": {
@@ -1338,11 +1410,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.89,
-    "yesAsk": 0.94,
-    "noBid": 0.06,
-    "noAsk": 0.11,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.77,
+    "yesAsk": 0.83,
+    "noBid": 0.17,
+    "noAsk": 0.23,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXDWTSELIMINATION-26NOV18-TAT": {
@@ -1357,11 +1429,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.31,
-    "yesAsk": 0.32,
-    "noBid": 0.68,
-    "noAsk": 0.69,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.19,
+    "yesAsk": 0.2,
+    "noBid": 0.8,
+    "noAsk": 0.81,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXCEONVDA-01JAN33-16NOV26": {
@@ -1374,14 +1446,15 @@
    "rules": "If the CEO of NVIDIA Corporation has announced, or it has been announced on their behalf, that they have left their position as CEO after issuance and before Nov 16, 2026, then the market resolves to Yes. The CEO covered by this event is Jensen Huang, the CEO of NVIDIA Corporation at issuance. The CEO must actually leave their position; announcing a future departure alone does not qualify. The departure must be announced by the CEO or on their behalf after issuance and before the specified date. \"Before\" excludes the specified calendar date. Each deadline is evaluated independently, so more th",
    "closeTime": "2026-11-16T15:00:00Z",
    "addedAt": "2026-11-12T00:37:28.590Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.74,
     "yesAsk": 0.75,
     "noBid": 0.25,
     "noAsk": 0.26,
     "at": "2026-11-12T00:37:28.590Z"
-   }
+   },
+   "settledAt": "2026-11-13T00:37:55.027Z"
   },
   "KXTRUMPSAY-26NOV16-CANA": {
    "ticker": "KXTRUMPSAY-26NOV16-CANA",
@@ -1395,11 +1468,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.43,
-    "yesAsk": 0.46,
-    "noBid": 0.54,
-    "noAsk": 0.57,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.99,
+    "yesAsk": 1,
+    "noBid": 0,
+    "noAsk": 0.01,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXHORMUZMAX-26NOV15-NOV11": {
@@ -1414,11 +1487,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.21,
-    "yesAsk": 0.22,
-    "noBid": 0.78,
-    "noAsk": 0.79,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.15,
+    "yesAsk": 0.16,
+    "noBid": 0.84,
+    "noAsk": 0.85,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXTOKENUSE-26NOV16-T232": {
@@ -1433,11 +1506,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.05,
-    "yesAsk": 0.06,
-    "noBid": 0.94,
-    "noAsk": 0.95,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.02,
+    "yesAsk": 0.03,
+    "noBid": 0.97,
+    "noAsk": 0.98,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXUE-AUS26OCT-5.1": {
@@ -1456,7 +1529,7 @@
     "yesAsk": 0.07,
     "noBid": 0.93,
     "noAsk": 0.99,
-    "at": "2026-11-12T00:37:28.590Z"
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNCAAFGAME-26NOV14TEXLSU-TEX": {
@@ -1475,7 +1548,7 @@
     "yesAsk": 0.38,
     "noBid": 0.62,
     "noAsk": 0.63,
-    "at": "2026-11-12T00:37:28.590Z"
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXNFLGAME-26NOV15MINGB-MIN": {
@@ -1490,11 +1563,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.39,
-    "yesAsk": 0.4,
-    "noBid": 0.6,
-    "noAsk": 0.61,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.4,
+    "yesAsk": 0.41,
+    "noBid": 0.59,
+    "noAsk": 0.6,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   },
   "KXUFCFIGHT-26NOV14GANHOK-GAN": {
@@ -1509,11 +1582,239 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.62,
-    "yesAsk": 0.63,
-    "noBid": 0.37,
-    "noAsk": 0.38,
-    "at": "2026-11-12T00:37:28.590Z"
+    "yesBid": 0.63,
+    "yesAsk": 0.64,
+    "noBid": 0.36,
+    "noAsk": 0.37,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXBUILDPERMS-26NOV18-T1.450": {
+   "ticker": "KXBUILDPERMS-26NOV18-T1.450",
+   "eventTicker": "KXBUILDPERMS-26NOV18",
+   "series": "KXBUILDPERMS",
+   "category": "Economics",
+   "title": "Will US building permits for October 2026 be above 1.450M?",
+   "sub": "Above 1.450M",
+   "rules": "If the value of US building permits (total units) for October 2026 is above 1.450M (SAAR), then the market resolves to Yes. The Underlying is the first-published U.S. building permits value for October 2026, as released in the Census New Residential Construction report and reflected by Trading Economics on the initial release date. Later revised, final, or updated building permits releases, including the revised permits release approximately one week later, will not be used for resolution.",
+   "closeTime": "2026-11-18T13:29:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.17,
+    "yesAsk": 0.24,
+    "noBid": 0.76,
+    "noAsk": 0.83,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXAPCALLAKSEN-26NOV04-NOV191200A": {
+   "ticker": "KXAPCALLAKSEN-26NOV04-NOV191200A",
+   "eventTicker": "KXAPCALLAKSEN-26NOV04",
+   "series": "KXAPCALLAKSEN",
+   "category": "Elections",
+   "title": "Will AP call the 2026 Alaska U.S. Senate election before 12:00 AM ET on Nov 19, 2026?",
+   "sub": "Before Nov 19",
+   "rules": "If the Associated Press makes its first definitive call of a winner for the 2026 Alaska U.S. Senate election before 12:00 AM ET on Nov 19, 2026, then the market resolves to Yes. The call must be an explicit declaration that a candidate, party, or option has won, will win, or equivalent clear language indicating AP has determined the winner. The phrase \"projected to win\" alone is insufficient; it must be AP's clear election call. The call must appear on one of AP's primary platforms (main website, television broadcast, or official social media if that is its primary medium) and not be prefaced ",
+   "closeTime": "2026-11-19T05:00:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.83,
+    "yesAsk": 0.87,
+    "noBid": 0.13,
+    "noAsk": 0.17,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXDWTSELIMINATION-26NOV18-NON": {
+   "ticker": "KXDWTSELIMINATION-26NOV18-NON",
+   "eventTicker": "KXDWTSELIMINATION-26NOV18",
+   "series": "KXDWTSELIMINATION",
+   "category": "Entertainment",
+   "title": "Will None and their partner be eliminated from Dancing with the Stars Season 35 before Nov 18, 2026?",
+   "sub": "None",
+   "rules": "If None and their partner are officially eliminated from Dancing with the Stars Season 35 before Nov 18, 2026, then the market resolves to Yes. How this is resolved\nThe declaration must be made through official program broadcast, website, verified social media, or press releases.\nIf the season is canceled without declaring eliminations, the market resolves to No.\n\nPayout criteria\nElimination includes being voted off, evicted, knocked out, removed from further contention, voluntary withdrawal, disqualification, or producer removal.\nMultiple simultaneous eliminations count.\nInitial elimination c",
+   "closeTime": "2026-11-18T04:59:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.43,
+    "yesAsk": 0.44,
+    "noBid": 0.56,
+    "noAsk": 0.57,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXFEAR-26NOV13-FEAR": {
+   "ticker": "KXFEAR-26NOV13-FEAR",
+   "eventTicker": "KXFEAR-26NOV13",
+   "series": "KXFEAR",
+   "category": "Financials",
+   "title": "Fear & Greed Index on Nov 13, 2026?",
+   "sub": "Fear",
+   "rules": "If the value at 4:00 PM ET on Nov 13, 2026 is Fear, then the market resolves to Yes.",
+   "closeTime": "2026-11-20T21:00:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.75,
+    "yesAsk": 0.82,
+    "noBid": 0.18,
+    "noAsk": 0.25,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXPRESSSECANNOUNCE-26OCT-NOV20": {
+   "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
+   "eventTicker": "KXPRESSSECANNOUNCE-26OCT",
+   "series": "KXPRESSSECANNOUNCE",
+   "category": "Politics",
+   "title": "Will Donald Trump issue any announcement (e.g., Truth Social post) on naming the next White House Press Secretary (excluding acting/interim) before Nov 20, 2026?",
+   "sub": "Before Nov 20, 2026",
+   "rules": "If Donald Trump has made any announcement (e.g., Truth Social post) naming the next White House Press Secretary (excluding acting/interim) after Issuance and before Nov 20, 2026, then the market resolves to Yes.",
+   "closeTime": "2026-11-20T04:59:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.19,
+    "yesAsk": 0.24,
+    "noBid": 0.76,
+    "noAsk": 0.81,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXUKRETAIL-26NOV20-T1.5": {
+   "ticker": "KXUKRETAIL-26NOV20-T1.5",
+   "eventTicker": "KXUKRETAIL-26NOV20",
+   "series": "KXUKRETAIL",
+   "category": "Economics",
+   "title": "Will United Kingdom retail sales MoM for October 2026 be above 1.5%?",
+   "sub": "Above 1.5%",
+   "rules": "If the United Kingdom retail sales MoM for October 2026 is above 1.5%, then the market resolves to Yes.",
+   "closeTime": "2026-11-20T06:59:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.12,
+    "yesAsk": 0.19,
+    "noBid": 0.81,
+    "noAsk": 0.88,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXCOLLECTIONSALE-KOONS-17NOV26-130000000": {
+   "ticker": "KXCOLLECTIONSALE-KOONS-17NOV26-130000000",
+   "eventTicker": "KXCOLLECTIONSALE-KOONS-17NOV26",
+   "series": "KXCOLLECTIONSALE",
+   "category": "Entertainment",
+   "title": "Will Heroes & Lovers (the Koons collection) total more than $130 million at the Christie’s New York 20th Century Evening Sale on November 17, 2026?",
+   "sub": "Above $130 million",
+   "rules": "If the total sale price including buyer’s premium of the Heroes & Lovers (the Koons collection) is above $130 million at the Christie’s New York 20th Century Evening Sale on November 17, 2026, then the market resolves to Yes. All prices used in this total include the buyer’s premium. In the Artnet Price Database, “P” indicates that the buyer’s premium is included, while “H” indicates the hammer price only.",
+   "closeTime": "2026-11-18T04:59:59Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.48,
+    "yesAsk": 0.49,
+    "noBid": 0.51,
+    "noAsk": 0.52,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXCCAVSICE-26NOV49": {
+   "ticker": "KXCCAVSICE-26NOV49",
+   "eventTicker": "KXCCAVSICE-26NOV49",
+   "series": "KXCCAVSICE",
+   "category": "Financials",
+   "title": "Will the USD Settlement Price for the Current Auction of the November 18, 2026 CARB Joint Auction #49 settle at or above the official November 18, 2026 ICE settlement price for the November 2026 California Carbon Allowance Vintage 2026 Future?",
+   "sub": "CARB ≥ ICE",
+   "rules": "If the official CARB Current Auction USD Settlement Price for CARB Joint Auction #49 is greater than or equal to the official ICE settlement for November 2026 California Carbon Allowance Vintage 2026 Future on November 18, 2026, the market resolves to Yes. CARB Leg: Use the uniform-price allowance price, expressed in USD/tCO2e, resulting from the sale of allowances in the Current Auction component. This figure strictly excludes the Advance Auction Settlement Price, any Allowance Price Containment Reserve sale price, and any secondary-market pricing. If the Current Auction is undersubscribed an",
+   "closeTime": "2026-11-18T21:00:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.16,
+    "yesAsk": 0.2,
+    "noBid": 0.8,
+    "noAsk": 0.84,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXUSLEI-26NOV19-T-0.1": {
+   "ticker": "KXUSLEI-26NOV19-T-0.1",
+   "eventTicker": "KXUSLEI-26NOV19",
+   "series": "KXUSLEI",
+   "category": "Economics",
+   "title": "Will the MoM percent change in The Conference Board Leading Economic Index for the U.S. for October 2026 be above -0.1%?",
+   "sub": "Above -0.1%",
+   "rules": "If the MoM percent change in The Conference Board Leading Economic Index for the U.S. for October 2026 is above \n\n-0.1%, then the market resolves to Yes. The Leading Economic Index refers to The Conference Board Leading Economic Index® (“LEI”) for the United States. This market will resolve using the month-over-month percent change for October 2026 stated in the first Conference Board release that reports the October 2026 LEI.\n\nThe market will use the percent change expressly reported by The Conference Board and will not independently calculate the change from index levels. Subsequent revision",
+   "closeTime": "2026-11-19T14:59:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.49,
+    "yesAsk": 0.57,
+    "noBid": 0.43,
+    "noAsk": 0.51,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXART-CHR34B19NOV26-65000000": {
+   "ticker": "KXART-CHR34B19NOV26-65000000",
+   "eventTicker": "KXART-CHR34B19NOV26",
+   "series": "KXART",
+   "category": "Entertainment",
+   "title": "Will the realized auction sale price of Untitled (Leonardo and His Five Grotesque Heads) (1983; lot 34B) by Jean-Michel Basquiat, as reported by Artnet, be above $65000000 during Christie's New York 21st Century Evening Sale (sale 24499), beginning November 19, 2026 at 7:00 PM EST?",
+   "sub": "Above $65M",
+   "rules": "If the sale price including buyer’s premium of the Untitled (Leonardo and His Five Grotesque Heads) (1983; lot 34B) by Jean-Michel Basquiat on Artnet is above $65M during Christie's New York 21st Century Evening Sale (sale 24499), beginning November 19, 2026 at 7:00 PM EST, then the market resolves to Yes. All sale prices and sales totals used for this market will include the buyer’s premium. In the Artnet Price Database, “P” indicates that the buyer’s premium is included, while “H” indicates the hammer price only.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way o",
+   "closeTime": "2026-11-20T15:00:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.07,
+    "yesAsk": 0.1,
+    "noBid": 0.9,
+    "noAsk": 0.93,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXUE-AUS26OCT-4.9": {
+   "ticker": "KXUE-AUS26OCT-4.9",
+   "eventTicker": "KXUE-AUS26OCT",
+   "series": "KXUE",
+   "category": "Economics",
+   "title": "Australia unemployment rate in October 2026?",
+   "sub": "Above 4.9%",
+   "rules": "If the Australia unemployment rate is above 4.9% for October 2026, then the market resolves to Yes.",
+   "closeTime": "2026-11-19T00:30:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.01,
+    "yesAsk": 0.09,
+    "noBid": 0.91,
+    "noAsk": 0.99,
+    "at": "2026-11-13T00:37:55.027Z"
+   }
+  },
+  "KXCOLLECTIONSALE-BLA-18NOV26-500000000": {
+   "ticker": "KXCOLLECTIONSALE-BLA-18NOV26-500000000",
+   "eventTicker": "KXCOLLECTIONSALE-BLA-18NOV26",
+   "series": "KXCOLLECTIONSALE",
+   "category": "Entertainment",
+   "title": "Will the sum of all sale prices, including buyer’s premiums of the Blaquier-Arrieta Collection at the Sotheby's evening auction beginning November 18, 2026 at 6:00 PM EST be above $500 million?",
+   "sub": "Above $500 million",
+   "rules": "If the sum of all sale prices, including buyer’s premiums of the Blaquier-Arrieta Collection is above $500 million at the Sotheby's evening auction beginning November 18, 2026 at 6:00 PM EST, then the market resolves to Yes. All prices used in this total include the buyer’s premium. In the Artnet Price Database, “P” indicates that the buyer’s premium is included, while “H” indicates the hammer price only.",
+   "closeTime": "2026-11-18T15:00:00Z",
+   "addedAt": "2026-11-13T00:37:55.027Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.48,
+    "yesAsk": 0.54,
+    "noBid": 0.46,
+    "noAsk": 0.52,
+    "at": "2026-11-13T00:37:55.027Z"
    }
   }
  },
@@ -1640,7 +1941,8 @@
      "p": 0.52,
      "confidence": "medium",
      "reasoning": "Belgium were heavy 1.48 favourites at home in October and reportedly won 3-0 (unverified); Turkey are winless and hit by injuries. No November odds found, so I see no specific reason to move from the market price for the away fixture.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -1668,6 +1970,11 @@
     {
      "at": "2026-11-12T00:37:28.590Z",
      "equity": 998.05,
+     "cash": 996.09
+    },
+    {
+     "at": "2026-11-13T00:37:55.027Z",
+     "equity": 998.89,
      "cash": 996.09
     }
    ]
@@ -1801,7 +2108,8 @@
      "p": 0.51,
      "confidence": "low",
      "reasoning": "Belgium beat a winless Türkiye 3-0 in October and was about a 65-70% favourite at home. With Türkiye at home, a regulation-time Belgium win looks near 50%. The market's 52-53¢ seems roughly fair; I shade it down slightly for draw risk.",
-     "pass": "edge -0.7¢ is under the 5¢ minimum"
+     "pass": "edge -0.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -1830,6 +2138,11 @@
      "at": "2026-11-12T00:37:28.590Z",
      "equity": 980.08,
      "cash": 946.27
+    },
+    {
+     "at": "2026-11-13T00:37:55.027Z",
+     "equity": 963.63,
+     "cash": 946.27
     }
    ]
   },
@@ -1837,7 +2150,7 @@
    "id": "claude--claude-sonnet-5-5",
    "provider": "claude",
    "model": "claude-sonnet-5-5",
-   "cash": 785.36,
+   "cash": 735.66,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -1969,7 +2282,8 @@
      "p": 0.52,
      "confidence": "low",
      "reasoning": "Belgium won 3-0 at home against Turkey on 2 October, and Turkey have lost both home Nations League games I found. The return game is in Turkey and draws don't count, so the market price of about 52% looks about right.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -2057,7 +2371,8 @@
      "p": 0.4,
      "confidence": "low",
      "reasoning": "Trump mentions the filibuster often, including in 2025 and March 2026. I found no evidence it is a live issue in the Nov 9–16, 2026 window, and the window is short, so I stayed near the market price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXTRUMPUFC-26NOV-DJT",
@@ -2171,7 +2486,10 @@
       "fee": 2.46,
       "cost": 47.32,
       "edge": 0.69
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -49.78
     },
     {
      "ticker": "KXTRUMPSAY-26NOV16-CANA",
@@ -2249,6 +2567,133 @@
      "confidence": "medium",
      "reasoning": "Sportsbook lines of -230 to -280 imply about 66-70% for Gane after removing the margin. The market at 62-63% is slightly lower, so I put him a little above it.",
      "pass": "edge 1.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXBUILDPERMS-26NOV18-T1.450",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.17,
+     "yesAsk": 0.24,
+     "p": 0.15,
+     "confidence": "medium",
+     "reasoning": "September permits were about 1.40M, so exceeding 1.450M needs a roughly 3.6% jump in one month. Single-family permits are weak and mortgage rates are high, so a rise that size is possible but unlikely.",
+     "pass": "edge 1.0¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAPCALLAKSEN-26NOV04-NOV191200A",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.83,
+     "yesAsk": 0.87,
+     "p": 0.88,
+     "confidence": "medium",
+     "reasoning": "Peltola leads by ~2 points with mostly rural ballots outstanding, and ranked-choice data favor her. The official tabulation is Nov 18, so AP likely calls by then. Risks are litigation or an AP delay past Nov 18.",
+     "pass": "edge 0.2¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-NON",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.43,
+     "yesAsk": 0.44,
+     "p": 0.37,
+     "confidence": "low",
+     "reasoning": "Semifinal elimination on Nov 17 falls within the window, but the contestant 'None' is unidentified, so I can't tell their odds. Typically 1-2 of about 6 couples go home; the 43¢ price looks slightly high.",
+     "pass": "edge 4.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXFEAR-26NOV13-FEAR",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.75,
+     "yesAsk": 0.82,
+     "p": 0.72,
+     "confidence": "low",
+     "reasoning": "Early November was Extreme Fear (~20), then a post-midterm rally moved the index to Fear. By Nov 13 it likely sits in Fear (25–45), but Extreme Fear or Neutral are both plausible and I found no Nov 13 reading.",
+     "pass": "edge 1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.19,
+     "yesAsk": 0.24,
+     "p": 0.13,
+     "confidence": "medium",
+     "reasoning": "The post is vacant after Leavitt left and Zacharia's five-day stint. Trump's offer to Dana White was a joke and White declined. I found no sign of an imminent permanent pick, and only about a week remains.",
+     "pass": "edge 4.9¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUKRETAIL-26NOV20-T1.5",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.12,
+     "yesAsk": 0.19,
+     "p": 0.04,
+     "confidence": "medium",
+     "reasoning": "September fell 0.4% (weather-driven), so a modest rebound is plausible, but a monthly rise above 1.5% is historically rare. Price of 12-19¢ looks too high.",
+     "trade": {
+      "side": "no",
+      "contracts": 56,
+      "price": 0.88,
+      "fee": 0.42,
+      "cost": 49.28,
+      "edge": 0.07
+     }
+    },
+    {
+     "ticker": "KXCOLLECTIONSALE-KOONS-17NOV26-130000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "p": 0.42,
+     "confidence": "low",
+     "reasoning": "Reported estimate is ~$100M+ (likely hammer-based). With premium that gives roughly $115-125M at estimate, so $130M needs results at or above estimate. The market price is already a fair midpoint, so I'm leaning slightly lower.",
+     "pass": "edge 4.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXCCAVSICE-26NOV49",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.16,
+     "yesAsk": 0.2,
+     "p": 0.22,
+     "confidence": "low",
+     "reasoning": "Auction clearing prices typically come in at or slightly below the same-day ICE Nov futures settlement. No current futures quote was found. The market's 16-20¢ price is consistent with that.",
+     "pass": "edge 0.9¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUSLEI-26NOV19-T-0.1",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.57,
+     "p": 0.52,
+     "confidence": "low",
+     "reasoning": "October data isn't out yet. August was -0.1% and September 0.0%, so the threshold (0.0% or higher) sits right at the recent trend. The six-month rate improved, but I found no information on October components.",
+     "pass": "edge -4.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXART-CHR34B19NOV26-65000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.1,
+     "p": 0.03,
+     "confidence": "high",
+     "reasoning": "The presale estimate is about $30M. A final price including premium above $65M would be more than double that, which is very unlikely.",
+     "pass": "edge 3.5¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXUE-AUS26OCT-4.9",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.09,
+     "p": 0.03,
+     "confidence": "high",
+     "reasoning": "September 2026 unemployment was 4.7%, with a trend rate of 4.6%. October would need to reach 5.0% or more, a 0.3-point monthly jump that is rare, though employment fell by about 39,000 in September.",
+     "pass": "edge -2.1¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXCOLLECTIONSALE-BLA-18NOV26-500000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.54,
+     "p": 0.58,
+     "confidence": "low",
+     "reasoning": "Estimate is about $450M, quoted before fees. Adding buyer's premium of about 15% puts a result at estimate near $510M, just above the line. A miss on the Van Gogh or Cézanne, or an unsold lot, would push it under $500M.",
+     "pass": "edge 2.3¢ is under the 5¢ minimum"
     }
    ],
    "history": [
@@ -2266,6 +2711,11 @@
      "at": "2026-11-12T00:37:28.590Z",
      "equity": 1000.51,
      "cash": 785.36
+    },
+    {
+     "at": "2026-11-13T00:37:55.027Z",
+     "equity": 940.06,
+     "cash": 735.66
     }
    ]
   },
@@ -2398,7 +2848,8 @@
      "p": 0.53,
      "confidence": "medium",
      "reasoning": "Belgium beat Turkey 3-0 away in October, Turkey is winless in the group, and Belgium is in form. Turkey's home advantage and the non-counting draw keep this near the market's 52-53% price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -2427,6 +2878,11 @@
      "at": "2026-11-12T00:37:28.590Z",
      "equity": 983.63,
      "cash": 956.12
+    },
+    {
+     "at": "2026-11-13T00:37:55.027Z",
+     "equity": 970.6,
+     "cash": 956.12
     }
    ]
   },
@@ -2434,7 +2890,7 @@
    "id": "random--coin-flip",
    "provider": "random",
    "model": "coin-flip",
-   "cash": 392.56,
+   "cash": 260.74,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -2572,7 +3028,10 @@
       "price": 0.48,
       "fee": 0.91,
       "cost": 24.96
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -25.87
     },
     {
      "ticker": "KXNBAGAME-26NOV10OKCPOR-OKC",
@@ -2679,7 +3138,10 @@
       "price": 0.44,
       "fee": 0.97,
       "cost": 24.64
-     }
+     },
+     "result": "yes",
+     "payout": 56,
+     "pnl": 30.39
     },
     {
      "ticker": "KXTRUMPUFC-26NOV-DJT",
@@ -2809,7 +3271,10 @@
       "price": 0.26,
       "fee": 1.3,
       "cost": 24.96
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -26.26
     },
     {
      "ticker": "KXTRUMPSAY-26NOV16-CANA",
@@ -2901,6 +3366,162 @@
       "fee": 1.08,
       "cost": 24.7
      }
+    },
+    {
+     "ticker": "KXBUILDPERMS-26NOV18-T1.450",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.17,
+     "yesAsk": 0.24,
+     "trade": {
+      "side": "no",
+      "contracts": 10,
+      "price": 0.83,
+      "fee": 0.1,
+      "cost": 8.3
+     }
+    },
+    {
+     "ticker": "KXAPCALLAKSEN-26NOV04-NOV191200A",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.83,
+     "yesAsk": 0.87,
+     "trade": {
+      "side": "no",
+      "contracts": 5,
+      "price": 0.17,
+      "fee": 0.05,
+      "cost": 0.85
+     }
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-NON",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.43,
+     "yesAsk": 0.44,
+     "trade": {
+      "side": "no",
+      "contracts": 43,
+      "price": 0.57,
+      "fee": 0.74,
+      "cost": 24.51
+     }
+    },
+    {
+     "ticker": "KXFEAR-26NOV13-FEAR",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.75,
+     "yesAsk": 0.82,
+     "trade": {
+      "side": "no",
+      "contracts": 4,
+      "price": 0.25,
+      "fee": 0.06,
+      "cost": 1
+     }
+    },
+    {
+     "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.19,
+     "yesAsk": 0.24,
+     "trade": {
+      "side": "yes",
+      "contracts": 104,
+      "price": 0.24,
+      "fee": 1.33,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXUKRETAIL-26NOV20-T1.5",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.12,
+     "yesAsk": 0.19,
+     "trade": {
+      "side": "yes",
+      "contracts": 10,
+      "price": 0.19,
+      "fee": 0.11,
+      "cost": 1.9
+     }
+    },
+    {
+     "ticker": "KXCOLLECTIONSALE-KOONS-17NOV26-130000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.49,
+     "trade": {
+      "side": "no",
+      "contracts": 48,
+      "price": 0.52,
+      "fee": 0.84,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXCCAVSICE-26NOV49",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.16,
+     "yesAsk": 0.2,
+     "trade": {
+      "side": "yes",
+      "contracts": 125,
+      "price": 0.2,
+      "fee": 1.4,
+      "cost": 25
+     }
+    },
+    {
+     "ticker": "KXUSLEI-26NOV19-T-0.1",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.57,
+     "trade": {
+      "side": "no",
+      "contracts": 49,
+      "price": 0.51,
+      "fee": 0.86,
+      "cost": 24.99
+     }
+    },
+    {
+     "ticker": "KXART-CHR34B19NOV26-65000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.07,
+     "yesAsk": 0.1,
+     "trade": {
+      "side": "yes",
+      "contracts": 10,
+      "price": 0.1,
+      "fee": 0.07,
+      "cost": 1
+     }
+    },
+    {
+     "ticker": "KXUE-AUS26OCT-4.9",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.09,
+     "trade": {
+      "side": "yes",
+      "contracts": 200,
+      "price": 0.09,
+      "fee": 1.15,
+      "cost": 18
+     }
+    },
+    {
+     "ticker": "KXCOLLECTIONSALE-BLA-18NOV26-500000000",
+     "at": "2026-11-13T00:37:55.027Z",
+     "yesBid": 0.48,
+     "yesAsk": 0.54,
+     "trade": {
+      "side": "yes",
+      "contracts": 46,
+      "price": 0.54,
+      "fee": 0.8,
+      "cost": 24.84
+     }
     }
    ],
    "history": [
@@ -2918,6 +3539,11 @@
      "at": "2026-11-12T00:37:28.590Z",
      "equity": 962.02,
      "cash": 392.56
+    },
+    {
+     "at": "2026-11-13T00:37:55.027Z",
+     "equity": 876.18,
+     "cash": 260.74
     }
    ]
   }
@@ -2988,7 +3614,28 @@
     "claude--claude-sonnet-5-5",
     "random--coin-flip"
    ]
+  },
+  {
+   "at": "2026-11-13T00:37:55.027Z",
+   "markets": [
+    "KXBUILDPERMS-26NOV18-T1.450",
+    "KXAPCALLAKSEN-26NOV04-NOV191200A",
+    "KXDWTSELIMINATION-26NOV18-NON",
+    "KXFEAR-26NOV13-FEAR",
+    "KXPRESSSECANNOUNCE-26OCT-NOV20",
+    "KXUKRETAIL-26NOV20-T1.5",
+    "KXCOLLECTIONSALE-KOONS-17NOV26-130000000",
+    "KXCCAVSICE-26NOV49",
+    "KXUSLEI-26NOV19-T-0.1",
+    "KXART-CHR34B19NOV26-65000000",
+    "KXUE-AUS26OCT-4.9",
+    "KXCOLLECTIONSALE-BLA-18NOV26-500000000"
+   ],
+   "traders": [
+    "claude--claude-sonnet-5-5",
+    "random--coin-flip"
+   ]
   }
  ],
- "updated": "2026-11-12T00:37:28.590Z"
+ "updated": "2026-11-13T00:37:55.027Z"
 }
