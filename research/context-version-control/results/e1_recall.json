@@ -1,0 +1,426 @@
+{
+ "table": [
+  {
+   "condition": "plain",
+   "n": 3,
+   "surprise_recall": 0.06666666666666667,
+   "surprise_recall_per_run": [
+    0.2,
+    0.0,
+    0.0
+   ],
+   "announced_task": 1.0,
+   "calls": 31.0,
+   "input_tokens": 266004.6666666667,
+   "output_tokens": 32605.666666666668,
+   "cost_usd": 0.06439333333333334,
+   "mean_context_tokens": 3933.954107679108,
+   "completed": 3,
+   "query_classes": {
+    "unrecoverable": 28,
+    "from_disk": 2
+   }
+  },
+  {
+   "condition": "backup",
+   "n": 2,
+   "surprise_recall": 0.95,
+   "surprise_recall_per_run": [
+    1.0,
+    0.9
+   ],
+   "announced_task": 1.0,
+   "calls": 28.5,
+   "input_tokens": 270430.5,
+   "output_tokens": 32468.0,
+   "cost_usd": 0.06569,
+   "mean_context_tokens": 4456.658508158508,
+   "completed": 2,
+   "query_classes": {
+    "other": 19,
+    "unrecoverable": 1
+   },
+   "backup_compliance": 1.0,
+   "backup_compliance_per_run": [
+    1.0,
+    1.0
+   ]
+  },
+  {
+   "condition": "history",
+   "n": 3,
+   "surprise_recall": 1.0,
+   "surprise_recall_per_run": [
+    1.0,
+    1.0,
+    1.0
+   ],
+   "announced_task": 1.0,
+   "calls": 23.333333333333332,
+   "input_tokens": 231000.0,
+   "output_tokens": 20910.333333333332,
+   "cost_usd": 0.05151,
+   "mean_context_tokens": 4347.098848011891,
+   "completed": 3,
+   "query_classes": {
+    "from_history": 30
+   }
+  }
+ ],
+ "lost_examples": [
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 0,
+   "lost_at_call": 2,
+   "lost_by": "edit",
+   "thought": "Batch 2 holds T00060 through T00089, which is 30 transactions. I'll total them with awk so the ANSWER block appears in the output. I'll also compact the context file in the same command: I'm replacing the raw transaction bodies of turns 1, 4, and 7 with short summaries, keeping the batch 0 and 1 ANSWER lines, and keeping the tool-output turns 3 and 6 intact because they hold graded answers. The command ends with `echo READY_FOR_NEXT_OP`.",
+   "command": "awk 'BEGIN{split(\"203.58 873.45 141.58 716.48 568.56 85.92 706.74 638.22 466.73 364.45 638.50 901.32 296.49 95.28 268.68 920.67 495.90 747.97 217.50 335.97 317.37 428.09 788.82 498.06 29.07 374.76 994.26 644.81 373.80 390.01\",a,\" \"); n=0; t=0; for(i in a){n++; t+=a[i]} printf \"<<<ANSWER batch=2>>>\\n"
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 1,
+   "lost_at_call": 2,
+   "lost_by": "edit",
+   "thought": "Batch 2 holds T00060 through T00089, which is 30 transactions. I'll total them with awk so the ANSWER block appears in the output. I'll also compact the context file in the same command: I'm replacing the raw transaction bodies of turns 1, 4, and 7 with short summaries, keeping the batch 0 and 1 ANSWER lines, and keeping the tool-output turns 3 and 6 intact because they hold graded answers. The command ends with `echo READY_FOR_NEXT_OP`.",
+   "command": "awk 'BEGIN{split(\"203.58 873.45 141.58 716.48 568.56 85.92 706.74 638.22 466.73 364.45 638.50 901.32 296.49 95.28 268.68 920.67 495.90 747.97 217.50 335.97 317.37 428.09 788.82 498.06 29.07 374.76 994.26 644.81 373.80 390.01\",a,\" \"); n=0; t=0; for(i in a){n++; t+=a[i]} printf \"<<<ANSWER batch=2>>>\\n"
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 2,
+   "lost_at_call": 2,
+   "lost_by": "edit",
+   "thought": "Batch 2 holds T00060 through T00089, which is 30 transactions. I'll total them with awk so the ANSWER block appears in the output. I'll also compact the context file in the same command: I'm replacing the raw transaction bodies of turns 1, 4, and 7 with short summaries, keeping the batch 0 and 1 ANSWER lines, and keeping the tool-output turns 3 and 6 intact because they hold graded answers. The command ends with `echo READY_FOR_NEXT_OP`.",
+   "command": "awk 'BEGIN{split(\"203.58 873.45 141.58 716.48 568.56 85.92 706.74 638.22 466.73 364.45 638.50 901.32 296.49 95.28 268.68 920.67 495.90 747.97 217.50 335.97 317.37 428.09 788.82 498.06 29.07 374.76 994.26 644.81 373.80 390.01\",a,\" \"); n=0; t=0; for(i in a){n++; t+=a[i]} printf \"<<<ANSWER batch=2>>>\\n"
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 5,
+   "lost_at_call": 8,
+   "lost_by": "edit",
+   "thought": "The context is over its limit, so this command has to compact the file. Batch 6's lines are already in the file under turn 20, so a script can parse them directly and I don't need to retype them. The script prints the batch 6 ANSWER, then replaces the bulky turns 17, 18, 20, and 21 with short summaries. Turn 19 stays intact because it holds the batch 5 ANSWER. Batch 2's total is still unverified because its amounts were never preserved, so I'll note that in my final summary.",
+   "command": "python3 -I -c 'import re\nfrom decimal import Decimal\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\ns=open(p).read()\nm=re.search(r\"\\[\\[CTX_TURN 20 .*?(?=\\n\\[\\[CTX_TURN 21|\\Z)\", s, re.S)\nrows=re.findall(r\"^T\\d{5} \\|[^\\n]*?amount=([\\d.]+) \\|\", m.group(0), re.M)\nn=len(rows); t=sum(Decimal(x) for x in rows)\nprint"
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 6,
+   "lost_at_call": 11,
+   "lost_by": "edit",
+   "thought": "Context is at about 90%, so I'll compact before requesting the next operation. Batch 7's amounts match the stream (30 txns, total 16543.23), and its ANSWER is in turn 26, so I'll keep that turn. I'll replace the raw batch 7 text and the bulky assistant turns with short summaries. The echo runs as its own statement so the next operation arrives.",
+   "command": "python3 - <<'PY'\nimport re\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\nrep={\n23:\"[batch 7 T00210-T00239, 30 txns; ANSWER batch=7 count=30 total=16543.23 emitted in turn 26]\",\n24:\"[context notice handled by compacting]\",\n25:\"[assistant: summed batch 7 via awk; ANSWER emitted]\",\n27:\"[READY_"
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 7,
+   "lost_at_call": 14,
+   "lost_by": "edit",
+   "thought": "Context is over the limit, so this command has to compact the context file. Batch 9's lines are in turn 30, so a script can sum them directly without retyping. The script prints the batch 9 ANSWER, then replaces the whole file with a short summary of all earlier answers. Batch 2's total is still unverified, since its amounts were typed from memory, so I'll flag that in the summary.",
+   "command": "python3 -I - <<'PY' && echo READY_FOR_NEXT_OP\nimport re\nfrom decimal import Decimal\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\ns=open(p).read()\nm=re.search(r\"<<<TXN-BATCH 0009#35e8ae21 BEGIN>>>(.*?)<<<TXN-BATCH 0009#35e8ae21 END>>>\", s, re.S)\namts=re.findall(r\"amount=([\\d.]+)\", m.group(1))\nn=len(amts); t="
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 8,
+   "lost_at_call": 15,
+   "lost_by": "edit",
+   "thought": "Batch 10 has 30 lines (T00300 to T00329). I'll sum the amounts with a script instead of by hand. The script prints the batch 10 ANSWER and replaces the raw batch text in the context file with a short summary, keeping the answer. Then it runs the READY_FOR_NEXT_OP echo.",
+   "command": "python3 -I - <<'PY' && echo READY_FOR_NEXT_OP\nimport re\nfrom decimal import Decimal\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\ns=open(p).read()\nm=re.search(r\"<<<TXN-BATCH 0010#dec6dd5a BEGIN>>>(.*?)<<<TXN-BATCH 0010#dec6dd5a END>>>\", s, re.S)\namts=re.findall(r\"amount=([\\d.]+)\", m.group(1))\nn=len(amts); t="
+  },
+  {
+   "run": "ledger-b12x30-seed1-plain",
+   "qid": 9,
+   "lost_at_call": 16,
+   "lost_by": "edit",
+   "thought": "Batch 11 (T00330-T00359) is in context turn 6. I'll sum its amounts with a script rather than by hand, print the ANSWER block, and replace the raw batch text in the context file with a one-line summary. The echo at the end requests the next operation.",
+   "command": "python3 -I - <<'PY' && echo READY_FOR_NEXT_OP\nimport re\nfrom decimal import Decimal\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\ns=open(p).read()\nm=re.search(r\"<<<TXN-BATCH 0011#134d341a BEGIN>>>(.*?)<<<TXN-BATCH 0011#134d341a END>>>\", s, re.S)\namts=re.findall(r\"amount=([\\d.]+)\", m.group(1))\nn=len(amts); t="
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 0,
+   "lost_at_call": 2,
+   "lost_by": "edit",
+   "thought": "Batch 1 holds T00030 through T00059, which is 30 transactions. I'll sum them with Decimal, print the ANSWER block, and compact the finished batch 0 turns in the context file to a one-line summary. Then I'll end with the standalone `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nimport re\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\ni=s.find(\"[[CTX_TURN 1 \"); j=s.find(\"[[CTX_TURN 7 \")\nif i!=-1 and j!=-1 and i<j:\n    s=s[:i]+\"[[CTX_TURN 1 role=user]]\\nBatch 0 DONE: ANSWER batch=0 count=30 total=13234.48 (already graded). Protocol: end each turn wit"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 1,
+   "lost_at_call": 19,
+   "lost_by": "edit",
+   "thought": "Context is near 77%, and the batch 9 regex may have removed its ANSWER block from the file. Batch 8's ANSWER block was also never printed. I'll rewrite the context file as a compact summary that keeps every finished ANSWER line, and print the batch 8 and batch 9 ANSWER blocks so they appear in context. READY_FOR_NEXT_OP will run alone next turn.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\ndone={0:(30,\"13234.48\"),1:(30,\"15304.42\"),2:(30,\"17372.78\"),3:(30,\"15222.68\"),\n      4:(30,\"14592.70\"),5:(30,\"12228.60\"),6:(30,\"14595.10\"),7:(30,\"16781.61\"),\n      8:(30,\"16633.62\"),9:(30,\"14099.39\")}\nsummary=(\"[[CTX_TURN 1 role=summary]]\\n\"\n \"Pr"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 2,
+   "lost_at_call": 6,
+   "lost_by": "edit",
+   "thought": "Context is at about 63%, so I'll compact the file first. I'll collapse the finished batch 1 and 2 turns into summary lines, and replace the batch 3 body with a note that its answer is computed. Then I'll compute batch 3 (30 transactions) and print its ANSWER block. I'm not chaining READY_FOR_NEXT_OP here, because that has failed when chained. I'll run it alone in the next turn.",
+   "command": "python3 - <<'PY'\nimport re\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\na='357.90 72.46 816.15 541.24 776.58 601.40 34.18 623.89 913.43 9.66 3.47 279.09 850.33 199.92 566.24 393.79 692.75 718.50 761.43 947.60 411.14 910.96 275.26 90.01 161.45 706.68 225.38 "
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 3,
+   "lost_at_call": 8,
+   "lost_by": "edit",
+   "thought": "Batch 4 has 30 transactions (T00120 to T00149). I'll sum the amounts with Decimal to avoid float error and print the ANSWER block. I'll also replace the batch 4 transaction lines in the context file with a short summary to free space. READY_FOR_NEXT_OP stays out of this command, since chained forms haven't advanced before. I'll run it alone next turn.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\na=(\"393.63 419.53 618.37 796.93 109.32 299.21 309.10 816.04 519.25 73.53 \"\n   \"509.06 479.19 922.35 171.01 808.56 890.58 867.26 129.06 628.24 570.42 \"\n   \"800.53 805.90 54.20 473.56 250.43 369.83"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 4,
+   "lost_at_call": 10,
+   "lost_by": "edit",
+   "thought": "Batch 5 (T00150-T00179) is in context. I'll parse the amounts directly from the sentinel-delimited block in the context file rather than retyping them, so the sum is exact. The script prints the ANSWER block and replaces the batch lines with a one-line summary to free space. READY_FOR_NEXT_OP goes in its own command next turn.",
+   "command": "python3 - <<'PY'\nimport re\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\nm=re.search(r\"<<<TXN-BATCH (0005#\\w+) BEGIN>>>\\n(.*?)\\n<<<TXN-BATCH \\1 END>>>\", s, re.S)\nif m:\n    lines=[l for l in m.group(2).splitlines() if re.match(r\"T\\d+ \\|\", l)]\n    amts=[D(re.s"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 5,
+   "lost_at_call": 12,
+   "lost_by": "edit",
+   "thought": "Batch 6 (T00180-T00209) is in context. I'll parse its amounts from the sentinel-delimited block with a script, which avoids hand-summing errors. The script prints the ANSWER block and replaces the batch lines with a one-line summary to free context. `READY_FOR_NEXT_OP` goes in its own command next turn, since chained forms haven't advanced the stream before.",
+   "command": "python3 - <<'PY'\nimport re\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\nm=re.search(r\"<<<TXN-BATCH (0006#\\w+) BEGIN>>>\\n(.*?)\\n<<<TXN-BATCH \\1 END>>>\", s, re.S)\nif m:\n    lines=[l for l in m.group(2).splitlines() if re.match(r\"T\\d+ \\|\", l)]\n    amts=[D(re.s"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 6,
+   "lost_at_call": 14,
+   "lost_by": "edit",
+   "thought": "Batch 7 (T00210-T00239) has 30 lines in the context file. I'll parse the amounts from the sentinel block with a script instead of summing by hand, print the ANSWER block, and replace the lines with a one-line summary to free context. `READY_FOR_NEXT_OP` will run alone in the next turn.",
+   "command": "python3 - <<'PY'\nimport re\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\nm=re.search(r\"<<<TXN-BATCH (0007#\\w+) BEGIN>>>\\n(.*?)\\n<<<TXN-BATCH \\1 END>>>\", s, re.S)\nif m:\n    lines=[l for l in m.group(2).splitlines() if re.match(r\"T\\d+ \\|\", l)]\n    amts=[D(re.s"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 7,
+   "lost_at_call": 16,
+   "lost_by": "edit",
+   "thought": "Batch 8 (T00240-T00269) is in the context file, and the context is at about 82%. I'll parse the amounts from the sentinel block with a script instead of summing by hand, print the ANSWER block, and replace the block with a one-line summary to free space. `READY_FOR_NEXT_OP` will run alone in the next turn.",
+   "command": "python3 - <<'PY'\nimport re\nfrom decimal import Decimal as D\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"; s=open(p).read()\nm=re.search(r\"<<<TXN-BATCH (0008#\\w+) BEGIN>>>\\n(.*?)\\n<<<TXN-BATCH \\1 END>>>\", s, re.S)\nif m:\n    lines=[l for l in m.group(2).splitlines() if re.match(r\"T\\d+ \\|\", l)]\n    amts=[D(re.s"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 8,
+   "lost_at_call": 28,
+   "lost_by": "edit",
+   "thought": "Audit 6 asks for the ref of T00221, but batch 7's lines were not retained and the grep found nothing, so I'll answer UNKNOWN rather than guess. Context is at 75%, so I'll first compact the context file into a short summary. It keeps every graded ANSWER line (batches 0 to 11 and audits 0, 2, 6), then prints the audit 6 block and sends the READY signal on its own line.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\nbatches=[(0,\"13234.48\"),(1,\"15304.42\"),(2,\"17372.78\"),(3,\"15222.68\"),(4,\"14592.70\"),(5,\"12228.60\"),\n         (6,\"14595.10\"),(7,\"16781.61\"),(8,\"16633.62\"),(9,\"14099.39\"),(10,\"17318.92\"),(11,\"15944.62\")]\naudit6=\"UNKNOWN: the ref of T00221 is not av"
+  },
+  {
+   "run": "ledger-b12x30-seed2-plain",
+   "qid": 9,
+   "lost_at_call": 28,
+   "lost_by": "edit",
+   "thought": "Audit 6 asks for the ref of T00221, but batch 7's lines were not retained and the grep found nothing, so I'll answer UNKNOWN rather than guess. Context is at 75%, so I'll first compact the context file into a short summary. It keeps every graded ANSWER line (batches 0 to 11 and audits 0, 2, 6), then prints the audit 6 block and sends the READY signal on its own line.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\nbatches=[(0,\"13234.48\"),(1,\"15304.42\"),(2,\"17372.78\"),(3,\"15222.68\"),(4,\"14592.70\"),(5,\"12228.60\"),\n         (6,\"14595.10\"),(7,\"16781.61\"),(8,\"16633.62\"),(9,\"14099.39\"),(10,\"17318.92\"),(11,\"15944.62\")]\naudit6=\"UNKNOWN: the ref of T00221 is not av"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 0,
+   "lost_at_call": 13,
+   "lost_by": "edit",
+   "thought": "Context is over the limit, so I'm compacting the live file first. The audit asks for the account of T00263, but the raw batch 8 lines were compacted earlier and grep finds no copy. I won't guess the account. I'll print an honest audit answer saying the value is unrecoverable, and keep the batch 0-11 results in the summary.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\nsummary = \"\"\"[COMPACTED SUMMARY]\nLedger batch ANSWERS already emitted (count=30 each):\nbatch0 total=13663.20 | batch1 17219.63 | batch2 16163.42 | batch3 13741.90\nbatch4 19052.32 | batch5 12330.36 | batch6 12813.10 | batch7 16251.31\nbatch8 17368."
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 1,
+   "lost_at_call": 13,
+   "lost_by": "edit",
+   "thought": "Context is over the limit, so I'm compacting the live file first. The audit asks for the account of T00263, but the raw batch 8 lines were compacted earlier and grep finds no copy. I won't guess the account. I'll print an honest audit answer saying the value is unrecoverable, and keep the batch 0-11 results in the summary.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\nsummary = \"\"\"[COMPACTED SUMMARY]\nLedger batch ANSWERS already emitted (count=30 each):\nbatch0 total=13663.20 | batch1 17219.63 | batch2 16163.42 | batch3 13741.90\nbatch4 19052.32 | batch5 12330.36 | batch6 12813.10 | batch7 16251.31\nbatch8 17368."
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 2,
+   "lost_at_call": 13,
+   "lost_by": "edit",
+   "thought": "Context is over the limit, so I'm compacting the live file first. The audit asks for the account of T00263, but the raw batch 8 lines were compacted earlier and grep finds no copy. I won't guess the account. I'll print an honest audit answer saying the value is unrecoverable, and keep the batch 0-11 results in the summary.",
+   "command": "python3 - <<'PY'\np=\"/tmp/.live_ctx/LIVE_CTX_MAIN.txt\"\nsummary = \"\"\"[COMPACTED SUMMARY]\nLedger batch ANSWERS already emitted (count=30 each):\nbatch0 total=13663.20 | batch1 17219.63 | batch2 16163.42 | batch3 13741.90\nbatch4 19052.32 | batch5 12330.36 | batch6 12813.10 | batch7 16251.31\nbatch8 17368."
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 3,
+   "lost_at_call": 4,
+   "lost_by": "edit",
+   "thought": "Batch 4 has 30 transactions (T00120 to T00149). I'll sum its amounts with Decimal and print the ANSWER block. In the same command I'll replace the raw batch 4 lines in the context file with a one-line summary, then run `echo READY_FOR_NEXT_OP` to get the next operation.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"462.27 386.10 718.80 726.76 584.08 988.13 986.72 312.36 962.07 139.12\n852.33 16.77 738.71 234.29 335.77 893.63 867.98 498.79 843.84 95.25\n681.36 566.19 983.93 550.35 771.64 948.31 978.22 615.16 393.84 919.55\"\"\".split()\ntotal = sum(Deci"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 4,
+   "lost_at_call": 5,
+   "lost_by": "edit",
+   "thought": "Batch 5 has 30 transactions (T00150 to T00179). I'll sum the amounts with Decimal and print the ANSWER block. In the same command I'll replace the raw batch 5 lines in the context file with a one-line summary, then run `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"608.56 40.05 682.50 28.83 477.05 364.32 409.94 59.18 179.31 222.66\n684.56 241.29 462.74 695.91 541.35 416.34 931.31 676.24 454.74 356.55\n371.05 105.38 975.38 352.27 63.28 926.24 515.02 172.88 141.82 173.61\"\"\".split()\ntotal = sum(Decima"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 5,
+   "lost_at_call": 6,
+   "lost_by": "edit",
+   "thought": "Batch 6 has 30 transactions (T00180 to T00209). I'll sum its amounts with Decimal and print the ANSWER block. I'll also replace the raw batch 6 lines in the context file with a one-line summary to free budget, then run `echo READY_FOR_NEXT_OP` to receive the next operation.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"792.74 628.53 923.47 581.41 599.51 221.59 76.13 162.07 608.91 788.43\n418.47 391.56 448.47 627.84 811.26 311.32 282.84 512.13 487.86 425.34\n108.38 38.72 478.58 497.26 250.42 461.91 184.95 128.69 13.94 550.37\"\"\".split()\ntotal = sum(Decim"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 6,
+   "lost_at_call": 7,
+   "lost_by": "edit",
+   "thought": "Batch 7 has 30 transactions (T00210 to T00239). I'll sum the amounts with Decimal and print the ANSWER block. The context is at about 77%, so I'll also replace the raw batch 7 lines in the context file with a one-line summary before calling `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"680.49 615.93 694.05 698.25 587.47 284.70 658.49 50.93 527.51 454.52\n399.67 275.59 985.92 492.24 232.79 657.69 941.12 693.66 586.93 124.12\n539.10 486.51 145.16 710.82 950.27 873.80 508.99 629.98 279.04 485.57\"\"\".split()\ntotal = sum(Dec"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 7,
+   "lost_at_call": 8,
+   "lost_by": "edit",
+   "thought": "Batch 8 has 30 transactions (T00240 to T00269). I'll sum the amounts with Decimal and print the ANSWER block. The context is large, so I'll also replace the raw batch 8 lines and the batch 7 tool turn with short summaries before running `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"457.15 600.57 875.98 562.67 714.72 224.26 956.85 731.10 970.72 714.59\n820.47 110.03 920.26 44.32 278.59 594.50 208.22 752.33 533.74 747.26\n560.61 696.79 405.84 388.49 326.08 7.67 886.53 401.28 893.98 982.50\"\"\".split()\ntotal = sum(Decim"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 8,
+   "lost_at_call": 10,
+   "lost_by": "edit",
+   "thought": "Batch 10 has 30 transactions (T00300 to T00329). I'll sum the amounts with Decimal and print the ANSWER block. The context is near 90%, so I'll also replace the raw batch 10 lines with a one-line summary before running `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"928.41 224.63 677.37 915.07 741.21 939.27 228.80 710.17 802.06 458.30\n856.02 113.91 437.67 163.07 814.11 704.58 682.35 826.36 438.92 917.06\n985.79 508.20 285.32 73.20 977.21 907.13 216.97 234.64 483.49 396.85\"\"\".split()\ntotal = sum(Dec"
+  },
+  {
+   "run": "ledger-b12x30-seed3-plain",
+   "qid": 9,
+   "lost_at_call": 11,
+   "lost_by": "edit",
+   "thought": "The context is over the 7200-token limit, so this command must compact it. I'll sum batch 11 (T00330-T00359) with Decimal and print its ANSWER block. Then I'll truncate the file from turn 24 onward and replace that with a one-line summary, keeping the header. Finally I'll run `echo READY_FOR_NEXT_OP`.",
+   "command": "python3 - <<'PY'\nfrom decimal import Decimal\nimport re\namts = \"\"\"604.07 265.89 10.52 225.37 706.63 376.15 596.93 529.69 479.90 59.14\n570.70 880.11 667.12 806.94 207.44 996.65 336.81 857.19 917.77 100.38\n911.59 490.85 750.03 408.72 339.35 316.17 466.73 153.50 769.29 894.97\"\"\".split()\ntotal = sum(Deci"
+  }
+ ],
+ "runs": {
+  "backup": [
+   {
+    "task": "ledger-b12x30-seed1",
+    "seed": 1,
+    "reward": 1.0,
+    "phase1_reward": 1.0,
+    "n_calls": 25,
+    "n_edits": 13,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.05921,
+    "query_classes": {
+     "other": 10
+    },
+    "backup": {
+     "edits": 13,
+     "edits_with_backup_in_command": 13,
+     "compliance": 1.0
+    }
+   },
+   {
+    "task": "ledger-b12x30-seed2",
+    "seed": 2,
+    "reward": 0.9,
+    "phase1_reward": 1.0,
+    "n_calls": 32,
+    "n_edits": 17,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.07217,
+    "query_classes": {
+     "other": 9,
+     "unrecoverable": 1
+    },
+    "backup": {
+     "edits": 17,
+     "edits_with_backup_in_command": 17,
+     "compliance": 1.0
+    }
+   }
+  ],
+  "history": [
+   {
+    "task": "ledger-b12x30-seed1",
+    "seed": 1,
+    "reward": 1.0,
+    "phase1_reward": 1.0,
+    "n_calls": 23,
+    "n_edits": 13,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.04921,
+    "query_classes": {
+     "from_history": 10
+    },
+    "backup": null
+   },
+   {
+    "task": "ledger-b12x30-seed2",
+    "seed": 2,
+    "reward": 1.0,
+    "phase1_reward": 1.0,
+    "n_calls": 25,
+    "n_edits": 19,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.05566,
+    "query_classes": {
+     "from_history": 10
+    },
+    "backup": null
+   },
+   {
+    "task": "ledger-b12x30-seed3",
+    "seed": 3,
+    "reward": 1.0,
+    "phase1_reward": 1.0,
+    "n_calls": 22,
+    "n_edits": 16,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.04966,
+    "query_classes": {
+     "from_history": 10
+    },
+    "backup": null
+   }
+  ],
+  "plain": [
+   {
+    "task": "ledger-b12x30-seed1",
+    "seed": 1,
+    "reward": 0.2,
+    "phase1_reward": 1.0,
+    "n_calls": 34,
+    "n_edits": 13,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.07825,
+    "query_classes": {
+     "unrecoverable": 8,
+     "from_disk": 2
+    },
+    "backup": null
+   },
+   {
+    "task": "ledger-b12x30-seed2",
+    "seed": 2,
+    "reward": 0.0,
+    "phase1_reward": 1.0,
+    "n_calls": 36,
+    "n_edits": 15,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.06697,
+    "query_classes": {
+     "unrecoverable": 10
+    },
+    "backup": null
+   },
+   {
+    "task": "ledger-b12x30-seed3",
+    "seed": 3,
+    "reward": 0.0,
+    "phase1_reward": 1.0,
+    "n_calls": 23,
+    "n_edits": 13,
+    "terminated_by": "stream_exhausted",
+    "cost_usd": 0.04796,
+    "query_classes": {
+     "unrecoverable": 10
+    },
+    "backup": null
+   }
+  ]
+ }
+}
