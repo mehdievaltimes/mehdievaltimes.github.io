@@ -898,6 +898,116 @@
    "category": "Economics",
    "feeMultiplier": 1,
    "title": "Monthly housing starts"
+  },
+  "KXNFLRSHYDSPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Rushing Yards Protected"
+  },
+  "KXNFLRECPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Receptions Protected"
+  },
+  "KXHEGSETHANNOUNCEOUT": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Hegseth announces he's leaving as Secretary of Defense"
+  },
+  "KXAAAGASCDDE": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Delaware gas price"
+  },
+  "KXLUTNICKOUT": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Howard Lutnick out as Commerce Secretary?"
+  },
+  "KXBULLETBRAWLTOP": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Chess.com Bullet Brawl Top Finishers"
+  },
+  "KXAAAGASCDHI": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Hawaii gas price"
+  },
+  "KXAAAGASCDAK": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "Alaska gas price"
+  },
+  "KXBRASILEIROSPREAD": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Brasileiro Serie A Game"
+  },
+  "KXNFL1QTOTAL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football 1st Quarter Total"
+  },
+  "KXNFLRRYDSPROT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Rushing and Receiving Yards Protected"
+  },
+  "KXMLSGAME": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Major League Soccer Game"
+  },
+  "KXBEDFORDANNOUNCEOUT": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Bryan Bedford out as FAA Administrator?"
+  },
+  "KXBULLETBRAWL": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Chess.com Bullet Brawl Winner"
+  },
+  "KXTRUMPVH": {
+   "category": "Politics",
+   "feeMultiplier": 1,
+   "title": "Trump Votehub approval rating"
+  },
+  "KXCBDSA": {
+   "category": "Economics",
+   "feeMultiplier": 1,
+   "title": "South Africa rate decision"
+  },
+  "KXNFLRRYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football Rush and Receiving Yards"
+  },
+  "KXNFLESCALATORRECYDS": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Receiving Yards Escalator"
+  },
+  "KXMISOINDW": {
+   "category": "Commodities",
+   "feeMultiplier": 1,
+   "title": "MISO Indiana Hub weekly power price"
+  },
+  "KXNFLFIRSTTDTEAM": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Pro Football First Team to Score a Touchdown"
+  },
+  "KXLEAGUECITYFLOCK": {
+   "category": "Elections",
+   "feeMultiplier": 1,
+   "title": "League City Flock camera referendum"
+  },
+  "KXCHESSTOURNAMENT": {
+   "category": "Sports",
+   "feeMultiplier": 1,
+   "title": "Chess Tournament Winner"
   }
  },
  "markets": {
@@ -913,11 +1023,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.17,
-    "yesAsk": 0.18,
-    "noBid": 0.82,
-    "noAsk": 0.83,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.06,
+    "yesAsk": 0.07,
+    "noBid": 0.93,
+    "noAsk": 0.94,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXNATGASW-26NOV1317-T3.599": {
@@ -930,14 +1040,15 @@
    "rules": "If the close price of the 1-minute candlestick for natural gas on November 13, 2026 at 5:00 PM EST is above 3.599 USD/MMBtu, then the market resolves to Yes. The settlement value is rounded to the nearest 3 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified ti",
    "closeTime": "2026-11-13T22:00:00Z",
    "addedAt": "2026-11-10T07:42:47.525Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.82,
     "yesAsk": 0.84,
     "noBid": 0.16,
     "noAsk": 0.18,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXBTCD-26NOV1317-T74999.99": {
    "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -949,14 +1060,15 @@
    "rules": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EST is above 74999.99 at 5 PM EST on Nov 13, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
    "closeTime": "2026-11-13T22:00:00Z",
    "addedAt": "2026-11-10T07:42:47.525Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.02,
     "yesAsk": 0.03,
     "noBid": 0.97,
     "noAsk": 0.98,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXAAAGASW-26NOV16-3.8400": {
    "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -989,11 +1101,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.89,
-    "yesAsk": 0.9,
-    "noBid": 0.1,
-    "noAsk": 0.11,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.99,
+    "yesAsk": 1,
+    "noBid": 0,
+    "noAsk": 0.01,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXTRUMPSAY-26NOV16-MELA": {
@@ -1046,11 +1158,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.89,
-    "yesAsk": 0.92,
-    "noBid": 0.08,
-    "noAsk": 0.11,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.94,
+    "yesAsk": 0.95,
+    "noBid": 0.05,
+    "noAsk": 0.06,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXGOLDW-26NOV1317-T4128.99": {
@@ -1063,14 +1175,15 @@
    "rules": "If the close price of the 1-minute candlestick for gold on November 13, 2026 at 5:00 PM EST is above 4128.99 USD/t.oz, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified time, th",
    "closeTime": "2026-11-13T22:00:00Z",
    "addedAt": "2026-11-10T07:42:47.525Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.02,
     "yesAsk": 0.04,
     "noBid": 0.96,
     "noAsk": 0.98,
     "at": "2026-11-12T00:37:28.590Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXUFCFIGHT-26NOV14GANHOK-HOK": {
    "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -1084,11 +1197,11 @@
    "addedAt": "2026-11-10T07:42:47.525Z",
    "result": null,
    "last": {
-    "yesBid": 0.35,
-    "yesAsk": 0.36,
-    "noBid": 0.64,
-    "noAsk": 0.65,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.34,
+    "yesAsk": 0.35,
+    "noBid": 0.65,
+    "noAsk": 0.66,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUEFANLGAME-26NOV12TURBEL-BEL": {
@@ -1143,11 +1256,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.25,
-    "yesAsk": 0.27,
-    "noBid": 0.73,
-    "noAsk": 0.75,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.08,
+    "yesAsk": 0.09,
+    "noBid": 0.91,
+    "noAsk": 0.92,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXBRENTW-26NOV1317-T88.99": {
@@ -1160,14 +1273,15 @@
    "rules": "If the close price of the 1-minute candlestick for brent crude oil on November 13, 2026 at 5:00 PM EST is above 88.99 USD/Bbl, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified ",
    "closeTime": "2026-11-13T22:00:00Z",
    "addedAt": "2026-11-11T00:37:34.764Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.95,
     "yesAsk": 0.96,
     "noBid": 0.04,
     "noAsk": 0.05,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXBTCD-26NOV1317-T73499.99": {
    "ticker": "KXBTCD-26NOV1317-T73499.99",
@@ -1179,14 +1293,15 @@
    "rules": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EST is above 73499.99 at 5 PM EST on Nov 13, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
    "closeTime": "2026-11-13T22:00:00Z",
    "addedAt": "2026-11-11T00:37:34.764Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.05,
     "yesAsk": 0.06,
     "noBid": 0.94,
     "noAsk": 0.95,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXAAAGASW-26NOV16-3.8000": {
    "ticker": "KXAAAGASW-26NOV16-3.8000",
@@ -1200,11 +1315,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.54,
-    "yesAsk": 0.55,
-    "noBid": 0.45,
-    "noAsk": 0.46,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.93,
+    "yesAsk": 0.95,
+    "noBid": 0.05,
+    "noAsk": 0.07,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXAPCALLAKSEN-26NOV04-NOV181200A": {
@@ -1219,11 +1334,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.37,
-    "yesAsk": 0.42,
-    "noBid": 0.58,
-    "noAsk": 0.63,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.6,
+    "yesAsk": 0.69,
+    "noBid": 0.31,
+    "noAsk": 0.4,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXRT-EBE-35": {
@@ -1238,11 +1353,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.98,
-    "yesAsk": 0.99,
-    "noBid": 0.01,
-    "noAsk": 0.02,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.99,
+    "yesAsk": 1,
+    "noBid": 0,
+    "noAsk": 0.01,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXTRUMPSAY-26NOV16-FILI": {
@@ -1277,11 +1392,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.06,
-    "yesAsk": 0.08,
-    "noBid": 0.92,
-    "noAsk": 0.94,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.02,
+    "yesAsk": 0.03,
+    "noBid": 0.97,
+    "noAsk": 0.98,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXLLM1-26NOV16-ANTH": {
@@ -1296,11 +1411,11 @@
    "addedAt": "2026-11-11T00:37:34.764Z",
    "result": null,
    "last": {
-    "yesBid": 0.08,
-    "yesAsk": 0.09,
-    "noBid": 0.91,
-    "noAsk": 0.92,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.04,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.96,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXNFLTOTAL-26NOV15MINGB-42": {
@@ -1319,7 +1434,7 @@
     "yesAsk": 0.53,
     "noBid": 0.47,
     "noAsk": 0.48,
-    "at": "2026-11-13T00:37:55.027Z"
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXNFLGAME-26NOV12WASNYG-NYG": {
@@ -1332,14 +1447,15 @@
    "rules": "If New York G wins the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026, then the market resolves to Yes. The following market refers to the team who wins the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026. If the game ends in a tie, the market will resolve to $0.50 for each team. If the game is postponed but begins within 48 hours from its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is not started within 48 hours, the market will resolve to a fair pric",
    "closeTime": "2026-11-15T01:15:00Z",
    "addedAt": "2026-11-11T00:37:34.764Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.53,
     "yesAsk": 0.54,
     "noBid": 0.46,
     "noAsk": 0.47,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXNFLSPREAD-26NOV12WASNYG-NYG3": {
    "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
@@ -1351,14 +1467,15 @@
    "rules": "If New York G wins by more than 2.5 points in the Washington vs New York G Pro Football game originally scheduled for Nov 12, 2026, then the market resolves to Yes. Kalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Governing League. All trademarks, logos, and brand names are the property of their respective owners.",
    "closeTime": "2026-11-15T01:15:00Z",
    "addedAt": "2026-11-11T00:37:34.764Z",
-   "result": null,
+   "result": "no",
    "last": {
     "yesBid": 0.47,
     "yesAsk": 0.48,
     "noBid": 0.52,
     "noAsk": 0.53,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXRAINWKND-26NOV14-PHX": {
    "ticker": "KXRAINWKND-26NOV14-PHX",
@@ -1372,11 +1489,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.45,
-    "yesAsk": 0.46,
-    "noBid": 0.54,
-    "noAsk": 0.55,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.32,
+    "yesAsk": 0.34,
+    "noBid": 0.66,
+    "noAsk": 0.68,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUSRETAIL-26NOV17-T0.4": {
@@ -1391,11 +1508,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.39,
-    "yesAsk": 0.48,
-    "noBid": 0.52,
-    "noAsk": 0.61,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.27,
+    "yesAsk": 0.36,
+    "noBid": 0.64,
+    "noAsk": 0.73,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXAPCALLNC03-26NOV04-NOV181200A": {
@@ -1410,11 +1527,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.77,
-    "yesAsk": 0.83,
-    "noBid": 0.17,
-    "noAsk": 0.23,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.79,
+    "yesAsk": 0.91,
+    "noBid": 0.09,
+    "noAsk": 0.21,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXDWTSELIMINATION-26NOV18-TAT": {
@@ -1429,11 +1546,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.19,
-    "yesAsk": 0.2,
-    "noBid": 0.8,
-    "noAsk": 0.81,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.15,
+    "yesAsk": 0.16,
+    "noBid": 0.84,
+    "noAsk": 0.85,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXCEONVDA-01JAN33-16NOV26": {
@@ -1466,14 +1583,15 @@
    "rules": "If Canada / Canadian, or a plural or possessive form of Canada / Canadian, is stated by Donald Trump after November 9, 2026 at 8:30am ET and before Nov 16, 2026 at 12:00am ET, then the market resolves to Yes. Payout criteria\nThe word or phrase must be stated by President Donald Trump in public statements, direct quotes published by Source Agencies, or written public statements on his personal social media accounts (Twitter/Truth Social).\nThe exact phrase/word, or a plural or possessive form of the phrase/word, must be used.\nFor phrases with slashes like \"Doge/Dogecoin,\" either word satisfies t",
    "closeTime": "2026-11-16T15:00:00Z",
    "addedAt": "2026-11-12T00:37:28.590Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.99,
     "yesAsk": 1,
     "noBid": 0,
     "noAsk": 0.01,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXHORMUZMAX-26NOV15-NOV11": {
    "ticker": "KXHORMUZMAX-26NOV15-NOV11",
@@ -1487,11 +1605,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.15,
-    "yesAsk": 0.16,
-    "noBid": 0.84,
-    "noAsk": 0.85,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.16,
+    "yesAsk": 0.19,
+    "noBid": 0.81,
+    "noAsk": 0.84,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXTOKENUSE-26NOV16-T232": {
@@ -1506,11 +1624,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.02,
-    "yesAsk": 0.03,
-    "noBid": 0.97,
-    "noAsk": 0.98,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.01,
+    "yesAsk": 0.02,
+    "noBid": 0.98,
+    "noAsk": 0.99,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUE-AUS26OCT-5.1": {
@@ -1529,7 +1647,7 @@
     "yesAsk": 0.07,
     "noBid": 0.93,
     "noAsk": 0.99,
-    "at": "2026-11-13T00:37:55.027Z"
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXNCAAFGAME-26NOV14TEXLSU-TEX": {
@@ -1548,7 +1666,7 @@
     "yesAsk": 0.38,
     "noBid": 0.62,
     "noAsk": 0.63,
-    "at": "2026-11-13T00:37:55.027Z"
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXNFLGAME-26NOV15MINGB-MIN": {
@@ -1563,11 +1681,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.4,
-    "yesAsk": 0.41,
-    "noBid": 0.59,
-    "noAsk": 0.6,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.41,
+    "yesAsk": 0.42,
+    "noBid": 0.58,
+    "noAsk": 0.59,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUFCFIGHT-26NOV14GANHOK-GAN": {
@@ -1582,11 +1700,11 @@
    "addedAt": "2026-11-12T00:37:28.590Z",
    "result": null,
    "last": {
-    "yesBid": 0.63,
-    "yesAsk": 0.64,
-    "noBid": 0.36,
-    "noAsk": 0.37,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.66,
+    "yesAsk": 0.67,
+    "noBid": 0.33,
+    "noAsk": 0.34,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXBUILDPERMS-26NOV18-T1.450": {
@@ -1602,10 +1720,10 @@
    "result": null,
    "last": {
     "yesBid": 0.17,
-    "yesAsk": 0.24,
-    "noBid": 0.76,
+    "yesAsk": 0.19,
+    "noBid": 0.81,
     "noAsk": 0.83,
-    "at": "2026-11-13T00:37:55.027Z"
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXAPCALLAKSEN-26NOV04-NOV191200A": {
@@ -1620,11 +1738,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.83,
-    "yesAsk": 0.87,
-    "noBid": 0.13,
-    "noAsk": 0.17,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.86,
+    "yesAsk": 0.91,
+    "noBid": 0.09,
+    "noAsk": 0.14,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXDWTSELIMINATION-26NOV18-NON": {
@@ -1639,11 +1757,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.43,
-    "yesAsk": 0.44,
-    "noBid": 0.56,
-    "noAsk": 0.57,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.39,
+    "yesAsk": 0.4,
+    "noBid": 0.6,
+    "noAsk": 0.61,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXFEAR-26NOV13-FEAR": {
@@ -1656,14 +1774,15 @@
    "rules": "If the value at 4:00 PM ET on Nov 13, 2026 is Fear, then the market resolves to Yes.",
    "closeTime": "2026-11-20T21:00:00Z",
    "addedAt": "2026-11-13T00:37:55.027Z",
-   "result": null,
+   "result": "yes",
    "last": {
     "yesBid": 0.75,
     "yesAsk": 0.82,
     "noBid": 0.18,
     "noAsk": 0.25,
     "at": "2026-11-13T00:37:55.027Z"
-   }
+   },
+   "settledAt": "2026-11-14T00:37:49.989Z"
   },
   "KXPRESSSECANNOUNCE-26OCT-NOV20": {
    "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
@@ -1677,11 +1796,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.19,
-    "yesAsk": 0.24,
-    "noBid": 0.76,
-    "noAsk": 0.81,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.18,
+    "yesAsk": 0.19,
+    "noBid": 0.81,
+    "noAsk": 0.82,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUKRETAIL-26NOV20-T1.5": {
@@ -1696,11 +1815,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.12,
-    "yesAsk": 0.19,
-    "noBid": 0.81,
-    "noAsk": 0.88,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.08,
+    "yesAsk": 0.14,
+    "noBid": 0.86,
+    "noAsk": 0.92,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXCOLLECTIONSALE-KOONS-17NOV26-130000000": {
@@ -1715,11 +1834,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.48,
-    "yesAsk": 0.49,
-    "noBid": 0.51,
-    "noAsk": 0.52,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.47,
+    "yesAsk": 0.5,
+    "noBid": 0.5,
+    "noAsk": 0.53,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXCCAVSICE-26NOV49": {
@@ -1734,11 +1853,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.16,
+    "yesBid": 0.15,
     "yesAsk": 0.2,
     "noBid": 0.8,
-    "noAsk": 0.84,
-    "at": "2026-11-13T00:37:55.027Z"
+    "noAsk": 0.85,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUSLEI-26NOV19-T-0.1": {
@@ -1753,11 +1872,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.49,
-    "yesAsk": 0.57,
-    "noBid": 0.43,
-    "noAsk": 0.51,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.5,
+    "yesAsk": 0.58,
+    "noBid": 0.42,
+    "noAsk": 0.5,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXART-CHR34B19NOV26-65000000": {
@@ -1772,11 +1891,11 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.07,
-    "yesAsk": 0.1,
-    "noBid": 0.9,
-    "noAsk": 0.93,
-    "at": "2026-11-13T00:37:55.027Z"
+    "yesBid": 0.05,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.95,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXUE-AUS26OCT-4.9": {
@@ -1792,10 +1911,10 @@
    "result": null,
    "last": {
     "yesBid": 0.01,
-    "yesAsk": 0.09,
-    "noBid": 0.91,
+    "yesAsk": 0.1,
+    "noBid": 0.9,
     "noAsk": 0.99,
-    "at": "2026-11-13T00:37:55.027Z"
+    "at": "2026-11-14T00:37:49.989Z"
    }
   },
   "KXCOLLECTIONSALE-BLA-18NOV26-500000000": {
@@ -1810,11 +1929,239 @@
    "addedAt": "2026-11-13T00:37:55.027Z",
    "result": null,
    "last": {
-    "yesBid": 0.48,
+    "yesBid": 0.47,
     "yesAsk": 0.54,
     "noBid": 0.46,
-    "noAsk": 0.52,
-    "at": "2026-11-13T00:37:55.027Z"
+    "noAsk": 0.53,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXGOLDW-26NOV2017-T3885.99": {
+   "ticker": "KXGOLDW-26NOV2017-T3885.99",
+   "eventTicker": "KXGOLDW-26NOV2017",
+   "series": "KXGOLDW",
+   "category": "Commodities",
+   "title": "Will the gold close price be above 3885.99 USD/t.oz on November 20, 2026 at 5:00 PM EST?",
+   "sub": "Above $3885.99",
+   "rules": "If the close price of the 1-minute candlestick for gold on November 20, 2026 at 5:00 PM EST is above 3885.99 USD/t.oz, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified time, th",
+   "closeTime": "2026-11-20T22:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.49,
+    "yesAsk": 0.52,
+    "noBid": 0.48,
+    "noAsk": 0.51,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXBTCD-26NOV2017-T68499.99": {
+   "ticker": "KXBTCD-26NOV2017-T68499.99",
+   "eventTicker": "KXBTCD-26NOV2017",
+   "series": "KXBTCD",
+   "category": "Crypto",
+   "title": "Bitcoin price on Nov 20, 2026?",
+   "sub": "$68,500 or above",
+   "rules": "If the simple average of the sixty seconds of CF Benchmarks' Bitcoin Real-Time Index (BRTI) before 5 PM EST is above 68499.99 at 5 PM EST on Nov 20, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+   "closeTime": "2026-11-20T22:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.46,
+    "yesAsk": 0.47,
+    "noBid": 0.53,
+    "noAsk": 0.54,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXAAAGASCDDE-26NOV14-SD": {
+   "ticker": "KXAAAGASCDDE-26NOV14-SD",
+   "eventTicker": "KXAAAGASCDDE-26NOV14",
+   "series": "KXAAAGASCDDE",
+   "category": "Economics",
+   "title": "Will gas prices show a small decrease?",
+   "sub": "Small decrease",
+   "rules": "If the change in the average regular gasoline price for Delaware from the previous calendar day to Nov 14, 2026 is greater than -1.5 and less than or equal to -0.5 cents per gallon according to AAA, then the market resolves to Yes. The daily change is calculated by subtracting the previous calendar day's average regular gasoline price from the average regular gasoline price for Nov 14, 2026, using AAA's figures for Delaware. The difference is multiplied by 100 to express the change in cents per gallon. Positive values indicate increases; negative values indicate decreases.\n\nUse the first publi",
+   "closeTime": "2026-11-21T15:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.72,
+    "yesAsk": 0.73,
+    "noBid": 0.27,
+    "noAsk": 0.28,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXLEAGUECITYFLOCK-26NOV03": {
+   "ticker": "KXLEAGUECITYFLOCK-26NOV03",
+   "eventTicker": "KXLEAGUECITYFLOCK-26NOV03",
+   "series": "KXLEAGUECITYFLOCK",
+   "category": "Elections",
+   "title": "Will the League City proposition to continue using Flock cameras pass?",
+   "sub": "Yes",
+   "rules": "If the League City proposition to continue using Flock cameras passes, then the market resolves to Yes. This market may resolve early once a consensus of designated media sources has declared a result. See full rules for details.\n\nThe proposition as it appears on the ballot reads: \"As a non-binding statement of voter preference, should the League City Police Department continue using automated license plate reader cameras at fixed locations on public roadways for law enforcement purposes?\"\n\nA majority voting Yes, in favour of continuing to use the cameras, is the Yes outcome. A majority voting",
+   "closeTime": "2026-11-18T04:59:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.01,
+    "yesAsk": 0.07,
+    "noBid": 0.93,
+    "noAsk": 0.99,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXDWTSELIMINATION-26NOV18-MHIG": {
+   "ticker": "KXDWTSELIMINATION-26NOV18-MHIG",
+   "eventTicker": "KXDWTSELIMINATION-26NOV18",
+   "series": "KXDWTSELIMINATION",
+   "category": "Entertainment",
+   "title": "Will Maura Higgins and their partner be eliminated from Dancing with the Stars Season 35 before Nov 18, 2026?",
+   "sub": "Maura Higgins",
+   "rules": "If Maura Higgins and their partner are officially eliminated from Dancing with the Stars Season 35 before Nov 18, 2026, then the market resolves to Yes. How this is resolved\nThe declaration must be made through official program broadcast, website, verified social media, or press releases.\nIf the season is canceled without declaring eliminations, the market resolves to No.\n\nPayout criteria\nElimination includes being voted off, evicted, knocked out, removed from further contention, voluntary withdrawal, disqualification, or producer removal.\nMultiple simultaneous eliminations count.\nInitial elim",
+   "closeTime": "2026-11-18T04:59:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.34,
+    "yesAsk": 0.35,
+    "noBid": 0.65,
+    "noAsk": 0.66,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXHEGSETHANNOUNCEOUT-26AUG-26NOV20": {
+   "ticker": "KXHEGSETHANNOUNCEOUT-26AUG-26NOV20",
+   "eventTicker": "KXHEGSETHANNOUNCEOUT-26APR",
+   "series": "KXHEGSETHANNOUNCEOUT",
+   "category": "Politics",
+   "title": "Will Pete Hegseth announce their departure as Secretary of Defense before Nov 20, 2026?",
+   "sub": "Before Nov 20, 2026",
+   "rules": "If Pete Hegseth leaves (or announces he will leave) as Secretary of Defense before Nov 20, 2026, then the market resolves to Yes. This market resolves based on when the departure is publicly announced or officially communicated, regardless of the effective date.\n\nIf the person leaves the role due to death (i.e., if the person dies while holding the role), all contracts on the person may resolve to the last fair price as determined in the sole discretion of the Exchange. Temporary leaves of absence, suspensions, or recusals do not constitute leaving, resigning from, or retiring from the role un",
+   "closeTime": "2026-11-20T04:59:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.02,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.98,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXBRENTW-26NOV2017-T98.99": {
+   "ticker": "KXBRENTW-26NOV2017-T98.99",
+   "eventTicker": "KXBRENTW-26NOV2017",
+   "series": "KXBRENTW",
+   "category": "Commodities",
+   "title": "Will the brent crude oil close price be above 98.99 USD/Bbl on November 20, 2026 at 5:00 PM EST?",
+   "sub": "Above $98.99",
+   "rules": "If the close price of the 1-minute candlestick for brent crude oil on November 20, 2026 at 5:00 PM EST is above 98.99 USD/Bbl, then the market resolves to Yes. The settlement value is rounded to the nearest 2 decimal places. When confirming the settlement value, note the close price for the 1-minute candlestick at a given time is the price at the end of the immediately preceding one-minute interval. For example, the candlestick timestamped 4:59 PM reflects trading during 4:59:00 PM to 4:59:59 PM and closes at 5:00:00 PM. If no data is published by the specified source agency for the specified ",
+   "closeTime": "2026-11-20T22:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.13,
+    "yesAsk": 0.16,
+    "noBid": 0.84,
+    "noAsk": 0.87,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXETHD-26NOV2017-T1939.99": {
+   "ticker": "KXETHD-26NOV2017-T1939.99",
+   "eventTicker": "KXETHD-26NOV2017",
+   "series": "KXETHD",
+   "category": "Crypto",
+   "title": "Ethereum price at Nov 20, 2026 at 5pm EST?",
+   "sub": "$1,940 or above",
+   "rules": "If the simple average of the sixty seconds of CF Benchmarks' Ethereum Real-Time Index (ERTI) before 5 PM EST is above 1939.99 at 5 PM EST on Nov 20, 2026, then the market resolves to Yes. Not all cryptocurrency price data is the same. While checking a source like Google or Coinbase may help guide your decision, the price used to determine this market is based on CF Benchmarks' corresponding Real Time Index (RTI). At the last minute before expiration, 60 RTI prices are collected. The official and final value is the average of these prices.",
+   "closeTime": "2026-11-20T22:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.45,
+    "yesAsk": 0.47,
+    "noBid": 0.53,
+    "noAsk": 0.55,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXAAAGASCDAK-26NOV14-LI": {
+   "ticker": "KXAAAGASCDAK-26NOV14-LI",
+   "eventTicker": "KXAAAGASCDAK-26NOV14",
+   "series": "KXAAAGASCDAK",
+   "category": "Economics",
+   "title": "Will gas prices show a large increase?",
+   "sub": "Large increase",
+   "rules": "If the change in the average regular gasoline price for Alaska from the previous calendar day to Nov 14, 2026 is greater than or equal to 1.5 cents per gallon according to AAA, then the market resolves to Yes. The daily change is calculated by subtracting the previous calendar day's average regular gasoline price from the average regular gasoline price for Nov 14, 2026, using AAA's figures for Alaska. The difference is multiplied by 100 to express the change in cents per gallon. Positive values indicate increases; negative values indicate decreases.\n\nUse the first published price for each date",
+   "closeTime": "2026-11-21T15:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.05,
+    "yesAsk": 0.06,
+    "noBid": 0.94,
+    "noAsk": 0.95,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXART-PHI6NOV26-3000000": {
+   "ticker": "KXART-PHI6NOV26-3000000",
+   "eventTicker": "KXART-PHI6NOV26",
+   "series": "KXART",
+   "category": "Entertainment",
+   "title": "Will the realized auction sale price of Untitled #6 (2002; lot 6) by Agnes Martin, as reported by Artnet, be above $3000000 during Phillips New York's November 2026 Modern & Contemporary Art Evening Sale (sale NY010726)?",
+   "sub": "Above $3M",
+   "rules": "If the sale price including buyer’s premium of the Untitled #6 (2002; lot 6) by Agnes Martin on Artnet is above $3M during Phillips New York's November 2026 Modern & Contemporary Art Evening Sale (sale NY010726), then the market resolves to Yes. All sale prices and sales totals used for this market will include the buyer’s premium. In the Artnet Price Database, “P” indicates that the buyer’s premium is included, while “H” indicates the hammer price only.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the Phillips. All trademarks, logos, ",
+   "closeTime": "2026-11-19T15:00:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.89,
+    "yesAsk": 0.94,
+    "noBid": 0.06,
+    "noAsk": 0.11,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXLUTNICKOUT-26SEP-26NOV20": {
+   "ticker": "KXLUTNICKOUT-26SEP-26NOV20",
+   "eventTicker": "KXLUTNICKOUT-26SEP",
+   "series": "KXLUTNICKOUT",
+   "category": "Politics",
+   "title": "Will Howard Lutnick be out as Commerce Secretary before Nov 20, 2026?",
+   "sub": "Before Nov 20, 2026",
+   "rules": "If Howard Lutnick leaves as Commerce Secretary before Nov 20, 2026, then the market resolves to Yes. Howard Lutnick must have an actual departure date and vacate the role within the time period.\n\nTemporary leaves of absence, suspensions, or recusals do not constitute leaving, resigning from, or retiring from the role unless the individual formally and permanently ceases to hold the position. If the person vacates the role and then re-occupies the role, the contract shall settle on the initial vacation of the role.\n\nFor \"leave,\" cessation of holding the role qualifies, including resignation, re",
+   "closeTime": "2026-11-20T04:59:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.04,
+    "yesAsk": 0.63,
+    "noBid": 0.37,
+    "noAsk": 0.96,
+    "at": "2026-11-14T00:37:49.989Z"
+   }
+  },
+  "KXMISOINDW-13NOV26-T50": {
+   "ticker": "KXMISOINDW-13NOV26-T50",
+   "eventTicker": "KXMISOINDW-13NOV26",
+   "series": "KXMISOINDW",
+   "category": "Commodities",
+   "title": "MISO Indiana Hub average power price above $50/MWh, Week 47?",
+   "sub": "Above $50/MWh",
+   "rules": "If the all-hours average real-time power price at MISO Indiana Hub is above $50/MWh for the week ending November 20, 2026, then the market resolves to Yes. Period: November 13, 2026 at 5:00 PM EST to November 20, 2026 at 5:00 PM EST. Includes the start; excludes the end.\nSource: MISO’s final hourly real-time ex-post total LMPs from rtlmpfinal. Use the corresponding Data Exchange endpoint only if MISO discontinues that report. Intervals follow MISO’s operating-day and hour-ending conventions. MISO uses fixed EST year-round.\nCalculation: Simple average of all applicable hourly prices, including ",
+   "closeTime": "2026-11-20T21:59:00Z",
+   "addedAt": "2026-11-14T00:37:49.989Z",
+   "result": null,
+   "last": {
+    "yesBid": 0.18,
+    "yesAsk": 0.19,
+    "noBid": 0.81,
+    "noAsk": 0.82,
+    "at": "2026-11-14T00:37:49.989Z"
    }
   }
  },
@@ -1844,7 +2191,8 @@
      "p": 0.47,
      "confidence": "low",
      "reasoning": "December futures trade near $3.22, far below the strike, yet the market sits near 48%, suggesting the underlying is a different contract (likely January) trading near $3.60. I could not confirm this, so I defer to the market price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -1854,7 +2202,8 @@
      "p": 0.47,
      "confidence": "low",
      "reasoning": "BTC is trading around $74.5k–$75.3k, right at the strike, with three days left and CPI reaction unknown. Roughly a coin flip; slight downward lean from ETF outflows and the pullback from $81k. No reason to deviate from market.",
-     "pass": "edge -0.7¢ is under the 5¢ minimum"
+     "pass": "edge -0.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -1921,7 +2270,8 @@
      "p": 0.46,
      "confidence": "low",
      "reasoning": "Spot gold traded about $4,110–4,130 on Nov 10, slightly below the 4128.99 strike. Three-day volatility is roughly $90 with US CPI data pending, so this is near a coin flip, tilted slightly to NO. Consistent with the market price.",
-     "pass": "edge -2.7¢ is under the 5¢ minimum"
+     "pass": "edge -2.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -1976,6 +2326,11 @@
      "at": "2026-11-13T00:37:55.027Z",
      "equity": 998.89,
      "cash": 996.09
+    },
+    {
+     "at": "2026-11-14T00:37:49.989Z",
+     "equity": 998.89,
+     "cash": 996.09
     }
    ]
   },
@@ -2011,7 +2366,10 @@
       "fee": 1.59,
       "cost": 48.23,
       "edge": 0.35
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -49.82
     },
     {
      "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -2021,7 +2379,8 @@
      "p": 0.47,
      "confidence": "medium",
      "reasoning": "BTC is trading about $74.1k–$75.0k, right at the $75k threshold, with three days left and a slight recent downtrend. That makes it close to a coin flip, slightly below 50%, which matches the market.",
-     "pass": "edge -0.7¢ is under the 5¢ minimum"
+     "pass": "edge -0.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -2088,7 +2447,8 @@
      "p": 0.47,
      "confidence": "medium",
      "reasoning": "Spot gold is about $4,115–4,128, just below the $4,129 line. Three days of roughly 1.5% daily moves dwarf that gap, and this week's CPI data could swing it either way. Close to a coin flip, slightly under, in line with the market.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -2143,6 +2503,11 @@
      "at": "2026-11-13T00:37:55.027Z",
      "equity": 963.63,
      "cash": 946.27
+    },
+    {
+     "at": "2026-11-14T00:37:49.989Z",
+     "equity": 949.07,
+     "cash": 946.27
     }
    ]
   },
@@ -2150,7 +2515,7 @@
    "id": "claude--claude-sonnet-5-5",
    "provider": "claude",
    "model": "claude-sonnet-5-5",
-   "cash": 735.66,
+   "cash": 718.13,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -2178,7 +2543,10 @@
       "fee": 1.59,
       "cost": 48.23,
       "edge": 0.15
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -49.82
     },
     {
      "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -2188,7 +2556,8 @@
      "p": 0.44,
      "confidence": "low",
      "reasoning": "BTC was about $74.2-74.5k on Nov 9, so it needs a gain of about 1% within roughly 3 days. A volatility estimate gives about 40%, and I adjusted slightly toward the 47-48¢ market price.",
-     "pass": "edge 2.3¢ is under the 5¢ minimum"
+     "pass": "edge 2.3¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -2262,7 +2631,8 @@
      "p": 0.47,
      "confidence": "low",
      "reasoning": "Spot gold was about $4,115–4,128 on Nov 10, essentially at the $4,128.99 strike with three days to go. That makes it close to a coin flip, slightly below 50% because spot sits just under the strike.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -2321,7 +2691,8 @@
      "p": 0.62,
      "confidence": "low",
      "reasoning": "Brent settled around $91.5 on Nov 10, about 2.5% above the $88.99 threshold. The trend is down on Iran peace hopes, and volatility is high. I couldn't find a Nov 11 price. The market price of about 57% looks slightly low.",
-     "pass": "edge 1.3¢ is under the 5¢ minimum"
+     "pass": "edge 1.3¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXBTCD-26NOV1317-T73499.99",
@@ -2331,7 +2702,8 @@
      "p": 0.53,
      "confidence": "low",
      "reasoning": "The latest price I found is about $76k on Nov 6, in a downtrend. The market price implies bitcoin is near the $73.5k strike, so I'm staying close to the market price.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8000",
@@ -2412,7 +2784,8 @@
      "p": 0.56,
      "confidence": "low",
      "reasoning": "No game-specific information found in search; relying on the market price of 56–57¢ for the Giants, shaded slightly lower.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
@@ -2422,7 +2795,8 @@
      "p": 0.49,
      "confidence": "low",
      "reasoning": "No current line was found for the Nov 12 game. The market price of about 50% implies a line near Giants -2.5, and I have no specific reason to move away from it.",
-     "pass": "edge -1.7¢ is under the 5¢ minimum"
+     "pass": "edge -1.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXRAINWKND-26NOV14-PHX",
@@ -2506,7 +2880,10 @@
       "fee": 0.02,
       "cost": 0.46,
       "edge": 0.37
-     }
+     },
+     "result": "yes",
+     "payout": 1,
+     "pnl": 0.52
     },
     {
      "ticker": "KXHORMUZMAX-26NOV15-NOV11",
@@ -2606,7 +2983,8 @@
      "p": 0.72,
      "confidence": "low",
      "reasoning": "Early November was Extreme Fear (~20), then a post-midterm rally moved the index to Fear. By Nov 13 it likely sits in Fear (25–45), but Extreme Fear or Neutral are both plausible and I found no Nov 13 reading.",
-     "pass": "edge 1.7¢ is under the 5¢ minimum"
+     "pass": "edge 1.7¢ is under the 5¢ minimum",
+     "result": "yes"
     },
     {
      "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
@@ -2694,6 +3072,133 @@
      "confidence": "low",
      "reasoning": "Estimate is about $450M, quoted before fees. Adding buyer's premium of about 15% puts a result at estimate near $510M, just above the line. A miss on the Van Gogh or Cézanne, or an unsold lot, would push it under $500M.",
      "pass": "edge 2.3¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXGOLDW-26NOV2017-T3885.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.52,
+     "p": 0.52,
+     "confidence": "low",
+     "reasoning": "Spot gold was about 3,890-3,960 around Nov 12-13, close to the 3,885.99 threshold, and sources conflict. A week of high volatility leaves this near a coin flip, with a slight lean to YES.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXBTCD-26NOV2017-T68499.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.46,
+     "yesAsk": 0.47,
+     "p": 0.47,
+     "confidence": "medium",
+     "reasoning": "BTC was about $68.4-69.1k on Nov 13, right at the $68.5k strike. With six days to go it's close to a coin flip, and the recent downward momentum tilts it slightly below 50%.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASCDDE-26NOV14-SD",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.72,
+     "yesAsk": 0.73,
+     "p": 0.65,
+     "confidence": "low",
+     "reasoning": "No Nov 14 AAA Delaware data found. The 0.5–1.5 cent decline band is narrow, but the market at 72% may already reflect a falling-price trend or the published figure, so I discount it only a little.",
+     "trade": {
+      "side": "no",
+      "contracts": 63,
+      "price": 0.28,
+      "fee": 0.89,
+      "cost": 17.64,
+      "edge": 0.06
+     }
+    },
+    {
+     "ticker": "KXLEAGUECITYFLOCK-26NOV03",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.07,
+     "p": 0.01,
+     "confidence": "high",
+     "reasoning": "Voters rejected Proposition A on Nov 3, 2026, with unofficial counts of about 54% No to 46% Yes. The gap is roughly 3,600 votes, so a flip at canvass is very unlikely.",
+     "pass": "edge -1.1¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-MHIG",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.34,
+     "yesAsk": 0.35,
+     "p": 0.3,
+     "confidence": "medium",
+     "reasoning": "Six couples remain; the Nov 17 semifinal likely eliminates two (base rate about 33%). Maura scores high with the judges (29/30), but she has a rib injury and fan voting is a risk. Result should arrive before the market closes.",
+     "pass": "edge 2.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXHEGSETHANNOUNCEOUT-26AUG-26NOV20",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.02,
+     "yesAsk": 0.06,
+     "p": 0.04,
+     "confidence": "medium",
+     "reasoning": "Only a six-day window. Trump publicly backs Hegseth. CBS reported he privately asked advisers whether Hegseth should stay after the midterm losses, but no decision was made. No sign of an imminent exit.",
+     "pass": "edge -2.1¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXBRENTW-26NOV2017-T98.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.13,
+     "yesAsk": 0.16,
+     "p": 0.18,
+     "confidence": "medium",
+     "reasoning": "Brent settled about $95.84 on Nov 13. The threshold of $98.99 is about 3.3% higher with one week left. Volatility is elevated because of the Iran war, so I estimate roughly 18–20%, a little above the market price.",
+     "pass": "edge 1.1¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXETHD-26NOV2017-T1939.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.45,
+     "yesAsk": 0.47,
+     "p": 0.47,
+     "confidence": "medium",
+     "reasoning": "ETH is about $1,935 against a $1,940 threshold with six days left. Volatility is large relative to the gap, so this is near 50/50. ETF outflows and the recent downtrend add a small bearish tilt.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXAAAGASCDAK-26NOV14-LI",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.05,
+     "yesAsk": 0.06,
+     "p": 0.06,
+     "confidence": "medium",
+     "reasoning": "Alaska's daily average gas price rarely rises 1.5 cents or more in one day. The base rate is about 5-8%, which matches the market price.",
+     "pass": "edge -0.4¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXART-PHI6NOV26-3000000",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.89,
+     "yesAsk": 0.94,
+     "p": 0.9,
+     "confidence": "medium",
+     "reasoning": "Phillips estimate $3.5-4.5M, likely excluding premium, so a sale at or above the low estimate lands well above $3M with premium. Main risks are the lot going unsold or withdrawn, or hammering well below estimate.",
+     "pass": "edge -1.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXLUTNICKOUT-26SEP-26NOV20",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.04,
+     "yesAsk": 0.63,
+     "p": 0.03,
+     "confidence": "medium",
+     "reasoning": "No evidence of an imminent departure. Resignation calls over the Epstein ties and conflict-of-interest claims haven't moved him, and the White House backs him. The window is only six days. I found no news from the last few days.",
+     "pass": "edge 0.7¢ is under the 5¢ minimum"
+    },
+    {
+     "ticker": "KXMISOINDW-13NOV26-T50",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.18,
+     "yesAsk": 0.19,
+     "p": 0.12,
+     "confidence": "low",
+     "reasoning": "Mid-November Indiana Hub weekly averages are typically in the $30s to low $40s. Monthly averages in spring 2026 were about $38–41. A weekly average above $50 would need a cold snap or gas spike. I found no data for this week's actual prices.",
+     "pass": "edge 5.0¢ is under the 5¢ minimum"
     }
    ],
    "history": [
@@ -2716,6 +3221,11 @@
      "at": "2026-11-13T00:37:55.027Z",
      "equity": 940.06,
      "cash": 735.66
+    },
+    {
+     "at": "2026-11-14T00:37:49.989Z",
+     "equity": 940.95,
+     "cash": 718.13
     }
    ]
   },
@@ -2751,7 +3261,10 @@
       "fee": 1.28,
       "cost": 38.69,
       "edge": 0.07
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -39.97
     },
     {
      "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -2761,7 +3274,8 @@
      "p": 0.45,
      "confidence": "medium",
      "reasoning": "BTC ~$74.6k on Nov 10, just under the $75k threshold with about three days left. Roughly coin-flip given volatility; recent downtrend and below-50-week-MA tilt slightly to NO.",
-     "pass": "edge 1.3¢ is under the 5¢ minimum"
+     "pass": "edge 1.3¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -2828,7 +3342,8 @@
      "p": 0.46,
      "confidence": "medium",
      "reasoning": "Spot gold on Nov 10 was about $4,110–4,127, just under the $4,128.99 threshold, with roughly three days to close. That leaves the outcome near a coin flip, slightly leaning NO, consistent with the market midpoint.",
-     "pass": "edge -2.7¢ is under the 5¢ minimum"
+     "pass": "edge -2.7¢ is under the 5¢ minimum",
+     "result": "no"
     },
     {
      "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -2883,6 +3398,11 @@
      "at": "2026-11-13T00:37:55.027Z",
      "equity": 970.6,
      "cash": 956.12
+    },
+    {
+     "at": "2026-11-14T00:37:49.989Z",
+     "equity": 958.92,
+     "cash": 956.12
     }
    ]
   },
@@ -2890,7 +3410,7 @@
    "id": "random--coin-flip",
    "provider": "random",
    "model": "coin-flip",
-   "cash": 260.74,
+   "cash": 227.31,
    "startedAt": "2026-11-10T07:42:47.525Z",
    "forecasts": [
     {
@@ -2917,7 +3437,10 @@
       "price": 0.5,
       "fee": 0.23,
       "cost": 6.5
-     }
+     },
+     "result": "yes",
+     "payout": 13,
+     "pnl": 6.27
     },
     {
      "ticker": "KXBTCD-26NOV1317-T74999.99",
@@ -2930,7 +3453,10 @@
       "price": 0.52,
       "fee": 0.84,
       "cost": 24.96
-     }
+     },
+     "result": "no",
+     "payout": 48,
+     "pnl": 22.2
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8400",
@@ -3002,7 +3528,10 @@
       "price": 0.56,
       "fee": 0.76,
       "cost": 24.64
-     }
+     },
+     "result": "no",
+     "payout": 44,
+     "pnl": 18.6
     },
     {
      "ticker": "KXUFCFIGHT-26NOV14GANHOK-HOK",
@@ -3073,7 +3602,10 @@
       "price": 0.44,
       "fee": 0.97,
       "cost": 24.64
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -25.61
     },
     {
      "ticker": "KXBTCD-26NOV1317-T73499.99",
@@ -3086,7 +3618,10 @@
       "price": 0.54,
       "fee": 0.8,
       "cost": 24.84
-     }
+     },
+     "result": "no",
+     "payout": 0,
+     "pnl": -25.64
     },
     {
      "ticker": "KXAAAGASW-26NOV16-3.8000",
@@ -3193,7 +3728,10 @@
       "price": 0.57,
       "fee": 0.74,
       "cost": 24.51
-     }
+     },
+     "result": "no",
+     "payout": 0,
+     "pnl": -25.25
     },
     {
      "ticker": "KXNFLSPREAD-26NOV12WASNYG-NYG3",
@@ -3206,7 +3744,10 @@
       "price": 0.51,
       "fee": 0.86,
       "cost": 24.99
-     }
+     },
+     "result": "no",
+     "payout": 49,
+     "pnl": 23.15
     },
     {
      "ticker": "KXRAINWKND-26NOV14-PHX",
@@ -3287,7 +3828,10 @@
       "price": 0.46,
       "fee": 0.02,
       "cost": 0.46
-     }
+     },
+     "result": "yes",
+     "payout": 1,
+     "pnl": 0.52
     },
     {
      "ticker": "KXHORMUZMAX-26NOV15-NOV11",
@@ -3417,7 +3961,10 @@
       "price": 0.25,
       "fee": 0.06,
       "cost": 1
-     }
+     },
+     "result": "yes",
+     "payout": 0,
+     "pnl": -1.06
     },
     {
      "ticker": "KXPRESSSECANNOUNCE-26OCT-NOV20",
@@ -3522,6 +4069,156 @@
       "fee": 0.8,
       "cost": 24.84
      }
+    },
+    {
+     "ticker": "KXGOLDW-26NOV2017-T3885.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.49,
+     "yesAsk": 0.52,
+     "trade": {
+      "side": "yes",
+      "contracts": 48,
+      "price": 0.52,
+      "fee": 0.84,
+      "cost": 24.96
+     }
+    },
+    {
+     "ticker": "KXBTCD-26NOV2017-T68499.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.46,
+     "yesAsk": 0.47,
+     "trade": {
+      "side": "no",
+      "contracts": 46,
+      "price": 0.54,
+      "fee": 0.8,
+      "cost": 24.84
+     }
+    },
+    {
+     "ticker": "KXAAAGASCDDE-26NOV14-SD",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.72,
+     "yesAsk": 0.73,
+     "trade": {
+      "side": "yes",
+      "contracts": 34,
+      "price": 0.73,
+      "fee": 0.47,
+      "cost": 24.82
+     }
+    },
+    {
+     "ticker": "KXLEAGUECITYFLOCK-26NOV03",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.01,
+     "yesAsk": 0.07,
+     "trade": {
+      "side": "yes",
+      "contracts": 100,
+      "price": 0.07,
+      "fee": 0.46,
+      "cost": 7
+     }
+    },
+    {
+     "ticker": "KXDWTSELIMINATION-26NOV18-MHIG",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.34,
+     "yesAsk": 0.35,
+     "trade": {
+      "side": "no",
+      "contracts": 37,
+      "price": 0.66,
+      "fee": 0.59,
+      "cost": 24.42
+     }
+    },
+    {
+     "ticker": "KXHEGSETHANNOUNCEOUT-26AUG-26NOV20",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.02,
+     "yesAsk": 0.06,
+     "trade": {
+      "side": "no",
+      "contracts": 5,
+      "price": 0.98,
+      "fee": 0.01,
+      "cost": 4.9
+     }
+    },
+    {
+     "ticker": "KXBRENTW-26NOV2017-T98.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.13,
+     "yesAsk": 0.16,
+     "trade": {
+      "side": "no",
+      "contracts": 28,
+      "price": 0.87,
+      "fee": 0.23,
+      "cost": 24.36
+     }
+    },
+    {
+     "ticker": "KXETHD-26NOV2017-T1939.99",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.45,
+     "yesAsk": 0.47,
+     "trade": {
+      "side": "no",
+      "contracts": 45,
+      "price": 0.55,
+      "fee": 0.78,
+      "cost": 24.75
+     }
+    },
+    {
+     "ticker": "KXAAAGASCDAK-26NOV14-LI",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.05,
+     "yesAsk": 0.06,
+     "pass": "position would be under one contract"
+    },
+    {
+     "ticker": "KXART-PHI6NOV26-3000000",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.89,
+     "yesAsk": 0.94,
+     "trade": {
+      "side": "yes",
+      "contracts": 22,
+      "price": 0.94,
+      "fee": 0.09,
+      "cost": 20.68
+     }
+    },
+    {
+     "ticker": "KXLUTNICKOUT-26SEP-26NOV20",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.04,
+     "yesAsk": 0.63,
+     "trade": {
+      "side": "yes",
+      "contracts": 4,
+      "price": 0.63,
+      "fee": 0.07,
+      "cost": 2.52
+     }
+    },
+    {
+     "ticker": "KXMISOINDW-13NOV26-T50",
+     "at": "2026-11-14T00:37:49.989Z",
+     "yesBid": 0.18,
+     "yesAsk": 0.19,
+     "trade": {
+      "side": "no",
+      "contracts": 1,
+      "price": 0.82,
+      "fee": 0.02,
+      "cost": 0.82
+     }
     }
    ],
    "history": [
@@ -3544,6 +4241,11 @@
      "at": "2026-11-13T00:37:55.027Z",
      "equity": 876.18,
      "cash": 260.74
+    },
+    {
+     "at": "2026-11-14T00:37:49.989Z",
+     "equity": 870.17,
+     "cash": 227.31
     }
    ]
   }
@@ -3635,7 +4337,28 @@
     "claude--claude-sonnet-5-5",
     "random--coin-flip"
    ]
+  },
+  {
+   "at": "2026-11-14T00:37:49.989Z",
+   "markets": [
+    "KXGOLDW-26NOV2017-T3885.99",
+    "KXBTCD-26NOV2017-T68499.99",
+    "KXAAAGASCDDE-26NOV14-SD",
+    "KXLEAGUECITYFLOCK-26NOV03",
+    "KXDWTSELIMINATION-26NOV18-MHIG",
+    "KXHEGSETHANNOUNCEOUT-26AUG-26NOV20",
+    "KXBRENTW-26NOV2017-T98.99",
+    "KXETHD-26NOV2017-T1939.99",
+    "KXAAAGASCDAK-26NOV14-LI",
+    "KXART-PHI6NOV26-3000000",
+    "KXLUTNICKOUT-26SEP-26NOV20",
+    "KXMISOINDW-13NOV26-T50"
+   ],
+   "traders": [
+    "claude--claude-sonnet-5-5",
+    "random--coin-flip"
+   ]
   }
  ],
- "updated": "2026-11-13T00:37:55.027Z"
+ "updated": "2026-11-14T00:37:49.989Z"
 }
