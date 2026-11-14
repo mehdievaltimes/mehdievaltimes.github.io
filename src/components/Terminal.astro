@@ -43,14 +43,15 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
 <script type="application/json" id="term-data" set:html={json} />
 
 <script>
-  import { HOME, ADMIN_HOME, ETC, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWER_SHA256, fileAt, type Dir } from './terminal/fs';
+  import { HOME, ADMIN_HOME, ETC, SRV, PROTECTED, SUDO_FILE, SUDO_RULE, COMMITS, STASH, REPO_DIR, AUTHOR_LINE, ANSWERS_SHA256, ANSWER_KEY, BAIT, STATIC_ELF, fileAt, type Dir } from './terminal/fs';
   import { EIGHT_BALL, MAN, PUBLIC } from './terminal/text';
+  import { markSolved } from './terminal/solves';
 
   type Data = { writing: Dir; reading: Dir; readingItems: number };
   const DATA: Data = JSON.parse(document.getElementById('term-data')?.textContent || '{}');
 
   const PAGES: Record<string, string> = { home: '/', 'puppy-bench': '/puppy-bench', sandbox: '/demos', ctf: '/ctf', trading: '/trading' };
-  const SOLVED_KEY = 'term-s', HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
+  const HISTORY_KEY = 'term-h', MOTD_KEY = 'term-motd';
 
   const section = document.getElementById('term')!;
   const outEl = document.getElementById('term-out')!;
@@ -83,17 +84,19 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   let status: number;
   let nuked: boolean; // after rm -rf / as admin: only shell builtins are left
   let repo: { dirty: boolean; stash: boolean };
-  // Only the advertised commands, plus a shell. The rest work but aren't listed: finding them is part of the fun.
-  const BIN = [...PUBLIC, 'sh', 'bash', 'tsh', 'htop'].sort();
+  // Only the advertised commands, plus a shell and the tools for looking inside a binary. The rest work but
+  // aren't listed: finding them is part of the fun.
+  const BIN = [...PUBLIC, 'sh', 'bash', 'tsh', 'htop', 'file', 'strings', 'ltrace'].sort();
 
   function boot() {
     root = {
-      bin: Object.fromEntries(BIN.map((c) => [c, '\x7fELF\x02\x01\x01 (binary)'])),
+      bin: Object.fromEntries(BIN.map((c) => [c, STATIC_ELF])),
       etc: structuredClone(ETC),
       home: {
         guest: { ...structuredClone(HOME), writing: { ...DATA.writing }, reading: { ...DATA.reading } },
         admin: structuredClone(ADMIN_HOME),
       },
+      srv: structuredClone(SRV),
       tmp: {},
     };
     user = 'guest';
@@ -112,7 +115,6 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   const pathStr = (p: string[]) => startsWith(p, homeOf(user)) ? '~' + abs(p.slice(2)).replace(/^\/$/, '') : abs(p);
   const sigil = () => (user === 'admin' ? '#' : '$');
   const prompt = () => `${user}@${host}:${pathStr(cwd)}${sigil()}`;
-  const solved = () => store.get(SOLVED_KEY) === '1';
 
   // ---- Output: queued and revealed one line at a time. Ctrl+C skips to the end. ----
   // A line is plain text (URLs become links) or a list of segments, some of them clickable.
@@ -181,6 +183,7 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
   function lookup(arg = ''): R | FsErr {
     let parts: string[];
     let rest = arg;
+    // The parser has already expanded ~ in commands; this is for tab completion and cd's default.
     const tilde = arg.match(/^~(guest|admin)?(?=\/|$)/);
     if (tilde) { parts = homeOf((tilde[1] as User) ?? user); rest = arg.slice(tilde[0].length); }
     else parts = arg.startsWith('/') ? [] : [...cwd];
@@ -254,6 +257,33 @@ const json = JSON.stringify(data).replace(/</g, '\\u003c');
     USER: user, HOME: abs(homeOf(user)), PWD: abs(cwd), OLDPWD: oldpwd ? abs(oldpwd) : '', SHELL: '/bin/tsh',
     HOSTNAME: host, TERM: 'xterm-256color', PATH: '/usr/local/bin:/usr/bin:/bin', '?': String(status),
   });
+
+  // ---- Programs outside /bin, run by path (./answer_key). Each returns the libc calls it made:
+  // run plainly you see what puts() printed, under ltrace you see every call. ----
+  type Call = { fn: string; args: (string | number)[]; ret: string | number; out?: string };
+  type Program = (argv: string[]) => { calls: Call[]; status: number };
+
+  // Like glibc's: the difference of the first bytes that differ.
+  function strcmp(a: string, b: string) {
+    for (let i = 0; ; i++) {
+      const d = (a.charCodeAt(i) || 0) - (b.charCodeAt(i) || 0);
+      if (d || i >= a.length) return d;
+    }
+  }
+
+  const PROGRAMS: Record<string, Program> = {
+    [abs(ANSWER_KEY.path)]: (argv) => {
+      const calls: Call[] = [];
+      const puts = (s: string) => calls.push({ fn: 'puts', args: [s], ret: s.length + 1, out: s });
+      if (argv.length < 2) { puts(ANSWER_KEY.usage); return { calls, status: 1 }; }
+      calls.push({ fn: 'malloc', args: [ANSWER_KEY.key.length + 1], ret: '0x5581d6c4b2a0' });
+      const d = strcmp(argv[1], ANSWER_KEY.key);
+      calls.push({ fn: 'strcmp', args: [argv[1], ANSWER_KEY.key], ret: d });
+      puts(d ? ANSWER_KEY.wrong : ANSWER_KEY.right);
+      return { calls, status: d ? 1 : 0 };
+    },
+  };
+  const programAt = (p: string[]) => PROGRAMS[abs(p)] as Program | undefined;
 
   // ---- git, for the repo in ~/.ctf ----
   const short = (h: string) => h.slice(0, 7);
@@ -677,7 +707,8 @@ These are common Git commands:
         const seg = (n: string): Seg => {
           const dir = n === '.' || n === '..' || isDir(node[n]);
           if (n === '.' || n === '..') return { t: n + '/', cls: 'dir' };
-          return dir ? { t: n + '/', cls: 'dir', run: `cd ${join(n)} && ls` } : { t: n, run: `cat ${join(n)}` };
+          if (dir) return { t: n + '/', cls: 'dir', run: `cd ${join(n)} && ls` };
+          return programAt([...r.path, n]) ? { t: n, run: join(n).includes('/') ? join(n) : './' + n } : { t: n, run: `cat ${join(n)}` };
         };
         if (!long && !io.tty) { if (names.length) io.out(names.join('\n')); continue; } // piped: one per line
         if (!long) {
@@ -692,8 +723,9 @@ These are common Git commands:
           const dir = isDir(child);
           const p = [...r.path, n];
           const locked = PROTECTED.some((x) => abs(x) === abs(p));
-          const mode = dir ? (locked ? 'drwx------' : 'drwxr-xr-x') : (locked ? '-rw-r-----' : '-rw-r--r--');
-          const owner = startsWith(p, ['home', 'guest']) && p.length === 2 ? 'guest guest' : 'admin admin';
+          const exe = !dir && (startsWith(p, ['bin']) || !!programAt(p));
+          const mode = dir ? (locked ? 'drwx------' : 'drwxr-xr-x') : locked ? '-rw-r-----' : exe ? '-rwxr-xr-x' : '-rw-r--r--';
+          const owner = startsWith(p, ['home', 'guest']) && p.length === 2 ? 'guest guest' : startsWith(p, ['srv', 'grader']) ? 'grader grader' : 'admin admin';
           const size = dir ? 4096 : (child as string).length;
           io.out([{ t: `${mode} 1 ${owner} ${String(size).padStart(5)} Sep 10 01:30 ` }, seg(n)]);
         }
@@ -756,9 +788,18 @@ These are common Git commands:
       let re: RegExp;
       try { re = new RegExp(pat, f.includes('i') ? 'i' : ''); } catch { return io.err('grep: invalid pattern'); }
       const hits: string[] = [];
-      const scan = (text: string, label: string | null) => text.split('\n').forEach((l, i) => {
-        if (re.test(l) !== f.includes('v')) hits.push((label ? `${label}:` : '') + (f.includes('n') ? `${i + 1}:` : '') + l);
-      });
+      let binary = false;
+      const scan = (text: string, label: string | null, name = label ?? '(standard input)') => {
+        const lines = text.split('\n');
+        // Like GNU grep, a match inside a binary is only reported, not printed.
+        if (text.startsWith('\x7fELF')) {
+          if (lines.some((l) => re.test(l) !== f.includes('v'))) { binary = true; io.err(`grep: ${name}: binary file matches`); }
+          return;
+        }
+        lines.forEach((l, i) => {
+          if (re.test(l) !== f.includes('v')) hits.push((label ? `${label}:` : '') + (f.includes('n') ? `${i + 1}:` : '') + l);
+        });
+      };
       const recurse = (dir: Dir, path: string[], label: string) =>
         walk(dir, path, label, (l, node) => { if (!isDir(node)) scan(node, l); }, (l) => io.err(`grep: ${l}: Permission denied`));
       if (!files.length) {
@@ -770,10 +811,10 @@ These are common Git commands:
         const r = lookup(file);
         if (isErr(r)) io.err(`grep: ${file}: ${WHY[r]}`);
         else if (isDir(r.node)) f.includes('r') ? recurse(r.node, r.path, file) : io.err(`grep: ${file}: Is a directory`);
-        else scan(r.node, files.length > 1 || f.includes('r') ? file : null);
+        else scan(r.node, files.length > 1 || f.includes('r') ? file : null, file);
       }
       if (hits.length) io.out(hits.join('\n'));
-      return hits.length ? 0 : 1;
+      return hits.length || binary ? 0 : 1;
     },
 
     head: (args, io) => {
@@ -1016,16 +1057,73 @@ These are common Git commands:
       closeTerm('[powered off]');
     },
 
+    // ---- Looking inside a binary ----
+    file: (args, io) => {
+      const names = operands(args);
+      if (!names.length) return io.err('Usage: file [-bchikLNnprsvz0] [--mime-type] FILE...');
+      const w = Math.max(...names.map((n) => n.length)) + 1;
+      for (const n of names) {
+        const r = lookup(n);
+        const what = isErr(r) ? `cannot open \`${n}' (${WHY[r]})`
+          : isDir(r.node) ? 'directory'
+          : programAt(r.path) ? 'ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=3f9c1e0b7a2d4e6f8a1b3c5d7e9f0a2b4c6d8e0f, for GNU/Linux 3.2.0, not stripped'
+          : r.node.startsWith('\x7fELF') ? 'ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, stripped'
+          : !r.node ? 'empty'
+          : /^[\x00-\x7f]*$/.test(r.node) ? 'ASCII text' : 'Unicode text, UTF-8 text';
+        io.out(`${(n + ':').padEnd(w)} ${what}`);
+      }
+    },
+    strings: (args, io) => {
+      const { n, rest } = takeN(args, 4);
+      const printable = new RegExp(`[\\x20-\\x7e\\t]{${Math.max(1, n)},}`, 'g');
+      for (const x of inputs('strings', rest.filter((a) => !a.startsWith('-')), io)) {
+        const found = x.text.match(printable);
+        if (found) io.out(found.join('\n'));
+      }
+    },
+    ltrace: async (args, io) => {
+      let size = 32, i = 0;
+      for (; i < args.length && args[i].startsWith('-'); i++) {
+        const m = args[i].match(/^-s(\d*)$/);
+        if (m) { const v = Number(m[1] || args[++i]); if (v >= 0) size = v; }
+      }
+      const [cmd, ...rest] = args.slice(i);
+      if (!cmd) return io.err("ltrace: too few arguments\nTry `ltrace --help' for more information.");
+      const cant = (why: string) => { io.err(`Can't execute \`${cmd}': ${why}`); return 1; };
+      const r = cmd.includes('/') ? lookup(cmd) : null;
+      if (r && isErr(r)) return cant(WHY[r]);
+      const prog = r ? programAt(r.path) : undefined;
+      if (!prog) {
+        if (r ? isDir(r.node) || !startsWith(r.path, ['bin']) : !commands[cmd]) return cant(r ? WHY.EACCES : WHY.ENOENT);
+        // /bin is statically linked: no library calls to show, only the exit.
+        const status = await runArgs([cmd, ...rest], io);
+        io.out(`+++ exited (status ${status}) +++`);
+        return status;
+      }
+      // Strings longer than -s are cut off, the way ltrace does it: "abc"...
+      const q = (s: string) => JSON.stringify(s.slice(0, size)) + (s.length > size ? '...' : '');
+      const at = (s: string, ret: string | number) => s + ' '.repeat(Math.max(1, 49 - s.length)) + '= ' + ret;
+      const { calls, status } = prog([cmd, ...rest]);
+      for (const c of calls) {
+        const call = `${c.fn}(${c.args.map((a) => (typeof a === 'string' ? q(a) : String(a))).join(', ')}`;
+        if (c.out === undefined) { io.out(at(call + ')', c.ret)); continue; }
+        // The program prints while the call is still open, so its output lands in the middle of the line.
+        // ltrace pads by what it printed itself, so the closing line comes up short.
+        io.out(call + c.out);
+        io.out(')' + ' '.repeat(Math.max(1, 49 - call.length - 1)) + '= ' + c.ret);
+      }
+      io.out(`+++ exited (status ${status}) +++`);
+      return status;
+    },
+
     submit: async (args, io) => {
       const guess = args.join(' ').trim();
       if (!guess) return io.err('usage: submit <answer>');
-      if (await sha256(guess) === ANSWER_SHA256) {
-        store.set(SOLVED_KEY, '1');
-        io.out('✓ accepted. 1/1 tests passed.', 'ok');
-      } else {
-        io.err('✗ rejected. 0/1 tests passed.');
-        return 1;
-      }
+      if (guess === BAIT) { io.err("✗ rejected. Nice try: that one's a decoy."); return 1; }
+      const n = ANSWERS_SHA256.indexOf(await sha256(guess));
+      if (n < 0) { io.err('✗ rejected. 0/1 tests passed.'); return 1; }
+      markSolved(n + 1);
+      io.out('✓ accepted. 1/1 tests passed.', 'ok');
     },
   };
   Object.assign(commands, {
@@ -1086,6 +1184,12 @@ These are common Git commands:
         if (line.startsWith('<<<', i)) { words.push(HERE); i += 2; } else words.push(FROM);
         continue;
       }
+      if (c === '~' && !inWord) {
+        // Tilde expansion, done here like bash does it: as whoever typed the line. So `sudo vim ~/notes.txt`
+        // hands vim guest's notes.txt, not a ~ that vim would then expand as admin.
+        const m = line.slice(i).match(/^~(guest|admin)?(?=$|[\s/|;&<])/);
+        if (m) { w += abs(homeOf((m[1] as User | undefined) ?? user)); inWord = true; i += m[0].length - 1; continue; }
+      }
       w += c;
       inWord = true;
     }
@@ -1099,6 +1203,12 @@ These are common Git commands:
       const r = lookup(name);
       if (isErr(r)) { io.err(`tsh: ${name}: ${WHY[r]}`); return 127; }
       if (isDir(r.node)) { io.err(`tsh: ${name}: Is a directory`); return 126; }
+      const prog = programAt(r.path);
+      if (prog) {
+        const { calls, status } = prog([name, ...args]);
+        for (const c of calls) if (c.out !== undefined) io.out(c.out);
+        return status;
+      }
       if (!startsWith(r.path, ['bin'])) { io.err(`tsh: ${name}: Permission denied`); return 126; }
       name = r.path[1];
     }

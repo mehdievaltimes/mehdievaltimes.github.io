@@ -5,3 +5,4 @@ dist
 .claude
 /data/
 __pycache__/
+.env
