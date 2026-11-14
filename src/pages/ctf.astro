@@ -4,20 +4,14 @@ import ctf from '../data/ctf.json';
 import { ANSWER_SHA256 } from '../components/terminal/fs';
 
 // Only SHA-256 hashes of the flags ship. The files that make the challenges aren't in this repo.
-type Challenge = { id: string; title: string; cat: string; level: string; hash: string; hint: string };
+type Challenge = { id: string; title: string; cat: string; level: string; hash: string };
 const challenges: Challenge[] = [
-  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWER_SHA256,
-    hint: 'Deleting a secret in a new commit doesn’t delete it from the old ones. Not everything is in the log, either.' },
-  { id: 'portrait', title: 'Portrait', cat: 'forensics', level: 'easy', hash: ctf.hashes.portrait,
-    hint: 'What you see is the high bits of each color. Look at them one bit at a time.' },
-  { id: 'sealed', title: 'Signed, sealed', cat: 'web', level: 'easy', hash: ctf.hashes.sealed,
-    hint: 'With HS256, anyone holding a token can test guesses for the secret offline, as fast as they can compute an HMAC. The secret is one lowercase English word.' },
-  { id: 'notebook', title: 'Notebook', cat: 'crypto', level: 'medium', hash: ctf.hashes.notebook,
-    hint: 'XOR two ciphertexts and the pad cancels out. Spaces XORed with letters flip their case.' },
-  { id: 'crackme', title: 'Crackme', cat: 'reversing', level: 'medium', hash: ctf.hashes.crackme,
-    hint: 'wasm2wat (from wabt) turns it into text. Every step of the check can be run backwards.' },
-  { id: 'memorized', title: 'Memorized', cat: 'ml', level: 'medium', hash: ctf.hashes.memorized,
-    hint: 'You don’t have to break anything. Write the forward pass from the model card and ask the model what comes after something.' },
+  { id: 'autograder', title: 'Autograder', cat: 'git', level: 'easy', hash: ANSWER_SHA256 },
+  { id: 'portrait', title: 'Portrait', cat: 'forensics', level: 'easy', hash: ctf.hashes.portrait },
+  { id: 'sealed', title: 'Signed, sealed', cat: 'web', level: 'easy', hash: ctf.hashes.sealed },
+  { id: 'notebook', title: 'Notebook', cat: 'crypto', level: 'medium', hash: ctf.hashes.notebook },
+  { id: 'crackme', title: 'Crackme', cat: 'reversing', level: 'medium', hash: ctf.hashes.crackme },
+  { id: 'memorized', title: 'Memorized', cat: 'ml', level: 'medium', hash: ctf.hashes.memorized },
 ];
 const sealed = ctf.sealed;
 ---
@@ -91,8 +85,6 @@ const sealed = ctf.sealed;
           </>}
         </div>
 
-        <details class="ctf-hint"><summary class="meta">hint</summary><p>{c.hint}</p></details>
-
         <form class="ctf-row ctf-submit">
           <input type="text" placeholder="flag{...}" autocomplete="off" spellcheck="false" aria-label={`Flag for ${c.title}`} />
           <button type="submit" class="ctf-btn">Submit</button>
@@ -152,12 +144,15 @@ const sealed = ctf.sealed;
       paint();
     });
 
-    // The address is put together on click, like the terminal's `mail`.
+    // The address is put together on click, like the terminal's `mail`, and opens a Gmail draft in a new tab.
     document.getElementById('ctf-mail')!.addEventListener('click', (e) => {
       e.preventDefault();
       const to = ['mehdi.s', 'columbia.edu'].join('@');
       const n = Object.values(solved).filter(Boolean).length;
-      location.href = `mailto:${to}?subject=${encodeURIComponent(`CTF: solved ${n}/${items.length}`)}`;
+      const su = encodeURIComponent(`CTF: solved ${n}/${items.length}`);
+      const tab = window.open(`https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${su}`, '_blank');
+      if (tab) tab.opener = null;
+      else location.href = `mailto:${to}?subject=${su}`; // popup blocked: fall back to the default mail app
     });
 
     // Signed, sealed: decrypt the export with whatever secret you found.
@@ -213,9 +208,6 @@ const sealed = ctf.sealed;
   .ctf-card { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .35rem .8rem; margin: .8rem 0 0; font-size: .92rem; }
   .ctf-card dt { font: .78rem var(--mono); color: var(--muted); padding-top: .15rem; }
   .ctf-card dd { margin: 0; }
-  .ctf-hint { margin-top: .8rem; }
-  .ctf-hint summary { cursor: pointer; }
-  .ctf-hint p { margin: .4rem 0 0; font-size: .95rem; color: var(--muted); }
   .ctf-row { display: flex; gap: .5rem; margin-top: .8rem; }
   .ctf-row input { flex: 1; min-width: 0; font-family: var(--mono); font-size: .92rem; }
   .ctf-btn { font: 500 .9rem var(--sans); padding: 0 1rem; border-radius: 8px; border: 1px solid var(--faint); background: var(--bg); color: var(--fg); cursor: pointer; white-space: nowrap; }
